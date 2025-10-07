@@ -1,0 +1,98 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  schedule:
+    - cron: "0 10 * * 5" # JST 19:00 (Fri)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        ruby:
+          - "3.1"
+          - "3.2"
+          - "3.3"
+          - "3.4"
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: bundle update
+        run: |
+          set -xe
+          bundle config path vendor/bundle
+          bundle update --jobs $(nproc) --retry 3
+
+      - run: bundle exec rake spec
+
+      - name: Slack Notification (not success)
+        uses: act10ns/slack@v2
+        if: "! success()"
+        continue-on-error: true
+        with:
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          matrix: ${{ toJson(matrix) }}
+
+  # TODO: Do after
+  # rbs:
+  #   runs-on: ubuntu-latest
+  #
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #
+  #     - uses: ruby/setup-ruby@v1
+  #       with:
+  #         ruby-version: ruby
+  #         bundler-cache: true
+  #
+  #     - name: bundle update
+  #       run: |
+  #         set -xe
+  #         bundle config path vendor/bundle
+  #         bundle update --jobs $(nproc) --retry 3
+  #
+  #     - run: bundle exec rbs collection install
+  #     - run: bundle exec rbs validate
+  #     - run: bundle exec steep check
+  #
+  #     - name: Slack Notification (not success)
+  #       uses: act10ns/slack@v2
+  #       if: "! success()"
+  #       continue-on-error: true
+  #       with:
+  #         status: ${{ job.status }}
+  #         webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+
+  notify:
+    needs:
+      - test
+      # - rbs
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Slack Notification (success)
+        uses: act10ns/slack@v2
+        if: always()
+        continue-on-error: true
+        with:
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
