@@ -51,40 +51,39 @@ jobs:
           webhook-url: ${{ secrets.SLACK_WEBHOOK }}
           matrix: ${{ toJson(matrix) }}
 
-  # TODO: Do after
-  # rbs:
-  #   runs-on: ubuntu-latest
-  #
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #
-  #     - uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: ruby
-  #         bundler-cache: true
-  #
-  #     - name: bundle update
-  #       run: |
-  #         set -xe
-  #         bundle config path vendor/bundle
-  #         bundle update --jobs $(nproc) --retry 3
-  #
-  #     - run: bundle exec rbs collection install
-  #     - run: bundle exec rbs validate
-  #     - run: bundle exec steep check
-  #
-  #     - name: Slack Notification (not success)
-  #       uses: act10ns/slack@v2
-  #       if: "! success()"
-  #       continue-on-error: true
-  #       with:
-  #         status: ${{ job.status }}
-  #         webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+  rbs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+          bundler-cache: true
+
+      - name: bundle update
+        run: |
+          set -xe
+          bundle config path vendor/bundle
+          bundle update --jobs $(nproc) --retry 3
+
+      - run: bundle exec rbs collection install
+      - run: bundle exec rbs validate
+      - run: bundle exec steep check
+
+      - name: Slack Notification (not success)
+        uses: act10ns/slack@v2
+        if: "! success()"
+        continue-on-error: true
+        with:
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
 
   notify:
     needs:
       - test
-      # - rbs
+      - rbs
 
     runs-on: ubuntu-latest
 
