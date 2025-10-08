@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "sashimi_tanpopo/version"
+require_relative "sashimi_tanpopo/file_updater"
 
 module SashimiTanpopo
   class Error < StandardError; end
