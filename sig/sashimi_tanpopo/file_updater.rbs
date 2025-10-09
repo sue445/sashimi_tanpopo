@@ -1,0 +1,30 @@
+module SashimiTanpopo
+  class FileUpdater
+    def evaluate: (
+        recipe_body: String,
+        recipe_path: String,
+        target_dir: String,
+        params: Hash[Symbol, String],
+        dry_run: bool
+      ) -> String
+
+    class EvalContext
+      attr_reader params: Hash[Symbol, String]
+
+      def initialize: (params: Hash[Symbol, String], dry_run: bool) -> void
+
+      def update_file: (String path) { (String) -> String } -> void
+    end
+
+    class InstanceEval
+      def initialize: (
+          recipe_body: String,
+          recipe_path: String,
+          target_dir: String,
+          context: EvalContext
+        ) -> void
+
+      def call: () -> String
+    end
+  end
+end

@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rbs"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rspec-temp_dir"
   spec.add_development_dependency "steep"
   spec.add_development_dependency "yard"
 
