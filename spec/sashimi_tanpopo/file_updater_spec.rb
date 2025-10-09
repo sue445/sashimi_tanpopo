@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe SashimiTanpopo::FileUpdater do
-
   let(:updater) { SashimiTanpopo::FileUpdater.new }
 
   describe "#evaluate" do
