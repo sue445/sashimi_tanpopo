@@ -7,7 +7,6 @@ module SashimiTanpopo
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
-    # @return [String]
     def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:)
       context = EvalContext.new(params: params, dry_run: dry_run)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
@@ -25,7 +24,8 @@ module SashimiTanpopo
         @dry_run = dry_run
       end
 
-      # @yieldparam content [String]
+      # @param path [String]
+      # @yieldparam content [String] content of file
       def update_file(path)
         return unless File.exist?(path)
 
