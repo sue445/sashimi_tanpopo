@@ -6,7 +6,7 @@ module SashimiTanpopo
         target_dir: String,
         params: Hash[Symbol, String],
         dry_run: bool
-      ) -> String
+      ) -> void
 
     class EvalContext
       attr_reader params: Hash[Symbol, String]
@@ -24,7 +24,7 @@ module SashimiTanpopo
           context: EvalContext
         ) -> void
 
-      def call: () -> String
+      def call: () -> void
     end
   end
 end
