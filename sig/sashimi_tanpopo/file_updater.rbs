@@ -5,15 +5,24 @@ module SashimiTanpopo
         recipe_path: String,
         target_dir: String,
         params: Hash[Symbol, String],
-        dry_run: bool
+        dry_run: bool,
+        is_colored: bool,
       ) -> void
 
     class EvalContext
       attr_reader params: Hash[Symbol, String]
 
-      def initialize: (params: Hash[Symbol, String], dry_run: bool) -> void
+      def initialize: (
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool,
+        ) -> void
 
       def update_file: (String path) { (String) -> String } -> void
+
+      private
+
+      def show_diff: (String str1, String str2) -> void
     end
 
     class InstanceEval

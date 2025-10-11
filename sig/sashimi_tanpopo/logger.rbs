@@ -1,0 +1,11 @@
+module SashimiTanpopo
+  module Logger
+    class Formatter
+      def call: (String, Time, String?, String) -> String
+    end
+  end
+
+  def self.logger: () -> ::Logger
+
+  def self.logger=: (::Logger) -> ::Logger
+end
