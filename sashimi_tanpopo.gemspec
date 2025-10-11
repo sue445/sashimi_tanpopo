@@ -33,7 +33,6 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "ansi"
   spec.add_dependency "diffy"
 
   spec.add_development_dependency "irb"
