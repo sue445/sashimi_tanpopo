@@ -28,9 +28,21 @@ module SashimiTanpopo
         @diffy_format = is_colored ? :color : :text
       end
 
-      # @param path [String]
+      # @param pattern [String]
+      # @param block [Proc]
       # @yieldparam content [String] content of file
-      def update_file(path)
+      def update_file(pattern, &block)
+        Dir.glob(pattern).each do |path|
+          update_single_file(path, &block)
+        end
+      end
+
+      private
+
+      # @param path [String]
+      # @param block [Proc]
+      # @yieldparam content [String] content of file
+      def update_single_file(path, &block)
         return unless File.exist?(path)
 
         content = File.read(path)
@@ -46,8 +58,6 @@ module SashimiTanpopo
 
         File.write(path, result)
       end
-
-      private
 
       # @param str1 [String]
       # @param str2 [String]
