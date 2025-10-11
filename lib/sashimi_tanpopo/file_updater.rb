@@ -7,8 +7,9 @@ module SashimiTanpopo
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
-    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:)
-      context = EvalContext.new(params: params, dry_run: dry_run)
+    # @param is_colored [Boolean] Whether show color diff
+    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
+      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
     end
 
@@ -19,9 +20,12 @@ module SashimiTanpopo
 
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
-      def initialize(params:, dry_run:)
+      # @param is_colored [Boolean] Whether show color diff
+      def initialize(params:, dry_run:, is_colored:)
         @params = params
         @dry_run = dry_run
+
+        @diffy_format = is_colored ? :color : :text
       end
 
       # @param path [String]
@@ -36,10 +40,24 @@ module SashimiTanpopo
         # File isn't changed
         return if content == result
 
-        if @dry_run
-          # TODO: Do after
-        else
-          File.write(path, result)
+        show_diff(content, result)
+
+        return if @dry_run
+
+        File.write(path, result)
+      end
+
+      private
+
+      # @param str1 [String]
+      # @param str2 [String]
+      def show_diff(str1, str2)
+        diff_text = Diffy::Diff.new(str1, str2).to_s(@diffy_format)
+
+        SashimiTanpopo.logger.info "diff:"
+
+        diff_text.each_line do |line|
+          SashimiTanpopo.logger.info line
         end
       end
     end
