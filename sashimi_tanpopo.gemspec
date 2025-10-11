@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "ansi"
+  spec.add_dependency "diffy"
 
   spec.add_development_dependency "irb"
   spec.add_development_dependency "rake", "~> 13.0"
