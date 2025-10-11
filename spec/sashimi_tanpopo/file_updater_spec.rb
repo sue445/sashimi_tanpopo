@@ -11,6 +11,7 @@ RSpec.describe SashimiTanpopo::FileUpdater do
         target_dir:  target_dir,
         params:      params,
         dry_run:     dry_run,
+        is_colored:  is_colored,
       )
     end
 
@@ -20,6 +21,7 @@ RSpec.describe SashimiTanpopo::FileUpdater do
     let(:target_dir) { temp_dir }
     let(:params) { {} }
     let(:dry_run) { false }
+    let(:is_colored) { true }
 
     context "simple case" do
       let(:recipe_body) do

@@ -14,6 +14,7 @@ sources:
 path: .gem_rbs_collection
 
 gems:
+  - name: logger
   - name: rbs
     ignore: true
   - name: steep
