@@ -31,6 +31,7 @@ module SashimiTanpopo
     def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
       context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
+      context.changed_file_paths
     end
 
     class EvalContext
@@ -113,14 +114,12 @@ module SashimiTanpopo
               eval(#{recipe_body.dump}, nil, #{recipe_path.dump}, 1)
             end
           end
-          @context.changed_file_paths
         RUBY
 
         @target_dir = target_dir
         @context = context
       end
 
-      # @return [Array<String>] changed file paths
       def call
         eval(@code)
       end
