@@ -5,6 +5,11 @@ require "sashimi_tanpopo"
 
 module SashimiTanpopo
   class CLI < Thor
+    desc "version", "Show sashimi_tanpopo version"
+    def version
+      puts "sashimi_tanpopo v#{SashimiTanpopo::VERSION}"
+    end
+
     def self.define_common_options
       option :target_dir, type: :string, aliases: "-d", default: Dir.pwd, desc: "Target directory"
       option :params, type: :string, aliases: "-p", desc: "Params passed to recipe file", banner: "key=value", repeatable: true
