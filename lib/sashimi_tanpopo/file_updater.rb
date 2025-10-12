@@ -86,15 +86,16 @@ module SashimiTanpopo
         return false unless File.exist?(path)
 
         content = File.read(path)
+        before_content = content.dup
 
-        result = yield content.dup
+        yield content
 
         # File isn't changed
-        return false if content == result
+        return false if content == before_content
 
-        show_diff(content, result)
+        show_diff(before_content, content)
 
-        File.write(path, result) unless @dry_run
+        File.write(path, content) unless @dry_run
 
         true
       end
