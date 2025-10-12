@@ -18,7 +18,7 @@ module SashimiTanpopo
 
       # @return [Array<String>] changed file paths
       def apply_recipe_files
-        changed_file_paths = []
+        changed_file_paths = [] # : Array[String]
 
         @recipe_paths.each do |recipe_path|
           changed_file_paths +=

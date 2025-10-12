@@ -1,0 +1,21 @@
+module SashimiTanpopo
+  module Provider
+    class Base
+      @recipe_paths: Array[String]
+      @target_dir: String
+      @params: Hash[Symbol, String]
+      @dry_run: bool
+      @is_colored: bool
+
+      def initialize: (
+          recipe_paths: Array[String],
+          target_dir: String,
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool
+        ) -> void
+
+      def apply_recipe_files: () -> Array[String]
+    end
+  end
+end
