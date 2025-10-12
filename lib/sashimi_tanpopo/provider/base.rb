@@ -15,6 +15,24 @@ module SashimiTanpopo
         @dry_run = dry_run
         @is_colored = is_colored
       end
+
+      # @return [Array<String>] changed file paths
+      def apply_recipe_files
+        changed_file_paths = []
+
+        @recipe_paths.each do |recipe_path|
+          changed_file_paths +=
+            FileUpdater.new.perform(
+              recipe_path: recipe_path,
+              target_dir:  @target_dir,
+              params:      @params,
+              dry_run:     @dry_run,
+              is_colored:  @is_colored,
+            )
+        end
+
+        changed_file_paths.compact
+      end
     end
   end
 end
