@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "sashimi_tanpopo"
+require "sashimi_tanpopo/cli"
 require "rspec/temp_dir"
 
 RSpec.configure do |config|

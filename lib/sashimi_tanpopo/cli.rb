@@ -21,5 +21,15 @@ module SashimiTanpopo
     define_common_options
     def local(*recipe_files)
     end
+
+    # @param params [Array<String>]
+    # @return [Hash<String,String>]
+    #
+    # @example
+    #   parse_params(["k1=v1", "k2=v2"])
+    #   #=> {"k1"=>"v1", "k2"=>"v2"}
+    def self.parse_params(params)
+      params.map { |param| param.split("=", 2) }.to_h.transform_keys(&:to_sym)
+    end
   end
 end
