@@ -7,6 +7,8 @@ module SashimiTanpopo
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
+    #
+    # @return [Array<String>] changed file paths
     def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:)
       evaluate(
         recipe_body: File.read(recipe_path),
@@ -24,6 +26,8 @@ module SashimiTanpopo
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
+    #
+    # @return [Array<String>] changed file paths
     def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
       context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
@@ -106,6 +110,7 @@ module SashimiTanpopo
         @context = context
       end
 
+      # @return [Array<String>] changed file paths
       def call
         eval(@code)
       end

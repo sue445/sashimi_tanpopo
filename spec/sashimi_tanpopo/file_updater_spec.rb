@@ -42,6 +42,8 @@ RSpec.describe SashimiTanpopo::FileUpdater do
         FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
       end
 
+      it { should contain_exactly("test.txt") }
+
       it "file is updated" do
         subject
 
@@ -65,6 +67,8 @@ RSpec.describe SashimiTanpopo::FileUpdater do
         FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
         FileUtils.cp(fixtures_dir.join("test2.txt"), temp_dir)
       end
+
+      it { should contain_exactly("test.txt", "test2.txt") }
 
       it "files are updated" do
         subject
