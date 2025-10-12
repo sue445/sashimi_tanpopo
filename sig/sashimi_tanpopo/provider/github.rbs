@@ -1,0 +1,55 @@
+module SashimiTanpopo
+  module Provider
+    class GitHub < Base
+      @git_username: String
+      @git_email: String
+      @commit_message: String
+      @repository: String
+      @pr_title: String
+      @pr_body: String
+      @pr_source_branch: String
+      @pr_target_branch: String
+      @pr_assignees: Array[String]
+      @pr_reviewers: Array[String]
+      @pr_labels: Array[String]
+      @client: Octokit::Client
+
+      def initialize: (
+          recipe_paths: Array[String],
+          target_dir: String,
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool,
+          git_username: String,
+          git_email: String,
+          commit_message: String,
+          repository: String,
+          access_token: String,
+          ?api_endpoint: String,
+          pr_title: String,
+          pr_body: String,
+          pr_source_branch: String,
+          pr_target_branch: String,
+          ?pr_assignees: Array[String],
+          ?pr_reviewers: Array[String],
+          ?pr_labels: Array[String]
+        ) -> void
+
+      def perform: () -> void
+
+      private
+
+      def create_branch_and_push_changes: (Array[String]) -> void
+
+      def create_tree_meta: (String file_path) -> { path: String, mode: String, type: String, sha: String }
+
+      def create_pull_request: () -> Integer
+
+      def add_pr_labels: (Integer pr_number) -> void
+
+      def add_pr_assignees: (Integer pr_number) -> void
+
+      def add_pr_reviewers: (Integer pr_number) -> void
+    end
+  end
+end

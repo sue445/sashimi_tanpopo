@@ -1,0 +1,5 @@
+module Sawyer
+  class Resource
+    def []: (untyped) -> untyped
+  end
+end

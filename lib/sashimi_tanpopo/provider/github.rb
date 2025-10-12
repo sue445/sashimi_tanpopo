@@ -71,25 +71,25 @@ module SashimiTanpopo
       # Create branch on repository and push changes
       def create_branch_and_push_changes(changed_file_paths)
         current_ref = @client.ref(@repository, "heads/#{@pr_target_branch}")
-        branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha)
+        branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
 
-        branch_commit = @client.commit(@repository, branch_ref.object.sha)
+        branch_commit = @client.commit(@repository, branch_ref.object.sha) # steep:ignore
 
         tree_metas = changed_file_paths.map { |file_path| create_tree_meta(file_path) }
-        tree = @client.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha)
+        tree = @client.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha) # steep:ignore
 
         commit = @client.create_commit(
           @repository,
           @commit_message,
-          tree.sha,
-          branch_ref.object.sha,
+          tree.sha, # steep:ignore
+          branch_ref.object.sha, # steep:ignore
           author: {
             name: @git_username,
             email: @git_email,
           }
         )
 
-        @client.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha)
+        @client.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha) # steep:ignore
       end
 
       # @param file_path [String]
