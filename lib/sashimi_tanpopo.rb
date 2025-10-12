@@ -2,6 +2,7 @@
 
 require "logger"
 require "diffy"
+require "octokit"
 
 require_relative "sashimi_tanpopo/version"
 require_relative "sashimi_tanpopo/file_updater"
