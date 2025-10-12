@@ -58,6 +58,8 @@ module SashimiTanpopo
 
         pr_number = create_pull_request
 
+        add_pr_labels(pr_number)
+
         # TODO: Impl
         # TODO: restore files
       end
@@ -106,6 +108,13 @@ module SashimiTanpopo
       def create_pull_request
         pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body)
         pr[:number]
+      end
+
+      # @param pr_number [Integer]
+      def add_pr_labels(pr_number)
+        return if @pr_labels.empty?
+
+        @client.add_labels_to_an_issue(@repository, pr_number, @pr_labels)
       end
     end
   end
