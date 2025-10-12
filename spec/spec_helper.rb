@@ -27,3 +27,7 @@ end
 def fixtures_dir
   spec_dir.join("fixtures")
 end
+
+def exe_sashimi_tanpopo
+  spec_dir.join("..", "exe", "sashimi_tanpopo")
+end
