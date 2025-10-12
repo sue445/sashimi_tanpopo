@@ -1,6 +1,10 @@
 ---
 path: ".gem_rbs_collection"
 gems:
+- name: date
+  version: '0'
+  source:
+    type: stdlib
 - name: dbm
   version: '0'
   source:
@@ -61,6 +65,18 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: stringio
+  version: '0'
+  source:
+    type: stdlib
+- name: thor
+  version: '1.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: tsort
   version: '0'
   source:

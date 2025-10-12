@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "sashimi_tanpopo"
+require "sashimi_tanpopo/cli"
 require "rspec/temp_dir"
 
 RSpec.configure do |config|
@@ -25,4 +26,8 @@ end
 
 def fixtures_dir
   spec_dir.join("fixtures")
+end
+
+def exe_sashimi_tanpopo
+  spec_dir.join("..", "exe", "sashimi_tanpopo")
 end

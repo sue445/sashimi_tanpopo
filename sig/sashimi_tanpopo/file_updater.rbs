@@ -26,6 +26,7 @@ module SashimiTanpopo
           params: Hash[Symbol, String],
           dry_run: bool,
           is_colored: bool,
+          target_dir: String,
         ) -> void
 
       def update_file: (String pattern) { (String) -> String } -> void

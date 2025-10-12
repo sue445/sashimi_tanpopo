@@ -29,7 +29,7 @@ module SashimiTanpopo
     #
     # @return [Array<String>] changed file paths
     def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
-      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored)
+      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored, target_dir: target_dir)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
       context.changed_file_paths
     end
@@ -46,9 +46,11 @@ module SashimiTanpopo
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
-      def initialize(params:, dry_run:, is_colored:)
+      # @param target_dir [String]
+      def initialize(params:, dry_run:, is_colored:, target_dir:)
         @params = params
         @dry_run = dry_run
+        @target_dir = target_dir
         @changed_file_paths = []
 
         @diffy_format = is_colored ? :color : :text
@@ -61,7 +63,15 @@ module SashimiTanpopo
         Dir.glob(pattern).each do |path|
           is_changed = update_single_file(path, &block)
 
-          @changed_file_paths << path if is_changed
+          next unless is_changed
+
+          @changed_file_paths << path
+
+          if @dry_run
+            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} will be changed (dryrun)"
+          else
+            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} is changed"
+          end
         end
       end
 
@@ -76,15 +86,16 @@ module SashimiTanpopo
         return false unless File.exist?(path)
 
         content = File.read(path)
+        before_content = content.dup
 
-        result = yield content.dup
+        yield content
 
         # File isn't changed
-        return false if content == result
+        return false if content == before_content
 
-        show_diff(content, result)
+        show_diff(before_content, content)
 
-        File.write(path, result) unless @dry_run
+        File.write(path, content) unless @dry_run
 
         true
       end

@@ -1,0 +1,13 @@
+module SashimiTanpopo
+  class CLI < Thor
+    def self.exit_on_failure?: () -> bool
+
+    def self.define_common_options: () -> void
+
+    def self.parse_params: (Array[String] params) -> Hash[Symbol, String]
+
+    def version: () -> void
+
+    def local: (*String recipe_files) -> void
+  end
+end

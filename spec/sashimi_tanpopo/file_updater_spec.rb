@@ -80,5 +80,27 @@ RSpec.describe SashimiTanpopo::FileUpdater do
         expect(test_txt2).to eq "Hello, sue445!\n"
       end
     end
+
+    context "empty recipe" do
+      let(:recipe_body) do
+        <<~RUBY
+          update_file "test.txt" do |content|
+          end
+        RUBY
+      end
+
+      before do
+        FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
+      end
+
+      it { should be_empty }
+
+      it "file is not updated" do
+        subject
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, name!\n"
+      end
+    end
   end
 end

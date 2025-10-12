@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "sashimi_tanpopo/cli"
+
+SashimiTanpopo::CLI.start(ARGV)
