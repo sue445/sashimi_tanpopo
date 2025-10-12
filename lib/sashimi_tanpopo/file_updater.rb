@@ -2,6 +2,22 @@
 
 module SashimiTanpopo
   class FileUpdater
+    # @param recipe_path [String]
+    # @param target_dir [String]
+    # @param params [Hash<Symbol, String>]
+    # @param dry_run [Boolean]
+    # @param is_colored [Boolean] Whether show color diff
+    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:)
+      evaluate(
+        recipe_body: File.read(recipe_path),
+        recipe_path: recipe_path,
+        target_dir:  target_dir,
+        params:      params,
+        dry_run:     dry_run,
+        is_colored:  is_colored,
+      )
+    end
+
     # @param recipe_body [String]
     # @param recipe_path [String]
     # @param target_dir [String]
