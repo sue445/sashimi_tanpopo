@@ -59,6 +59,7 @@ module SashimiTanpopo
         pr_number = create_pull_request
 
         add_pr_labels(pr_number)
+        add_pr_assignees(pr_number)
 
         # TODO: Impl
         # TODO: restore files
@@ -115,6 +116,13 @@ module SashimiTanpopo
         return if @pr_labels.empty?
 
         @client.add_labels_to_an_issue(@repository, pr_number, @pr_labels)
+      end
+
+      # @param pr_number [Integer]
+      def add_pr_assignees(pr_number)
+        return if @pr_assignees.empty?
+
+        @client.add_assignees(@repository, pr_number, @pr_assignees)
       end
     end
   end

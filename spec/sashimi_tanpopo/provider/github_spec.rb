@@ -155,6 +155,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       stub_request(:post, "https://api.github.com/repos/#{repository}/issues/1347/labels").
         with(headers: request_headers, body: pr_labels.to_json).
         to_return(status: 201, headers: response_headers, body: fixture("github_add_labels.json"))
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/issues/1347/assignees").
+        with(headers: request_headers, body: { assignees: pr_assignees, }.to_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_add_assignees.json"))
     end
 
     it "file is updated and create PullRequest" do
