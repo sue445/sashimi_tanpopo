@@ -41,7 +41,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_source_branch) { "test" }
   let(:pr_target_branch) { "main" }
   let(:pr_assignees)     { %w(sue445) }
-  let(:pr_reviewers)     { %w(sue445) }
+  let(:pr_reviewers)     { %w(sue445-test) }
   let(:pr_labels)        { %w(sashimi-tanpopo) }
 
   describe "#perform" do
@@ -159,6 +159,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       stub_request(:post, "https://api.github.com/repos/#{repository}/issues/1347/assignees").
         with(headers: request_headers, body: { assignees: pr_assignees, }.to_json).
         to_return(status: 201, headers: response_headers, body: fixture("github_add_assignees.json"))
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls/1347/requested_reviewers").
+        with(headers: request_headers, body: { reviewers: pr_reviewers, }.to_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_add_reviewers.json"))
     end
 
     it "file is updated and create PullRequest" do

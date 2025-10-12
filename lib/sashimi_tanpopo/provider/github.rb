@@ -60,6 +60,7 @@ module SashimiTanpopo
 
         add_pr_labels(pr_number)
         add_pr_assignees(pr_number)
+        add_pr_reviewers(pr_number)
 
         # TODO: Impl
         # TODO: restore files
@@ -123,6 +124,13 @@ module SashimiTanpopo
         return if @pr_assignees.empty?
 
         @client.add_assignees(@repository, pr_number, @pr_assignees)
+      end
+
+      # @param pr_number [Integer]
+      def add_pr_reviewers(pr_number)
+        return if @pr_reviewers.empty?
+
+        @client.request_pull_request_review(@repository, pr_number, reviewers: @pr_reviewers)
       end
     end
   end
