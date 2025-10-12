@@ -56,6 +56,8 @@ module SashimiTanpopo
 
         create_branch_and_push_changes(changed_file_paths)
 
+        pr_number = create_pull_request
+
         # TODO: Impl
         # TODO: restore files
       end
@@ -98,6 +100,12 @@ module SashimiTanpopo
           type: "blob",
           sha:  file_body_sha,
         }
+      end
+
+      # @return [Integer] Created PullRequest number
+      def create_pull_request
+        pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body)
+        pr[:number]
       end
     end
   end

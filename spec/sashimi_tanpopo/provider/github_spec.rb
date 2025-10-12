@@ -140,6 +140,17 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       stub_request(:patch, "https://api.github.com/repos/#{repository}/git/refs/heads/#{pr_source_branch}").
         with(headers: request_headers, body: update_ref_json).
         to_return(status: 200, headers: response_headers, body: fixture("github_update_ref.json"))
+
+      create_pr_json = {
+        base: pr_target_branch,
+        head: pr_source_branch,
+        title: pr_title,
+        body: pr_body,
+      }.to_json
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
+        with(headers: request_headers, body: create_pr_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
     end
 
     it "file is updated and create PullRequest" do
