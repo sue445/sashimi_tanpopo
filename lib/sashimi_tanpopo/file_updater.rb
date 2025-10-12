@@ -63,14 +63,14 @@ module SashimiTanpopo
         Dir.glob(pattern).each do |path|
           is_changed = update_single_file(path, &block)
 
-          if is_changed
-            @changed_file_paths << path
+          next unless is_changed
 
-            if @dry_run
-              SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} will be changed (dryrun)"
-            else
-              SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} is changed"
-            end
+          @changed_file_paths << path
+
+          if @dry_run
+            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} will be changed (dryrun)"
+          else
+            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} is changed"
           end
         end
       end
