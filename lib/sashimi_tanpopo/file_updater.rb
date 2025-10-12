@@ -2,15 +2,36 @@
 
 module SashimiTanpopo
   class FileUpdater
+    # @param recipe_path [String]
+    # @param target_dir [String]
+    # @param params [Hash<Symbol, String>]
+    # @param dry_run [Boolean]
+    # @param is_colored [Boolean] Whether show color diff
+    #
+    # @return [Array<String>] changed file paths
+    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:)
+      evaluate(
+        recipe_body: File.read(recipe_path),
+        recipe_path: recipe_path,
+        target_dir:  target_dir,
+        params:      params,
+        dry_run:     dry_run,
+        is_colored:  is_colored,
+      )
+    end
+
     # @param recipe_body [String]
     # @param recipe_path [String]
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
+    #
+    # @return [Array<String>] changed file paths
     def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
       context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
+      context.changed_file_paths
     end
 
     class EvalContext
@@ -18,12 +39,17 @@ module SashimiTanpopo
       # @return [Hash<Symbol, String>]
       attr_reader :params
 
+      # @!attribute [r] changed_file_paths
+      # @return [Array<String>]
+      attr_reader :changed_file_paths
+
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
       def initialize(params:, dry_run:, is_colored:)
         @params = params
         @dry_run = dry_run
+        @changed_file_paths = []
 
         @diffy_format = is_colored ? :color : :text
       end
@@ -33,7 +59,9 @@ module SashimiTanpopo
       # @yieldparam content [String] content of file
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
-          update_single_file(path, &block)
+          is_changed = update_single_file(path, &block)
+
+          @changed_file_paths << path if is_changed
         end
       end
 
@@ -42,21 +70,23 @@ module SashimiTanpopo
       # @param path [String]
       # @param block [Proc]
       # @yieldparam content [String] content of file
+      #
+      # @return [Boolean] Whether file is changed
       def update_single_file(path, &block)
-        return unless File.exist?(path)
+        return false unless File.exist?(path)
 
         content = File.read(path)
 
         result = yield content.dup
 
         # File isn't changed
-        return if content == result
+        return false if content == result
 
         show_diff(content, result)
 
-        return if @dry_run
+        File.write(path, result) unless @dry_run
 
-        File.write(path, result)
+        true
       end
 
       # @param str1 [String]
