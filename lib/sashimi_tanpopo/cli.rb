@@ -20,6 +20,13 @@ module SashimiTanpopo
     desc "local RECIPE [RECIPE...]", "Change local files using recipe files"
     define_common_options
     def local(*recipe_files)
+      Provider::Local.new(
+        recipe_paths: recipe_files,
+        target_dir:   options[:target_dir],
+        params:       self.class.parse_params(options[:params]),
+        dry_run:      options[:dry_run],
+        is_colored:   options[:is_colored],
+      ).perform
     end
 
     # @param params [Array<String>]
