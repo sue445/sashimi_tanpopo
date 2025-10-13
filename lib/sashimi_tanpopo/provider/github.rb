@@ -2,6 +2,7 @@
 
 module SashimiTanpopo
   module Provider
+    # Apply recipe files and create Pull Request
     class GitHub < Base
       # @param recipe_paths [Array<String>]
       # @param target_dir [String]

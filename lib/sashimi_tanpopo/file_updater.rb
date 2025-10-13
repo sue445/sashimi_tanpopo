@@ -2,6 +2,8 @@
 
 module SashimiTanpopo
   class FileUpdater
+    # Apply recipe file
+    #
     # @param recipe_path [String]
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
@@ -31,6 +33,8 @@ module SashimiTanpopo
       )
     end
 
+    # Apply recipe file for unit test
+    #
     # @param recipe_body [String]
     # @param recipe_path [String]
     # @param target_dir [String]

@@ -18,6 +18,8 @@ module SashimiTanpopo
         @is_update_local = is_update_local
       end
 
+      # Apply recipe files
+      #
       # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
       #
       # @example Responce format

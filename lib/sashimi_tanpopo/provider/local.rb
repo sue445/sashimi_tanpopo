@@ -2,6 +2,7 @@
 
 module SashimiTanpopo
   module Provider
+    # Apply recipe files to local
     class Local < Base
       # @param recipe_paths [Array<String>]
       # @param target_dir [String]
