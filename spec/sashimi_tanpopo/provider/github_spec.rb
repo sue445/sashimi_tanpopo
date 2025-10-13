@@ -32,8 +32,8 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:dry_run) { false }
   let(:is_colored) { true }
 
-  let(:git_username)     { "test" }
-  let(:git_email)        { "test@example.com" }
+  let(:git_username)     { nil }
+  let(:git_email)        { nil }
   let(:commit_message)   { "Update files" }
   let(:repository)       { "example/example" }
   let(:access_token)     { "DUMMY" }
@@ -122,22 +122,6 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         with(headers: request_headers, body: tree_json).
         to_return(status: 201, headers: response_headers, body: fixture("github_create_tree.json"))
 
-      commit_json = {
-        author: {
-          name: "test",
-          email:  "test@example.com",
-        },
-        message: "Update files",
-        tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
-        parents: [
-          "aa218f56b14c9653891f9e74264a383fa43fefbd",
-        ],
-      }.to_json
-
-      stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
-        with(headers: request_headers, body: commit_json).
-        to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
-
       update_ref_json = {
         sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
         force: false,
@@ -172,13 +156,68 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         to_return(status: 201, headers: response_headers, body: fixture("github_add_reviewers.json"))
     end
 
-    it "file is not updated and create PullRequest" do
-      pr_url = subject
+    context "with git_username and git_email" do
+      let(:git_username) { "test" }
+      let(:git_email)    { "test@example.com" }
 
-      expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+      before do
+        commit_json = {
+          author: {
+            name: "test",
+            email: "test@example.com",
+          },
+          message: "Update files",
+          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+          parents: [
+            "aa218f56b14c9653891f9e74264a383fa43fefbd",
+          ],
+        }.to_json
 
-      test_txt = File.read(temp_dir_path.join("test.txt"))
-      expect(test_txt).to eq "Hi, name!\n"
+        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
+          with(headers: request_headers, body: commit_json).
+          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+      end
+
+      it "file is not updated and create PullRequest" do
+        pr_url = subject
+
+        expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, name!\n"
+      end
+    end
+
+    context "without git_username and git_email" do
+      let(:git_username) { nil }
+      let(:git_email)    { nil }
+
+      before do
+        commit_json = {
+          author: {
+            name: "octocat",
+            email: "octocat@users.noreply.github.com",
+          },
+          message: "Update files",
+          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+          parents: [
+            "aa218f56b14c9653891f9e74264a383fa43fefbd",
+          ],
+        }.to_json
+
+        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
+          with(headers: request_headers, body: commit_json).
+          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+      end
+
+      it "file is not updated and create PullRequest" do
+        pr_url = subject
+
+        expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, name!\n"
+      end
     end
   end
 
