@@ -24,8 +24,8 @@ module SashimiTanpopo
           params: Hash[Symbol, String],
           dry_run: bool,
           is_colored: bool,
-          git_username: String,
-          git_email: String,
+          git_username: String?,
+          git_email: String?,
           commit_message: String,
           repository: String,
           access_token: String,
@@ -45,6 +45,8 @@ module SashimiTanpopo
       def self.github_host: (String api_endpoint) -> String
 
       private
+
+      def current_user_name: () -> String
 
       def create_branch_and_push_changes: (changed_files changed_files) -> void
 

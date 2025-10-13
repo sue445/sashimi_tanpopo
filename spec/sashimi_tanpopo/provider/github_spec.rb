@@ -76,6 +76,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
     end
 
     before do
+      stub_request(:get, "https://api.github.com/user").
+        with(headers: request_headers).
+        to_return(status: 200, headers: response_headers, body: fixture("github_get_user.json"))
+
       stub_request(:get, "https://api.github.com/repos/#{repository}/git/refs/heads/#{pr_target_branch}").
         with(headers: request_headers).
         to_return(status: 200, headers: response_headers, body: fixture("github_get_ref.json"))

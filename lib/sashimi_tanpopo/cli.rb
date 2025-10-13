@@ -35,8 +35,8 @@ module SashimiTanpopo
 
     desc "github RECIPE [RECIPE...]", "Change local files using recipe files and create Pull Request"
     define_common_options
-    option :git_user_name,     type: :string,  desc: "user name for git commit", required: true
-    option :git_email,         type: :string,  desc: "email for git commit", required: true
+    option :git_user_name,     type: :string,  desc: "user name for git commit. default: username of user authenticated with token"
+    option :git_email,         type: :string,  desc: "email for git commit. default: <git_user_name>@users.noreply.<github_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
     option :github_repository, type: :string,  desc: "GitHub repository for Pull Request [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
     option :github_api_url,    type: :string,  desc: "GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"

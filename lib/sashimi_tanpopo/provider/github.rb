@@ -13,8 +13,8 @@ module SashimiTanpopo
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
-      # @param git_username [String]
-      # @param git_email [String]
+      # @param git_username [String,nil]
+      # @param git_email [String,nil]
       # @param commit_message [String]
       # @param repository [String]
       # @param access_token [String]
@@ -41,8 +41,6 @@ module SashimiTanpopo
           is_update_local: false,
         )
 
-        @git_username = git_username
-        @git_email = git_email
         @commit_message = commit_message
         @repository = repository
         @pr_title = pr_title
@@ -55,6 +53,20 @@ module SashimiTanpopo
         @is_draft_pr = is_draft_pr
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
+
+        @git_username =
+          if git_username
+            git_username
+          else
+            current_user_name
+          end
+
+        @git_email =
+          if git_email
+            git_email
+          else
+            "#{@git_username}@users.noreply.#{self.class.github_host(api_endpoint)}"
+          end
       end
 
       # Apply recipe files
@@ -83,12 +95,17 @@ module SashimiTanpopo
         return DEFAULT_GITHUB_HOST if api_endpoint == DEFAULT_API_ENDPOINT
 
         matched = %r{^https?://(.+)/api}.match(api_endpoint)
-        return matched[1] if matched
+        return matched[1] if matched # steep:ignore
 
         DEFAULT_GITHUB_HOST
       end
 
       private
+
+      # @return [String]
+      def current_user_name
+        @client.user[:login]
+      end
 
       # Create branch on repository and push changes
       def create_branch_and_push_changes(changed_files)
