@@ -1,6 +1,9 @@
 module SashimiTanpopo
   module Provider
     class GitHub < Base
+      DEFAULT_API_ENDPOINT: String
+      DEFAULT_GITHUB_HOST: String
+
       @git_username: String
       @git_email: String
       @commit_message: String
@@ -38,6 +41,8 @@ module SashimiTanpopo
         ) -> void
 
       def perform: () -> String?
+
+      def self.github_host: (String api_endpoint) -> String
 
       private
 

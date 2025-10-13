@@ -4,6 +4,10 @@ module SashimiTanpopo
   module Provider
     # Apply recipe files and create Pull Request
     class GitHub < Base
+      DEFAULT_API_ENDPOINT = "https://api.github.com/"
+
+      DEFAULT_GITHUB_HOST = "github.com"
+
       # @param recipe_paths [Array<String>]
       # @param target_dir [String]
       # @param params [Hash<Symbol, String>]
@@ -25,7 +29,7 @@ module SashimiTanpopo
       # @param is_draft_pr [Boolean] Whether create draft Pull Request
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:,
                      git_username:, git_email:, commit_message:,
-                     repository:, access_token:, api_endpoint: "https://api.github.com/",
+                     repository:, access_token:, api_endpoint: DEFAULT_API_ENDPOINT,
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
                      pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:)
         super(
@@ -70,6 +74,18 @@ module SashimiTanpopo
         add_pr_reviewers(pr[:number])
 
         pr[:html_url]
+      end
+
+      # Get GitHub host from api_endpoint
+      # @param api_endpoint [String]
+      # @return [String]
+      def self.github_host(api_endpoint)
+        return DEFAULT_GITHUB_HOST if api_endpoint == DEFAULT_API_ENDPOINT
+
+        matched = %r{^https?://(.+)/api}.match(api_endpoint)
+        return matched[1] if matched
+
+        DEFAULT_GITHUB_HOST
       end
 
       private

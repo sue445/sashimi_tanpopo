@@ -177,4 +177,26 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       expect(test_txt).to eq "Hi, name!\n"
     end
   end
+
+  describe ".github_host" do
+    subject { SashimiTanpopo::Provider::GitHub.github_host(api_endpoint) }
+
+    context "with default API endpoint" do
+      let(:api_endpoint) { "https://api.github.com/" }
+
+      it { should eq "github.com" }
+    end
+
+    context "with GHES API endpoint" do
+      let(:api_endpoint) { "https://example.com/api/v3" }
+
+      it { should eq "example.com" }
+    end
+
+    context "unknown format" do
+      let(:api_endpoint) { "https://example.com/" }
+
+      it { should eq "github.com" }
+    end
+  end
 end
