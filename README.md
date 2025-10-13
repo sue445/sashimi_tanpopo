@@ -51,8 +51,7 @@ Usage:
   sashimi_tanpopo local RECIPE [RECIPE...]
 
 Options:
-  -d, [--target-dir=TARGET_DIR]                      # Target directory
-                                                     # Default: /Users/sue445/workspace/github.com/sue445/sashimi_tanpopo
+  -d, [--target-dir=TARGET_DIR]                      # Target directory. default: current directory
   -p, [--params=key:value]                           # Params passed to recipe file
       [--dry-run], [--no-dry-run], [--skip-dry-run]  # Whether to run dry run
                                                      # Default: false
@@ -70,8 +69,7 @@ Usage:
   sashimi_tanpopo github RECIPE [RECIPE...] --github-repository=user/repo --pr-source-branch=pr_branch --pr-target-branch=main --pr-title=PR_TITLE -m, --message=MESSAGE
 
 Options:
-  -d, [--target-dir=TARGET_DIR]                         # Target directory
-                                                        # Default: /Users/sue445/workspace/github.com/sue445/sashimi_tanpopo
+  -d, [--target-dir=TARGET_DIR]                         # Target directory. default: current directory
   -p, [--params=key:value]                              # Params passed to recipe file
       [--dry-run], [--no-dry-run], [--skip-dry-run]     # Whether to run dry run
                                                         # Default: false

@@ -15,7 +15,7 @@ module SashimiTanpopo
     end
 
     def self.define_exec_common_options
-      option :target_dir, type: :string, aliases: "-d", default: Dir.pwd, desc: "Target directory"
+      option :target_dir, type: :string, aliases: "-d", desc: "Target directory. default: current directory"
       option :params,     type: :hash, aliases: "-p", default: {}, desc: "Params passed to recipe file", repeatable: true
       option :dry_run,    type: :boolean, default: false, desc: "Whether to run dry run"
       option :color,      type: :boolean, default: true, desc: "Whether to colorize output"

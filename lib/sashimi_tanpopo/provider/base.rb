@@ -4,14 +4,14 @@ module SashimiTanpopo
   module Provider
     class Base
       # @param recipe_paths [Array<String>]
-      # @param target_dir [String]
+      # @param target_dir [String,nil]
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
       # @param is_update_local [Boolean] Whether update local file in `update_file`
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:, is_update_local:)
         @recipe_paths = recipe_paths
-        @target_dir = target_dir
+        @target_dir = target_dir || Dir.pwd
         @params = params
         @dry_run = dry_run
         @is_colored = is_colored
