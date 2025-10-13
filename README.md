@@ -31,8 +31,9 @@ end
 $ sashimi_tanpopo local --target-dir=/path/to/app --params=ruby_version:3.4.5 /path/to/recipe.rb
 
 # Update local app files using recipe.rb and create Pull Request
-$ sashimi_tanpopo github --target-dir=/path/to/app --params=ruby_version:3.4.5 --message="Upgrade to Ruby 3.4.5" --github-repository=yourname/yourrepo \
---pr-title="Upgrade to Ruby 3.4.5" --pr-source-branch=ruby_3.4.5 --pr-target-branch=main --pr-draft recipe.rb
+$ sashimi_tanpopo github --target-dir=/path/to/app --params=ruby_version:3.4.5 \
+--message="Upgrade to Ruby 3.4.5" --github-repository=yourname/yourrepo --pr-title="Upgrade to Ruby 3.4.5" \
+--pr-source-branch=ruby_3.4.5 --pr-target-branch=main --pr-draft /path/to/recipe.rb
 ```
 
 ## Installation
