@@ -16,8 +16,8 @@ module SashimiTanpopo
       # @param api_endpoint [String]
       # @param pr_title [String]
       # @param pr_body [String]
-      # @param pr_source_branch [String] PullRequest source branch (a.k.a. head branch)
-      # @param pr_target_branch [String] PullRequest target branch (a.k.a. base branch)
+      # @param pr_source_branch [String] Pull Request source branch (a.k.a. head branch)
+      # @param pr_target_branch [String] Pull Request target branch (a.k.a. base branch)
       # @param pr_assignees [Array<String>]
       # @param pr_reviewers [Array<String>]
       # @param pr_labels [Array<String>]
@@ -106,7 +106,7 @@ module SashimiTanpopo
         }
       end
 
-      # @return [Integer] Created PullRequest number
+      # @return [Integer] Created Pull Request number
       def create_pull_request
         pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body)
         pr[:number]
