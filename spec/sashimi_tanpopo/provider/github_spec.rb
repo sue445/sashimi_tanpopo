@@ -168,11 +168,11 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         to_return(status: 201, headers: response_headers, body: fixture("github_add_reviewers.json"))
     end
 
-    it "file is updated and create PullRequest" do
+    it "file is not updated and create PullRequest" do
       subject
 
       test_txt = File.read(temp_dir_path.join("test.txt"))
-      expect(test_txt).to eq "Hi, sue445!\n"
+      expect(test_txt).to eq "Hi, name!\n"
     end
   end
 end

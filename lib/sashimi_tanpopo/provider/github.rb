@@ -28,11 +28,12 @@ module SashimiTanpopo
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
                      pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:)
         super(
-          recipe_paths: recipe_paths,
-          target_dir:   target_dir,
-          params:       params,
-          dry_run:      dry_run,
-          is_colored:   is_colored,
+          recipe_paths:    recipe_paths,
+          target_dir:      target_dir,
+          params:          params,
+          dry_run:         dry_run,
+          is_colored:      is_colored,
+          is_update_local: false,
         )
 
         @git_username = git_username
@@ -52,32 +53,32 @@ module SashimiTanpopo
       end
 
       def perform
-        changed_file_paths = apply_recipe_files
+        changed_files = apply_recipe_files
 
-        return if changed_file_paths.empty? || @dry_run
+        return if changed_files.empty? || @dry_run
 
-        create_branch_and_push_changes(changed_file_paths)
+        create_branch_and_push_changes(changed_files)
 
         pr_number = create_pull_request
 
         add_pr_labels(pr_number)
         add_pr_assignees(pr_number)
         add_pr_reviewers(pr_number)
-
-        # TODO: Impl
-        # TODO: restore files
       end
 
       private
 
       # Create branch on repository and push changes
-      def create_branch_and_push_changes(changed_file_paths)
+      def create_branch_and_push_changes(changed_files)
         current_ref = @client.ref(@repository, "heads/#{@pr_target_branch}")
         branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
 
         branch_commit = @client.commit(@repository, branch_ref.object.sha) # steep:ignore
 
-        tree_metas = changed_file_paths.map { |file_path| create_tree_meta(file_path) }
+        tree_metas =
+          changed_files.map do |path, data|
+            create_tree_meta(path: path, body: data[:after_content], mode: data[:mode])
+          end
         tree = @client.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha) # steep:ignore
 
         commit = @client.create_commit(
@@ -94,15 +95,15 @@ module SashimiTanpopo
         @client.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha) # steep:ignore
       end
 
-      # @param file_path [String]
-      def create_tree_meta(file_path)
-        full_file_path = File.join(@target_dir, file_path)
-        file_body = File.read(full_file_path)
-        file_body_sha = @client.create_blob(@repository, file_body)
+      # @param path [String]
+      # @param body [String]
+      # @param mode [String]
+      def create_tree_meta(path:, body:, mode:)
+        file_body_sha = @client.create_blob(@repository, body)
 
         {
-          path: file_path,
-          mode: File.stat(full_file_path).mode.to_s(8),
+          path: path,
+          mode: mode,
           type: "blob",
           sha:  file_body_sha,
         }

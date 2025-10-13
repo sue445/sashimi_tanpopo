@@ -6,16 +6,20 @@ module SashimiTanpopo
       @params: Hash[Symbol, String]
       @dry_run: bool
       @is_colored: bool
+      @is_update_local: bool
 
       def initialize: (
           recipe_paths: Array[String],
           target_dir: String,
           params: Hash[Symbol, String],
           dry_run: bool,
-          is_colored: bool
+          is_colored: bool,
+          is_update_local: bool,
         ) -> void
 
-      def apply_recipe_files: () -> Array[String]
+      def apply_recipe_files: () -> changed_files
+
+      def cleanup_target_dir: () -> void
     end
   end
 end
