@@ -169,7 +169,9 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
     end
 
     it "file is not updated and create PullRequest" do
-      subject
+      pr_url = subject
+
+      expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
 
       test_txt = File.read(temp_dir_path.join("test.txt"))
       expect(test_txt).to eq "Hi, name!\n"

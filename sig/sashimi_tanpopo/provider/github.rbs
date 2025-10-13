@@ -37,7 +37,7 @@ module SashimiTanpopo
           is_draft_pr: bool,
         ) -> void
 
-      def perform: () -> void
+      def perform: () -> String?
 
       private
 
@@ -45,7 +45,7 @@ module SashimiTanpopo
 
       def create_tree_meta: (path: String, body: String, mode: String) -> { path: String, mode: String, type: String, sha: String }
 
-      def create_pull_request: () -> Integer
+      def create_pull_request: () -> { number: Integer, html_url: String }
 
       def add_pr_labels: (Integer pr_number) -> void
 

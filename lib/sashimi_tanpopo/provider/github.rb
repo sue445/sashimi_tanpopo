@@ -53,18 +53,23 @@ module SashimiTanpopo
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
       end
 
+      # Apply recipe files
+      # @return [String] Created Pull Request URL
+      # @return [nil] Pull Request isn't created
       def perform
         changed_files = apply_recipe_files
 
-        return if changed_files.empty? || @dry_run
+        return nil if changed_files.empty? || @dry_run
 
         create_branch_and_push_changes(changed_files)
 
-        pr_number = create_pull_request
+        pr = create_pull_request
 
-        add_pr_labels(pr_number)
-        add_pr_assignees(pr_number)
-        add_pr_reviewers(pr_number)
+        add_pr_labels(pr[:number])
+        add_pr_assignees(pr[:number])
+        add_pr_reviewers(pr[:number])
+
+        pr[:html_url]
       end
 
       private
@@ -110,13 +115,16 @@ module SashimiTanpopo
         }
       end
 
-      # @return [Integer] Created Pull Request number
+      # @return [Hash{pr_number: Integer, html_url: String}] Created Pull Request info
       def create_pull_request
         pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
 
         SashimiTanpopo.logger.info "Pull Request is created: #{pr[:html_url]}"
 
-        pr[:number]
+        {
+          number: pr[:number],
+          html_url: pr[:html_url],
+        }
       end
 
       # @param pr_number [Integer]
