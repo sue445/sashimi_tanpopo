@@ -13,7 +13,7 @@ module SashimiTanpopo
     #
     # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
     #
-    # @example Responce format
+    # @example Response format
     #   {
     #     "path/to/changed-file.txt" => {
     #       before_content: "foo",
@@ -45,7 +45,7 @@ module SashimiTanpopo
     #
     # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
     #
-    # @example Responce format
+    # @example Response format
     #   {
     #     "path/to/changed-file.txt" => {
     #       before_content: "foo",
