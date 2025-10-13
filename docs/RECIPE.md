@@ -44,7 +44,7 @@ end
 
 Parameters:
 
-* `pattern`: Path to target file. This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. e.g. `.github/workflows/*.yml`
+* `pattern`: Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
 
 Yield Parameters:
 
