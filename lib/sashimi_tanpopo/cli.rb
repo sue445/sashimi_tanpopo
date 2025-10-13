@@ -95,7 +95,7 @@ module SashimiTanpopo
       # @return [String,nil]
       def option_or_env(option_name, env_name, default = nil)
         return options[option_name] if options[option_name] && !options[option_name].empty?
-        return ENV[env_name] if ENV[env_name] && !ENV[env_name].empty?
+        return ENV[env_name] unless ENV.fetch(env_name, "") == ""
         default
       end
 

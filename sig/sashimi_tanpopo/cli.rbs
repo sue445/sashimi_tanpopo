@@ -9,5 +9,18 @@ module SashimiTanpopo
     def version: () -> void
 
     def local: (*String recipe_files) -> void
+
+    def github: (*String recipe_files) -> void
+
+    def option_or_env: (
+        (String | Symbol) option_name,
+        String env_name,
+        ?String? default,
+      ) -> String?
+
+    def option_or_env!: (
+        (String | Symbol) option_name,
+        String env_name,
+      ) -> String
   end
 end
