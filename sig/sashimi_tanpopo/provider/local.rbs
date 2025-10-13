@@ -3,7 +3,7 @@ module SashimiTanpopo
     class Local < Base
       def initialize: (
           recipe_paths: Array[String],
-          target_dir: String,
+          target_dir: String?,
           params: Hash[Symbol, String],
           dry_run: bool,
           is_colored: bool

@@ -9,7 +9,7 @@ module SashimiTanpopo
       DEFAULT_GITHUB_HOST = "github.com"
 
       # @param recipe_paths [Array<String>]
-      # @param target_dir [String]
+      # @param target_dir [String,nil]
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff

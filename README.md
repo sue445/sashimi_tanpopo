@@ -51,8 +51,7 @@ Usage:
   sashimi_tanpopo local RECIPE [RECIPE...]
 
 Options:
-  -d, [--target-dir=TARGET_DIR]                      # Target directory
-                                                     # Default: /Users/sue445/workspace/github.com/sue445/sashimi_tanpopo
+  -d, [--target-dir=TARGET_DIR]                      # Target directory. Default: current directory
   -p, [--params=key:value]                           # Params passed to recipe file
       [--dry-run], [--no-dry-run], [--skip-dry-run]  # Whether to run dry run
                                                      # Default: false
@@ -70,15 +69,14 @@ Usage:
   sashimi_tanpopo github RECIPE [RECIPE...] --github-repository=user/repo --pr-source-branch=pr_branch --pr-target-branch=main --pr-title=PR_TITLE -m, --message=MESSAGE
 
 Options:
-  -d, [--target-dir=TARGET_DIR]                         # Target directory
-                                                        # Default: /Users/sue445/workspace/github.com/sue445/sashimi_tanpopo
+  -d, [--target-dir=TARGET_DIR]                         # Target directory. Default: current directory
   -p, [--params=key:value]                              # Params passed to recipe file
       [--dry-run], [--no-dry-run], [--skip-dry-run]     # Whether to run dry run
                                                         # Default: false
       [--color], [--no-color], [--skip-color]           # Whether to colorize output
                                                         # Default: true
-      [--git-user-name=GIT_USER_NAME]                   # user name for git commit. default: username of user authenticated with token
-      [--git-email=GIT_EMAIL]                           # email for git commit. default: <git_user_name>@users.noreply.<github_host>
+      [--git-user-name=GIT_USER_NAME]                   # user name for git commit. Default: username of user authenticated with token
+      [--git-email=GIT_EMAIL]                           # email for git commit. Default: <git_user_name>@users.noreply.<github_host>
   -m, --message=MESSAGE                                 # commit message
       --github-repository=user/repo                     # GitHub repository for Pull Request [$GITHUB_REPOSITORY]
       [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
