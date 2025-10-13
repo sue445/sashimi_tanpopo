@@ -9,12 +9,26 @@ RSpec.describe "sashimi_tanpopo" do
       FileUtils.cp(fixtures_dir.join("recipe.rb"), temp_dir)
     end
 
-    context "with --params" do
+    context "with single --params" do
       it "run command" do
         sh "#{exe_sashimi_tanpopo} local --target-dir=#{temp_dir} --params=name:sue445 #{temp_dir_path.join("recipe.rb")}"
 
         test_txt = File.read(temp_dir_path.join("test.txt"))
         expect(test_txt).to eq "Hi, sue445!\n"
+      end
+    end
+
+    context "with multiple --params" do
+      before do
+        FileUtils.cp(fixtures_dir.join("test3.txt"), temp_dir)
+        FileUtils.cp(fixtures_dir.join("recipe_test3.rb"), temp_dir)
+      end
+
+      it "run command" do
+        sh "#{exe_sashimi_tanpopo} local --target-dir=#{temp_dir} --params=name:sue445 --params=lang:ja #{temp_dir_path.join("recipe_test3.rb")}"
+
+        test_txt = File.read(temp_dir_path.join("test3.txt"))
+        expect(test_txt).to eq "Name=sue445\nLanguage=ja\n"
       end
     end
 

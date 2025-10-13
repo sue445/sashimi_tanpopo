@@ -60,6 +60,7 @@ module SashimiTanpopo
     end
 
     class EvalContext
+      # passed from `--params`
       # @!attribute [r] params
       # @return [Hash<Symbol, String>]
       attr_reader :params
@@ -83,9 +84,21 @@ module SashimiTanpopo
         @diffy_format = is_colored ? :color : :text
       end
 
-      # @param pattern [String]
-      # @param block [Proc]
-      # @yieldparam content [String] content of file
+      # Update files if exists
+      #
+      # @param pattern [String] Path to target file. This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. e.g. `.github/workflows/*.yml`
+      #
+      # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
+      #
+      # @example Update single file
+      #   update_file "test.txt" do |content|
+      #     content.gsub!("name", params[:name])
+      #   end
+      #
+      # @example Update multiple files
+      #   update_file ".github/workflows/*.yml" do |content|
+      #     content.gsub!(/ruby-version: "(.+)"/, %Q{ruby-version: "#{params[:ruby_version]}"})
+      #   end
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
           full_file_path = File.join(@target_dir, path)
