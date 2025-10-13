@@ -111,6 +111,9 @@ module SashimiTanpopo
       # @return [Integer] Created Pull Request number
       def create_pull_request
         pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
+
+        SashimiTanpopo.logger.info "Pull Request is created: #{pr[:html_url]}"
+
         pr[:number]
       end
 
