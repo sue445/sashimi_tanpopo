@@ -21,11 +21,12 @@ module SashimiTanpopo
       # @param pr_assignees [Array<String>]
       # @param pr_reviewers [Array<String>]
       # @param pr_labels [Array<String>]
+      # @param is_draft_pr [Boolean] Whether create draft Pull Request
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:,
                      git_username:, git_email:, commit_message:,
                      repository:, access_token:, api_endpoint: "https://api.github.com/",
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
-                     pr_assignees: [], pr_reviewers: [], pr_labels: [])
+                     pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:)
         super(
           recipe_paths: recipe_paths,
           target_dir:   target_dir,
@@ -45,6 +46,7 @@ module SashimiTanpopo
         @pr_assignees = pr_assignees
         @pr_reviewers = pr_reviewers
         @pr_labels = pr_labels
+        @is_draft_pr = is_draft_pr
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
       end
@@ -108,7 +110,7 @@ module SashimiTanpopo
 
       # @return [Integer] Created Pull Request number
       def create_pull_request
-        pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body)
+        pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
         pr[:number]
       end
 

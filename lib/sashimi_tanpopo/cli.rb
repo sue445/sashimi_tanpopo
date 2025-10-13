@@ -35,19 +35,20 @@ module SashimiTanpopo
 
     desc "github RECIPE [RECIPE...]", "Change local files using recipe files and create Pull Request"
     define_common_options
-    option :git_user_name,     type: :string, desc: "user name for git commit", required: true
-    option :git_email,         type: :string, desc: "email for git commit", required: true
-    option :message,           type: :string, desc: "commit message", required: true, aliases: "-m"
-    option :github_repository, type: :string, desc: "GitHub repository for Pull Request [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
-    option :github_api_url,    type: :string, desc: "GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
-    option :github_token,      type: :string, desc: "GitHub access token. Either --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
-    option :pr_title,          type: :string, desc: "Pull Request title", required: true
-    option :pr_body,           type: :string, desc: "Pull Request body"
-    option :pr_source_branch,  type: :string, desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
-    option :pr_target_branch,  type: :string, desc: "Pull Request target branch (a.k.a. base branch). Either --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", required: true, banner: "main"
-    option :pr_assignees,      type: :array,  desc: "Pull Request assignees"
-    option :pr_reviewers,      type: :array,  desc: "Pull Request reviewers"
-    option :pr_labels,         type: :array,  desc: "Pull Request labels"
+    option :git_user_name,     type: :string,  desc: "user name for git commit", required: true
+    option :git_email,         type: :string,  desc: "email for git commit", required: true
+    option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
+    option :github_repository, type: :string,  desc: "GitHub repository for Pull Request [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
+    option :github_api_url,    type: :string,  desc: "GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
+    option :github_token,      type: :string,  desc: "GitHub access token. Either --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
+    option :pr_title,          type: :string,  desc: "Pull Request title", required: true
+    option :pr_body,           type: :string,  desc: "Pull Request body"
+    option :pr_source_branch,  type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
+    option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Either --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", required: true, banner: "main"
+    option :pr_assignees,      type: :array,   desc: "Pull Request assignees"
+    option :pr_reviewers,      type: :array,   desc: "Pull Request reviewers"
+    option :pr_labels,         type: :array,   desc: "Pull Request labels"
+    option :pr_draft,          type: :boolean, desc: "Whether to create draft Pull Request", default: false
     def github(*recipe_files)
       repository       = option_or_env!(:github_repository, "GITHUB_REPOSITORY")
       api_endpoint     = option_or_env!(:github_api_url, "GITHUB_API_URL")
@@ -73,6 +74,7 @@ module SashimiTanpopo
         pr_assignees:     options[:pr_assignees],
         pr_reviewers:     options[:pr_reviewers],
         pr_labels:        options[:pr_labels],
+        is_draft_pr:      options[:pr_draft],
       ).perform
     end
 

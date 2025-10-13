@@ -20,6 +20,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       pr_assignees:     pr_assignees,
       pr_reviewers:     pr_reviewers,
       pr_labels:        pr_labels,
+      is_draft_pr:      is_draft_pr,
     )
   end
 
@@ -43,6 +44,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_assignees)     { %w(sue445) }
   let(:pr_reviewers)     { %w(sue445-test) }
   let(:pr_labels)        { %w(sashimi-tanpopo) }
+  let(:is_draft_pr)      { false }
 
   describe "#perform" do
     subject { provider.perform }
@@ -142,6 +144,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         to_return(status: 200, headers: response_headers, body: fixture("github_update_ref.json"))
 
       create_pr_json = {
+        draft: is_draft_pr,
         base: pr_target_branch,
         head: pr_source_branch,
         title: pr_title,
