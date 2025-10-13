@@ -26,4 +26,6 @@ class Thor
       **untyped
     ) -> void
   alias self.option self.method_option
+
+  def self.no_commands: () { () -> void } -> void
 end

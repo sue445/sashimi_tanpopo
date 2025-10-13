@@ -1,6 +1,22 @@
 ---
 path: ".gem_rbs_collection"
 gems:
+- name: addressable
+  version: '2.8'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: bigdecimal
+  version: '3.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: date
   version: '0'
   source:
@@ -21,11 +37,35 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: faraday
+  version: '2.7'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: fileutils
   version: '0'
   source:
     type: stdlib
+- name: forwardable
+  version: '0'
+  source:
+    type: stdlib
+- name: hashdiff
+  version: '1.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: io-console
+  version: '0'
+  source:
+    type: stdlib
+- name: json
   version: '0'
   source:
     type: stdlib
@@ -37,6 +77,22 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: net-http
+  version: '0'
+  source:
+    type: stdlib
+- name: net-protocol
+  version: '0'
+  source:
+    type: stdlib
+- name: octokit
+  version: '8.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: pp
   version: '0'
   source:
@@ -77,8 +133,24 @@ gems:
     revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: timeout
+  version: '0'
+  source:
+    type: stdlib
 - name: tsort
   version: '0'
   source:
     type: stdlib
+- name: uri
+  version: '0'
+  source:
+    type: stdlib
+- name: webmock
+  version: '3.19'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 gemfile_lock_path: Gemfile.lock

@@ -6,7 +6,8 @@ module SashimiTanpopo
         params: Hash[Symbol, String],
         dry_run: bool,
         is_colored: bool,
-      ) -> Array[String]
+        is_update_local: bool,
+      ) -> changed_files
 
     def evaluate: (
         recipe_body: String,
@@ -15,25 +16,27 @@ module SashimiTanpopo
         params: Hash[Symbol, String],
         dry_run: bool,
         is_colored: bool,
-      ) -> Array[String]
+        is_update_local: bool,
+      ) -> changed_files
 
     class EvalContext
       attr_reader params: Hash[Symbol, String]
 
-      attr_reader changed_file_paths: Array[String]
+      attr_reader changed_files: changed_files
 
       def initialize: (
           params: Hash[Symbol, String],
           dry_run: bool,
           is_colored: bool,
           target_dir: String,
+          is_update_local: bool,
         ) -> void
 
       def update_file: (String pattern) { (String) -> String } -> void
 
       private
 
-      def update_single_file: (String path) { (String) -> String } -> bool
+      def update_single_file: (String path) { (String) -> String } -> String?
 
       def show_diff: (String str1, String str2) -> void
     end

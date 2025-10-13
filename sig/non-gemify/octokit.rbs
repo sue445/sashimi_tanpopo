@@ -1,0 +1,15 @@
+module Octokit
+  class Client
+    def ref: (String repo, String ref) -> Sawyer::Resource
+    def create_ref: (String repo, String ref, String sha) -> Sawyer::Resource
+    def commit: (String repo, String sha) -> Sawyer::Resource
+    def create_tree: (String repo, Array[untyped] tree_metas, base_tree: String) -> Sawyer::Resource
+    def create_blob: (String repo, String file_body) -> String
+    def create_commit: (String repo, String message, String tree_sha, String parent_sha, author: { name: String, email: String }) -> Sawyer::Resource
+    def update_ref: (String repo, String ref, String sha) -> Sawyer::Resource
+    def create_pull_request: (String repo, String base, String head, String title, String body, ?Hash[Symbol, untyped] options) -> Sawyer::Resource
+    def add_labels_to_an_issue: (String repo, Integer pr_number, Array[String] labels) -> Sawyer::Resource
+    def add_assignees: (String repo, Integer pr_number, Array[String] assignees) -> Sawyer::Resource
+    def request_pull_request_review: (String repo, Integer pr_number, reviewers: Array[String]) -> Sawyer::Resource
+  end
+end

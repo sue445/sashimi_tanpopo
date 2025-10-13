@@ -2,36 +2,61 @@
 
 module SashimiTanpopo
   class FileUpdater
+    # Apply recipe file
+    #
     # @param recipe_path [String]
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
+    # @param is_update_local [Boolean] Whether update local file in `update_file`
     #
-    # @return [Array<String>] changed file paths
-    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:)
+    # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
+    #
+    # @example Responce format
+    #   {
+    #     "path/to/changed-file.txt" => {
+    #       before_content: "foo",
+    #       after_content:  "bar",
+    #       mode:           "100644",
+    #     }
+    #   }
+    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:)
       evaluate(
-        recipe_body: File.read(recipe_path),
-        recipe_path: recipe_path,
-        target_dir:  target_dir,
-        params:      params,
-        dry_run:     dry_run,
-        is_colored:  is_colored,
+        recipe_body:     File.read(recipe_path),
+        recipe_path:     recipe_path,
+        target_dir:      target_dir,
+        params:          params,
+        dry_run:         dry_run,
+        is_colored:      is_colored,
+        is_update_local: is_update_local,
       )
     end
 
+    # Apply recipe file for unit test
+    #
     # @param recipe_body [String]
     # @param recipe_path [String]
     # @param target_dir [String]
     # @param params [Hash<Symbol, String>]
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
+    # @param is_update_local [Boolean] Whether update local file in `update_file`
     #
-    # @return [Array<String>] changed file paths
-    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:)
-      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored, target_dir: target_dir)
+    # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
+    #
+    # @example Responce format
+    #   {
+    #     "path/to/changed-file.txt" => {
+    #       before_content: "foo",
+    #       after_content:  "bar",
+    #       mode:           "100644",
+    #     }
+    #   }
+    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:)
+      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored, target_dir: target_dir, is_update_local: is_update_local)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
-      context.changed_file_paths
+      context.changed_files
     end
 
     class EvalContext
@@ -39,19 +64,21 @@ module SashimiTanpopo
       # @return [Hash<Symbol, String>]
       attr_reader :params
 
-      # @!attribute [r] changed_file_paths
-      # @return [Array<String>]
-      attr_reader :changed_file_paths
+      # @!attribute [r] changed_files
+      # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      attr_reader :changed_files
 
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
       # @param target_dir [String]
-      def initialize(params:, dry_run:, is_colored:, target_dir:)
+      # @param is_update_local [Boolean] Whether update local file in `update_file`
+      def initialize(params:, dry_run:, is_colored:, target_dir:, is_update_local:)
         @params = params
         @dry_run = dry_run
         @target_dir = target_dir
-        @changed_file_paths = []
+        @is_update_local = is_update_local
+        @changed_files = {}
 
         @diffy_format = is_colored ? :color : :text
       end
@@ -61,16 +88,28 @@ module SashimiTanpopo
       # @yieldparam content [String] content of file
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
-          is_changed = update_single_file(path, &block)
+          full_file_path = File.join(@target_dir, path)
+          before_content = File.read(full_file_path)
 
-          next unless is_changed
+          SashimiTanpopo.logger.info "Checking #{full_file_path}"
 
-          @changed_file_paths << path
+          after_content = update_single_file(path, &block)
+
+          unless after_content
+            SashimiTanpopo.logger.info "#{full_file_path} isn't changed"
+            next
+          end
+
+          @changed_files[path] = {
+            before_content: before_content,
+            after_content:  after_content,
+            mode:           File.stat(full_file_path).mode.to_s(8)
+          }
 
           if @dry_run
-            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} will be changed (dryrun)"
+            SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
           else
-            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} is changed"
+            SashimiTanpopo.logger.info "#{full_file_path} is changed"
           end
         end
       end
@@ -81,9 +120,10 @@ module SashimiTanpopo
       # @param block [Proc]
       # @yieldparam content [String] content of file
       #
-      # @return [Boolean] Whether file is changed
+      # @return [String] Content of changed file if file is changed
+      # @return [nil] file isn't changed
       def update_single_file(path, &block)
-        return false unless File.exist?(path)
+        return nil unless File.exist?(path)
 
         content = File.read(path)
         before_content = content.dup
@@ -91,13 +131,13 @@ module SashimiTanpopo
         yield content
 
         # File isn't changed
-        return false if content == before_content
+        return nil if content == before_content
 
         show_diff(before_content, content)
 
-        File.write(path, content) unless @dry_run
+        File.write(path, content) if !@dry_run && @is_update_local
 
-        true
+        content
       end
 
       # @param str1 [String]

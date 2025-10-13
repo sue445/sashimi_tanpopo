@@ -1,0 +1,64 @@
+module SashimiTanpopo
+  module Provider
+    class GitHub < Base
+      DEFAULT_API_ENDPOINT: String
+      DEFAULT_GITHUB_HOST: String
+
+      @git_username: String
+      @git_email: String
+      @commit_message: String
+      @repository: String
+      @pr_title: String
+      @pr_body: String
+      @pr_source_branch: String
+      @pr_target_branch: String
+      @pr_assignees: Array[String]
+      @pr_reviewers: Array[String]
+      @pr_labels: Array[String]
+      @client: Octokit::Client
+      @is_draft_pr: bool
+
+      def initialize: (
+          recipe_paths: Array[String],
+          target_dir: String,
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool,
+          git_username: String?,
+          git_email: String?,
+          commit_message: String,
+          repository: String,
+          access_token: String,
+          ?api_endpoint: String,
+          pr_title: String,
+          pr_body: String,
+          pr_source_branch: String,
+          pr_target_branch: String,
+          ?pr_assignees: Array[String],
+          ?pr_reviewers: Array[String],
+          ?pr_labels: Array[String],
+          is_draft_pr: bool,
+        ) -> void
+
+      def perform: () -> String?
+
+      def self.github_host: (String api_endpoint) -> String
+
+      private
+
+      def current_user_name: () -> String
+
+      def create_branch_and_push_changes: (changed_files changed_files) -> void
+
+      def create_tree_meta: (path: String, body: String, mode: String) -> { path: String, mode: String, type: String, sha: String }
+
+      def create_pull_request: () -> { number: Integer, html_url: String }
+
+      def add_pr_labels: (Integer pr_number) -> void
+
+      def add_pr_assignees: (Integer pr_number) -> void
+
+      def add_pr_reviewers: (Integer pr_number) -> void
+    end
+  end
+end

@@ -4,5 +4,7 @@ module SashimiTanpopo
   class Error < StandardError
   end
 
+  type changed_files = Hash[String, { before_content: String, after_content: String, mode: String }]
+
   # See the writing guide of rbs: https://github.com/ruby/rbs#guides
 end

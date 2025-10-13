@@ -6,12 +6,13 @@ RSpec.describe SashimiTanpopo::FileUpdater do
   describe "#evaluate" do
     subject do
       updater.evaluate(
-        recipe_body: recipe_body,
-        recipe_path: recipe_path,
-        target_dir:  target_dir,
-        params:      params,
-        dry_run:     dry_run,
-        is_colored:  is_colored,
+        recipe_body:     recipe_body,
+        recipe_path:     recipe_path,
+        target_dir:      target_dir,
+        params:          params,
+        dry_run:         dry_run,
+        is_colored:      is_colored,
+        is_update_local: true,
       )
     end
 
@@ -22,6 +23,7 @@ RSpec.describe SashimiTanpopo::FileUpdater do
     let(:params) { {} }
     let(:dry_run) { false }
     let(:is_colored) { true }
+    let(:is_update_local) { true }
 
     context "update single file" do
       let(:recipe_body) do
@@ -38,11 +40,21 @@ RSpec.describe SashimiTanpopo::FileUpdater do
 
       let(:params) { { name: "sue445"} }
 
+      let(:expected) do
+        {
+          "test.txt" => {
+            before_content: "Hi, name!\n",
+            after_content: "Hi, sue445!\n",
+            mode: "100644",
+          },
+        }
+      end
+
       before do
         FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
       end
 
-      it { should contain_exactly("test.txt") }
+      it { should eq expected }
 
       it "file is updated" do
         subject
@@ -63,12 +75,27 @@ RSpec.describe SashimiTanpopo::FileUpdater do
 
       let(:params) { { name: "sue445"} }
 
+      let(:expected) do
+        {
+          "test.txt" => {
+            before_content: "Hi, name!\n",
+            after_content: "Hi, sue445!\n",
+            mode: "100644",
+          },
+          "test2.txt" => {
+            before_content: "Hello, name!\n",
+            after_content: "Hello, sue445!\n",
+            mode: "100644",
+          },
+        }
+      end
+
       before do
         FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
         FileUtils.cp(fixtures_dir.join("test2.txt"), temp_dir)
       end
 
-      it { should contain_exactly("test.txt", "test2.txt") }
+      it { should eq expected }
 
       it "files are updated" do
         subject
