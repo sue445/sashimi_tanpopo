@@ -29,7 +29,7 @@ module SashimiTanpopo
         target_dir:   options[:target_dir],
         params:       self.class.parse_params(options[:params]),
         dry_run:      options[:dry_run],
-        is_colored:   options[:is_colored],
+        is_colored:   options[:color],
       ).perform
     end
 
@@ -60,7 +60,7 @@ module SashimiTanpopo
         target_dir:       options[:target_dir],
         params:           self.class.parse_params(options[:params]),
         dry_run:          options[:dry_run],
-        is_colored:       options[:is_colored],
+        is_colored:       options[:color],
         git_username:     options[:git_user_name],
         git_email:        options[:git_email],
         commit_message:   options[:message],
