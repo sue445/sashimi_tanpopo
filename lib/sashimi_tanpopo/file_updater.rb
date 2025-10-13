@@ -61,6 +61,10 @@ module SashimiTanpopo
       # @yieldparam content [String] content of file
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
+          full_file_path = File.join(@target_dir, path)
+
+          SashimiTanpopo.logger.info "Checking #{full_file_path}"
+
           is_changed = update_single_file(path, &block)
 
           next unless is_changed
@@ -68,9 +72,9 @@ module SashimiTanpopo
           @changed_file_paths << path
 
           if @dry_run
-            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} will be changed (dryrun)"
+            SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
           else
-            SashimiTanpopo.logger.info "#{File.join(@target_dir, path)} is changed"
+            SashimiTanpopo.logger.info "#{full_file_path} is changed"
           end
         end
       end
