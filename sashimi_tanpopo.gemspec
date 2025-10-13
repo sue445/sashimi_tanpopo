@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "diffy", ">= 3.0", "< 4.0"
+  spec.add_dependency "faraday-retry", ">= 2.0", "< 3.0"
   spec.add_dependency "octokit", ">= 10.0", "< 11.0"
   spec.add_dependency "thor", ">= 1.0", "< 2.0"
 
