@@ -4,7 +4,7 @@ module SashimiTanpopo
 
     def self.define_exec_common_options: () -> void
 
-    def self.parse_params: (Array[String] params) -> Hash[Symbol, String]
+    def self.normalize_params: (Hash[String, String] params) -> Hash[Symbol, String]
 
     def version: () -> void
 

@@ -11,7 +11,7 @@ RSpec.describe "sashimi_tanpopo" do
 
     context "with --params" do
       it "run command" do
-        sh "#{exe_sashimi_tanpopo} local --target-dir=#{temp_dir} --params=name=sue445 #{temp_dir_path.join("recipe.rb")}"
+        sh "#{exe_sashimi_tanpopo} local --target-dir=#{temp_dir} --params=name:sue445 #{temp_dir_path.join("recipe.rb")}"
 
         test_txt = File.read(temp_dir_path.join("test.txt"))
         expect(test_txt).to eq "Hi, sue445!\n"

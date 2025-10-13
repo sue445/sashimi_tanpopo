@@ -16,7 +16,7 @@ module SashimiTanpopo
 
     def self.define_exec_common_options
       option :target_dir, type: :string, aliases: "-d", default: Dir.pwd, desc: "Target directory"
-      option :params,     type: :string, aliases: "-p", default: [], desc: "Params passed to recipe file", banner: "key=value", repeatable: true
+      option :params,     type: :hash, aliases: "-p", default: {}, desc: "Params passed to recipe file", repeatable: true
       option :dry_run,    type: :boolean, default: false, desc: "Whether to run dry run"
       option :color,      type: :boolean, default: true, desc: "Whether to colorize output"
     end
@@ -27,7 +27,7 @@ module SashimiTanpopo
       Provider::Local.new(
         recipe_paths: recipe_files,
         target_dir:   options[:target_dir],
-        params:       self.class.parse_params(options[:params]),
+        params:       self.class.normalize_params(options[:params]),
         dry_run:      options[:dry_run],
         is_colored:   options[:color],
       ).perform
@@ -58,7 +58,7 @@ module SashimiTanpopo
       Provider::GitHub.new(
         recipe_paths:     recipe_files,
         target_dir:       options[:target_dir],
-        params:           self.class.parse_params(options[:params]),
+        params:           self.class.normalize_params(options[:params]),
         dry_run:          options[:dry_run],
         is_colored:       options[:color],
         git_username:     options[:git_user_name],
@@ -78,14 +78,14 @@ module SashimiTanpopo
       ).perform
     end
 
-    # @param params [Array<String>]
-    # @return [Hash<String,String>]
+    # @param params [Hash<String, String>]
+    # @return [Hash<Symbol,String>]
     #
     # @example
-    #   parse_params(["k1=v1", "k2=v2"])
-    #   #=> {"k1"=>"v1", "k2"=>"v2"}
-    def self.parse_params(params)
-      params.map { |param| param.split("=", 2) }.to_h.transform_keys(&:to_sym)
+    #   normalize_params({"k1"=>"v1", "k2"=>"v2"})
+    #   #=> {k1: "v1", k2: "v2"}
+    def self.normalize_params(params)
+      params.transform_keys(&:to_sym)
     end
 
     private
