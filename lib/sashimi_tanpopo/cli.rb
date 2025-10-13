@@ -45,9 +45,9 @@ module SashimiTanpopo
     option :pr_body,           type: :string,  desc: "Pull Request body"
     option :pr_source_branch,  type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
     option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Either --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", required: true, banner: "main"
-    option :pr_assignees,      type: :array,   desc: "Pull Request assignees"
-    option :pr_reviewers,      type: :array,   desc: "Pull Request reviewers"
-    option :pr_labels,         type: :array,   desc: "Pull Request labels"
+    option :pr_assignees,      type: :array,   desc: "Pull Request assignees", default: []
+    option :pr_reviewers,      type: :array,   desc: "Pull Request reviewers", default: []
+    option :pr_labels,         type: :array,   desc: "Pull Request labels", default: []
     option :pr_draft,          type: :boolean, desc: "Whether to create draft Pull Request", default: false
     def github(*recipe_files)
       repository       = option_or_env!(:github_repository, "GITHUB_REPOSITORY")
