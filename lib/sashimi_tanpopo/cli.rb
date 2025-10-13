@@ -14,7 +14,7 @@ module SashimiTanpopo
       true
     end
 
-    def self.define_common_options
+    def self.define_exec_common_options
       option :target_dir, type: :string, aliases: "-d", default: Dir.pwd, desc: "Target directory"
       option :params,     type: :string, aliases: "-p", default: [], desc: "Params passed to recipe file", banner: "key=value", repeatable: true
       option :dry_run,    type: :boolean, default: false, desc: "Whether to run dry run"
@@ -22,7 +22,7 @@ module SashimiTanpopo
     end
 
     desc "local RECIPE [RECIPE...]", "Change local files using recipe files"
-    define_common_options
+    define_exec_common_options
     def local(*recipe_files)
       Provider::Local.new(
         recipe_paths: recipe_files,
@@ -34,7 +34,7 @@ module SashimiTanpopo
     end
 
     desc "github RECIPE [RECIPE...]", "Change local files using recipe files and create Pull Request"
-    define_common_options
+    define_exec_common_options
     option :git_user_name,     type: :string,  desc: "user name for git commit. default: username of user authenticated with token"
     option :git_email,         type: :string,  desc: "email for git commit. default: <git_user_name>@users.noreply.<github_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
