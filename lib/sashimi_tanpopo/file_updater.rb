@@ -102,7 +102,7 @@ module SashimiTanpopo
       #   end
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
-          full_file_path = File.join(target_dir, path)
+          full_file_path = File.join(@__target_dir__, path)
           before_content = File.read(full_file_path)
 
           SashimiTanpopo.logger.info "Checking #{full_file_path}"
@@ -120,7 +120,7 @@ module SashimiTanpopo
             mode:           File.stat(full_file_path).mode.to_s(8)
           }
 
-          if dry_run?
+          if @__dry_run__
             SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
           else
             SashimiTanpopo.logger.info "#{full_file_path} is changed"
@@ -129,26 +129,6 @@ module SashimiTanpopo
       end
 
       private
-
-      # @return [Boolean]
-      def dry_run?
-        @__dry_run__
-      end
-
-      # @return [String]
-      def target_dir
-        @__target_dir__
-      end
-
-      # @return [Boolean]
-      def is_update_local?
-        @__is_update_local__
-      end
-
-      # @return [Symbol]
-      def diffy_format
-        @__diffy_format__
-      end
 
       # @param path [String]
       #
@@ -169,7 +149,7 @@ module SashimiTanpopo
 
         show_diff(before_content, content)
 
-        File.write(path, content) if !dry_run? && is_update_local?
+        File.write(path, content) if !@__dry_run__ && @__is_update_local__
 
         content
       end
@@ -177,7 +157,7 @@ module SashimiTanpopo
       # @param str1 [String]
       # @param str2 [String]
       def show_diff(str1, str2)
-        diff_text = Diffy::Diff.new(str1, str2).to_s(diffy_format) # steep:ignore
+        diff_text = Diffy::Diff.new(str1, str2).to_s(@__diffy_format__) # steep:ignore
 
         SashimiTanpopo.logger.info "diff:"
 

@@ -43,14 +43,6 @@ module SashimiTanpopo
 
       private
 
-      def dry_run?: () -> bool
-
-      def target_dir: () -> String
-
-      def is_update_local?: () -> bool
-
-      def diffy_format: () -> Symbol
-
       def update_single_file: (String path) { (String) -> void } -> String?
 
       def show_diff: (String str1, String str2) -> void
