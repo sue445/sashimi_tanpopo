@@ -75,7 +75,17 @@ module SashimiTanpopo
       end
 
       # passed from `--params`
+      #
       # @return [Hash<Symbol, String>]
+      #
+      # @example Pass params via `--params`
+      #   sashimi_tanpopo local --params name:sue445 --params lang:ja recipe.rb
+      #
+      # @example within `recipe.rb`
+      #   # recipe.rb
+      #
+      #   params
+      #   #=> {name: "sue445", lang: "ja"}
       def params
         @__params__
       end
