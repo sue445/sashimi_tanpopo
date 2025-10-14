@@ -1,13 +1,17 @@
 # Recipe file specification
 Recipe file is simple Ruby script, with some exceptions.
 
-By avoiding the DSL variables and methods listed below, you are free to write code as you like.
+By avoiding the DSL methods listed below, you are free to write code as you like.
 
-## Special variables available within recipe file
-The following variables are special variables available within recipe file.
+## Special methods available within recipe file
+The following methods are special variables available within recipe file.
 
 ### `params`
 Passed from `--params`
+
+Returns:
+
+* `Hash<Symbol, String>`
 
 e.g.
 
@@ -23,9 +27,6 @@ within `recipe.rb`
 params
 #=> {name: "sue445", lang: "ja"}
 ```
-
-## Special methods available within recipe file
-The following methods are special variables available within recipe file.
 
 ### `update_file`
 Update files if exists
