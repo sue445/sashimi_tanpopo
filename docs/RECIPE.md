@@ -24,8 +24,8 @@ params
 #=> {name: "sue445", lang: "ja"}
 ```
 
-## Special functions available within recipe file
-The following functions are special variables available within recipe file.
+## Special methods available within recipe file
+The following methods are special variables available within recipe file.
 
 ### `update_file`
 Update files if exists
