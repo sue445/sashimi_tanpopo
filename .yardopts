@@ -1,6 +1,7 @@
 --markup markdown
 --no-private
 --hide-void-return
+--output-dir ./.doc
 -
 CHANGELOG.md
 LICENSE.txt
