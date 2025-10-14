@@ -151,12 +151,12 @@ module SashimiTanpopo
       end
 
       # @param path [String]
-      # @param block [Proc]
+      #
       # @yieldparam content [String] content of file
       #
       # @return [String] Content of changed file if file is changed
       # @return [nil] file isn't changed
-      def update_single_file(path, &block)
+      def update_single_file(path)
         return nil unless File.exist?(path)
 
         content = File.read(path)
