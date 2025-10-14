@@ -178,13 +178,38 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
           to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
       end
 
-      it "file is not updated and create PullRequest" do
-        pr_url = subject
+      context "branch isn't exists" do
+        before do
+          stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+            with(headers: request_headers).
+            to_return(status: 404, headers: response_headers, body: "{}")
+        end
 
-        expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+        it "file is not updated and create PullRequest" do
+          pr_url = subject
 
-        test_txt = File.read(temp_dir_path.join("test.txt"))
-        expect(test_txt).to eq "Hi, name!\n"
+          expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+          test_txt = File.read(temp_dir_path.join("test.txt"))
+          expect(test_txt).to eq "Hi, name!\n"
+        end
+      end
+
+      context "branch is exists" do
+        before do
+          stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+            with(headers: request_headers).
+            to_return(status: 200, headers: response_headers, body: fixture("github_get_branch.json"))
+        end
+
+        it "file is not updated and not created PullRequest" do
+          pr_url = subject
+
+          expect(pr_url).to eq nil
+
+          test_txt = File.read(temp_dir_path.join("test.txt"))
+          expect(test_txt).to eq "Hi, name!\n"
+        end
       end
     end
 
@@ -208,6 +233,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
           with(headers: request_headers, body: commit_json).
           to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+
+        stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+          with(headers: request_headers).
+          to_return(status: 404, headers: response_headers, body: "{}")
       end
 
       it "file is not updated and create PullRequest" do

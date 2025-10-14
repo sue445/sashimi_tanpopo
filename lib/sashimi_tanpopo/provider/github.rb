@@ -77,6 +77,11 @@ module SashimiTanpopo
 
         return nil if changed_files.empty? || @dry_run
 
+        if exists_branch?(@pr_source_branch)
+          SashimiTanpopo.logger.info "Skipped because branch #{@pr_source_branch} already exists on #{@repository}"
+          return nil
+        end
+
         create_branch_and_push_changes(changed_files)
 
         pr = create_pull_request
@@ -105,6 +110,15 @@ module SashimiTanpopo
       # @return [String]
       def current_user_name
         @client.user[:login]
+      end
+
+      # Whether exists branch on repository
+      # @return [Boolean]
+      def exists_branch?(branch)
+        @client.branch(@repository, branch)
+        true
+      rescue Octokit::NotFound
+        false
       end
 
       # Create branch on repository and push changes
