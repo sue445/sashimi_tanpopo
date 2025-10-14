@@ -1,4 +1,13 @@
 module Octokit
+  class Error < StandardError
+  end
+
+  class ClientError < Error
+  end
+
+  class NotFound < ClientError
+  end
+
   class Client
     def ref: (String repo, String ref) -> Sawyer::Resource
     def create_ref: (String repo, String ref, String sha) -> Sawyer::Resource
@@ -11,5 +20,6 @@ module Octokit
     def add_labels_to_an_issue: (String repo, Integer pr_number, Array[String] labels) -> Sawyer::Resource
     def add_assignees: (String repo, Integer pr_number, Array[String] assignees) -> Sawyer::Resource
     def request_pull_request_review: (String repo, Integer pr_number, reviewers: Array[String]) -> Sawyer::Resource
+    def branch: (String repo, String branch, ?Hash[Symbol, untyped] options) -> Sawyer::Resource
   end
 end

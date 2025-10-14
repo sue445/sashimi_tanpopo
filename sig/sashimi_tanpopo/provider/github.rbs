@@ -48,6 +48,8 @@ module SashimiTanpopo
 
       def current_user_name: () -> String
 
+      def exists_branch?: (String branch) -> bool
+
       def create_branch_and_push_changes: (changed_files changed_files) -> void
 
       def create_tree_meta: (path: String, body: String, mode: String) -> { path: String, mode: String, type: String, sha: String }
