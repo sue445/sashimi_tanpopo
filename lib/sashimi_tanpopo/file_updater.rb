@@ -199,5 +199,6 @@ module SashimiTanpopo
         eval(@code)
       end
     end
+    private_constant :InstanceEval
   end
 end
