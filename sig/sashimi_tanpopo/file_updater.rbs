@@ -20,9 +20,12 @@ module SashimiTanpopo
       ) -> changed_files
 
     class EvalContext
-      attr_reader params: Hash[Symbol, String]
-
-      attr_reader changed_files: changed_files
+      @__params__: Hash[Symbol, String]
+      @__dry_run__: bool
+      @__target_dir__: String
+      @__is_update_local__: bool
+      @__diffy_format__: Symbol
+      @__changed_files__: changed_files
 
       def initialize: (
           params: Hash[Symbol, String],
@@ -32,9 +35,21 @@ module SashimiTanpopo
           is_update_local: bool,
         ) -> void
 
+      def params: () -> Hash[Symbol, String]
+
+      def changed_files: () -> changed_files
+
       def update_file: (String pattern) { (String) -> String } -> void
 
       private
+
+      def dry_run?: () -> bool
+
+      def target_dir: () -> String
+
+      def is_update_local?: () -> bool
+
+      def diffy_format: () -> Symbol
 
       def update_single_file: (String path) { (String) -> String } -> String?
 
@@ -42,6 +57,10 @@ module SashimiTanpopo
     end
 
     class InstanceEval
+      @code: String
+      @target_dir: String
+      @context: EvalContext
+
       def initialize: (
           recipe_body: String,
           recipe_path: String,
