@@ -60,28 +60,29 @@ module SashimiTanpopo
     end
 
     class EvalContext
-      # passed from `--params`
-      # @!attribute [r] params
-      # @return [Hash<Symbol, String>]
-      attr_reader :params
-
-      # @!attribute [r] changed_files
-      # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
-      attr_reader :changed_files
-
       # @param params [Hash<Symbol, String>]
       # @param dry_run [Boolean]
       # @param is_colored [Boolean] Whether show color diff
       # @param target_dir [String]
       # @param is_update_local [Boolean] Whether update local file in `update_file`
       def initialize(params:, dry_run:, is_colored:, target_dir:, is_update_local:)
-        @params = params
-        @dry_run = dry_run
-        @target_dir = target_dir
-        @is_update_local = is_update_local
-        @changed_files = {}
+        @__params__ = params
+        @__dry_run__ = dry_run
+        @__target_dir__ = target_dir
+        @__is_update_local__ = is_update_local
 
-        @diffy_format = is_colored ? :color : :text
+        @__diffy_format__ = is_colored ? :color : :text
+      end
+
+      # passed from `--params`
+      # @return [Hash<Symbol, String>]
+      def params
+        @__params__
+      end
+
+      # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      def changed_files
+        @__changed_files__ ||= {}
       end
 
       # Update files if exists
@@ -101,7 +102,7 @@ module SashimiTanpopo
       #   end
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
-          full_file_path = File.join(@target_dir, path)
+          full_file_path = File.join(@__target_dir__, path)
           before_content = File.read(full_file_path)
 
           SashimiTanpopo.logger.info "Checking #{full_file_path}"
@@ -113,13 +114,13 @@ module SashimiTanpopo
             next
           end
 
-          @changed_files[path] = {
+          changed_files[path] = {
             before_content: before_content,
             after_content:  after_content,
             mode:           File.stat(full_file_path).mode.to_s(8)
           }
 
-          if @dry_run
+          if @__dry_run__
             SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
           else
             SashimiTanpopo.logger.info "#{full_file_path} is changed"
@@ -130,12 +131,12 @@ module SashimiTanpopo
       private
 
       # @param path [String]
-      # @param block [Proc]
+      #
       # @yieldparam content [String] content of file
       #
       # @return [String] Content of changed file if file is changed
       # @return [nil] file isn't changed
-      def update_single_file(path, &block)
+      def update_single_file(path)
         return nil unless File.exist?(path)
 
         content = File.read(path)
@@ -148,7 +149,7 @@ module SashimiTanpopo
 
         show_diff(before_content, content)
 
-        File.write(path, content) if !@dry_run && @is_update_local
+        File.write(path, content) if !@__dry_run__ && @__is_update_local__
 
         content
       end
@@ -156,7 +157,7 @@ module SashimiTanpopo
       # @param str1 [String]
       # @param str2 [String]
       def show_diff(str1, str2)
-        diff_text = Diffy::Diff.new(str1, str2).to_s(@diffy_format) # steep:ignore
+        diff_text = Diffy::Diff.new(str1, str2).to_s(@__diffy_format__) # steep:ignore
 
         SashimiTanpopo.logger.info "diff:"
 
