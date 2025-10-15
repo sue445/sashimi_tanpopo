@@ -12,6 +12,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       git_email:        git_email,
       commit_message:   commit_message,
       repository:       repository,
+      api_endpoint:     api_endpoint,
       access_token:     access_token,
       mr_title:         mr_title,
       mr_body:          mr_body,
@@ -32,22 +33,96 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
   let(:dry_run) { false }
   let(:is_colored) { true }
 
-  let(:git_username)     { nil }
-  let(:git_email)        { nil }
-  let(:commit_message)   { "Update files" }
-  let(:repository)       { "example/example" }
-  let(:access_token)     { "DUMMY" }
-  let(:mr_title)         { "MR title" }
-  let(:mr_body)          { "MR body" }
-  let(:mr_source_branch) { "test" }
-  let(:mr_target_branch) { "main" }
-  let(:mr_assignees)     { %w(sue445) }
-  let(:mr_reviewers)     { %w(sue445-test) }
-  let(:mr_labels)        { %w(sashimi-tanpopo) }
-  let(:is_draft_mr)      { false }
+  let(:git_username)       { "test" }
+  let(:git_email)          { "test@example.com" }
+  let(:commit_message)     { "Update files" }
+  let(:repository)         { "example/example" }
+  let(:escaped_repository) { repository.gsub("/", "%2F") }
+  let(:api_endpoint)       { "https://gitlab.example.com/api/v4" }
+  let(:access_token)       { "DUMMY" }
+  let(:mr_title)           { "MR title" }
+  let(:mr_body)            { "MR body" }
+  let(:mr_source_branch)   { "test" }
+  let(:mr_target_branch)   { "main" }
+  let(:mr_assignees)       { %w(sue445) }
+  let(:mr_reviewers)       { %w(sue445-test) }
+  let(:mr_labels)          { %w(sashimi-tanpopo) }
+  let(:is_draft_mr)        { false }
 
   describe "#perform" do
     subject { provider.perform }
 
+    before do
+      FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
+
+      commit_payload = {
+        actions: [
+          {
+            action: "update",
+            file_path: "test.txt",
+            execute_filemode: "false",
+            content: "Hi, sue445!\n",
+          }
+        ],
+        author_email: git_email,
+        author_name: git_username,
+        branch: mr_source_branch,
+        commit_message: commit_message,
+        start_branch: mr_target_branch,
+      }
+
+      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+        with(headers: request_headers, body: commit_payload).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+    end
+
+    let(:request_headers) do
+      {
+        "Accept" => "application/json",
+        "Content-Type" => "application/x-www-form-urlencoded",
+        "Private-Token" => "DUMMY",
+      }
+    end
+
+    let(:response_headers) do
+      {
+        "Content-Type" => "application/json",
+      }
+    end
+
+    let(:recipe_paths) do
+      [
+        fixtures_dir.join("recipe.rb").to_s,
+      ]
+    end
+
+    let(:params) { { name: "sue445"} }
+
+    context "branch isn't exists" do
+      it "file is not updated and create Merge Request" do
+        mr_url = subject
+
+        expect(mr_url).to eq ""
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, name!\n"
+      end
+    end
+  end
+
+  describe ".executable_mode?" do
+    subject { SashimiTanpopo::Provider::GitLab.executable_mode?(mode) }
+
+    context "with executable mode" do
+      let(:mode) { "100755" }
+
+      it { should eq true }
+    end
+
+    context "with non executable mode" do
+      let(:mode) { "100644" }
+
+      it { should eq false }
+    end
   end
 end
