@@ -1,0 +1,45 @@
+module SashimiTanpopo
+  module Provider
+    class GitLab < Base
+      DEFAULT_API_ENDPOINT: String
+
+      @git_username: String
+      @git_email: String
+      @commit_message: String
+      @repository: String
+      @mr_title: String
+      @mr_body: String
+      @mr_source_branch: String
+      @mr_target_branch: String
+      @mr_assignees: Array[String]
+      @mr_reviewers: Array[String]
+      @mr_labels: Array[String]
+      @client: Octokit::Client
+      @is_draft_mr: bool
+
+      def initialize: (
+          recipe_paths: Array[String],
+          target_dir: String?,
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool,
+          git_username: String?,
+          git_email: String?,
+          commit_message: String,
+          repository: String,
+          access_token: String,
+          ?api_endpoint: String,
+          mr_title: String,
+          mr_body: String,
+          mr_source_branch: String,
+          mr_target_branch: String,
+          ?mr_assignees: Array[String],
+          ?mr_reviewers: Array[String],
+          ?mr_labels: Array[String],
+          is_draft_mr: bool,
+        ) -> void
+
+      def perform: () -> String?
+    end
+  end
+end
