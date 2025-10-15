@@ -111,6 +111,8 @@ module SashimiTanpopo
       private
 
       # @return [String]
+      #
+      # @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
       def current_user_name
         @client.user[:login]
       end
@@ -130,6 +132,13 @@ module SashimiTanpopo
       # Create branch on repository and push changes
       #
       # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      #
+      # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#get-a-reference
+      # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#create-a-reference
+      # @see https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#get-a-commit
+      # @see https://docs.github.com/en/rest/git/trees#create-a-tree
+      # @see https://docs.github.com/en/rest/git/commits?apiVersion=2022-11-28#create-a-commit
+      # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#update-a-reference
       def create_branch_and_push_changes(changed_files)
         current_ref = @client.ref(@repository, "heads/#{@pr_target_branch}")
         branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
@@ -159,6 +168,10 @@ module SashimiTanpopo
       # @param path [String]
       # @param body [String]
       # @param mode [String]
+      #
+      # @return [Hash<{ path: String, mode: String, type: String, sha: String }>]
+      #
+      # @see https://docs.github.com/en/rest/git/blobs#create-a-blob
       def create_tree_meta(path:, body:, mode:)
         file_body_sha = @client.create_blob(@repository, body)
 
@@ -171,6 +184,8 @@ module SashimiTanpopo
       end
 
       # @return [Hash{pr_number: Integer, html_url: String}] Created Pull Request info
+      #
+      # @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
       def create_pull_request
         pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
 
@@ -183,6 +198,8 @@ module SashimiTanpopo
       end
 
       # @param pr_number [Integer]
+      #
+      # @see https://docs.github.com/en/rest/issues/labels?apiVersion=2022-11-28#add-labels-to-an-issue
       def add_pr_labels(pr_number)
         return if @pr_labels.empty?
 
@@ -190,6 +207,8 @@ module SashimiTanpopo
       end
 
       # @param pr_number [Integer]
+      #
+      # @see https://docs.github.com/en/rest/issues/assignees?apiVersion=2022-11-28#add-assignees-to-an-issue
       def add_pr_assignees(pr_number)
         return if @pr_assignees.empty?
 
@@ -197,6 +216,8 @@ module SashimiTanpopo
       end
 
       # @param pr_number [Integer]
+      #
+      # @see https://docs.github.com/en/rest/pulls/review-requests?apiVersion=2022-11-28#request-reviewers-for-a-pull-request
       def add_pr_reviewers(pr_number)
         return if @pr_reviewers.empty?
 
