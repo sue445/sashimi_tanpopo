@@ -73,7 +73,51 @@ module SashimiTanpopo
 
         create_branch_and_push_changes(changed_files)
 
-        # TODO: Impl
+        mr = create_merge_request
+
+        mr[:web_url]
+      end
+
+      # @param username [String]
+      #
+      # @return [Integer]
+      # @return [nil] user is not found
+      #
+      # @see https://docs.gitlab.com/api/users/#as-a-regular-user
+      def get_user_id_from_user_name(username)
+        user = with_retry do
+          @gitlab.users(username: username).first
+        end
+        return nil unless user
+
+        user["id"].to_i
+      end
+
+      # @param username [String]
+      #
+      # @return [Integer]
+      #
+      # @raise [SashimiTanpopo::NotFoundUserError]
+      #
+      # @see https://docs.gitlab.com/api/users/#as-a-regular-user
+      def get_user_id_from_user_name!(username)
+        user_id = get_user_id_from_user_name(username)
+        raise NotFoundUserError, "#{username} isn't found" unless user_id
+
+        user_id
+      end
+
+      # @param usernames [Array<String>]
+      #
+      # @return [Array<Integer>]
+      #
+      # @raise [SashimiTanpopo::NotFoundUserError]
+      #
+      # @see https://docs.gitlab.com/api/users/#as-a-regular-user
+      def get_user_ids_from_user_names!(usernames)
+        Parallel.map(usernames, in_threads: 2) do |username|
+          get_user_id_from_user_name!(username)
+        end
       end
 
       # @param mode [String] e.g. `100644`, `100755`
@@ -146,6 +190,41 @@ module SashimiTanpopo
             author_name:  @git_username,
           )
         end
+      end
+
+      # @return [Hash{iid: Integer, web_url: String}] Created Merge Request info
+      #
+      # @see https://docs.gitlab.com/api/merge_requests/#create-mr
+      def create_merge_request
+        params = {
+          source_branch:        @mr_source_branch,
+          target_branch:        @mr_target_branch,
+          remove_source_branch: true,
+          description:          @mr_body,
+        }
+
+        params[:labels] = @mr_labels.join(",") unless @mr_labels.empty?
+
+        unless @mr_assignees.empty?
+          params[:assignee_ids] = get_user_ids_from_user_names!(@mr_assignees)
+        end
+
+        unless @mr_reviewers.empty?
+          params[:reviewer_ids] = get_user_ids_from_user_names!(@mr_reviewers)
+        end
+
+        mr = with_retry do
+          @gitlab.create_merge_request(
+            @repository,
+            @mr_title,
+            params,
+          )
+        end
+
+        {
+          iid:     mr["iid"],
+          web_url: mr["web_url"],
+        }
       end
     end
   end

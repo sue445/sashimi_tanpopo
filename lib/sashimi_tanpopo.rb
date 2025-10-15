@@ -13,5 +13,6 @@ require_relative "sashimi_tanpopo/provider"
 
 module SashimiTanpopo
   class Error < StandardError; end
-  # Your code goes here...
+
+  class NotFoundUserError < Error; end
 end

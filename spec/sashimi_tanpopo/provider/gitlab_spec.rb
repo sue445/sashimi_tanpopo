@@ -49,13 +49,27 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
   let(:mr_labels)          { %w(sashimi-tanpopo) }
   let(:is_draft_mr)        { false }
 
+  let(:request_headers) do
+    {
+      "Accept" => "application/json",
+      "Content-Type" => "application/x-www-form-urlencoded",
+      "Private-Token" => access_token,
+    }
+  end
+
+  let(:response_headers) do
+    {
+      "Content-Type" => "application/json",
+    }
+  end
+
   describe "#perform" do
     subject { provider.perform }
 
     before do
       FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
 
-      commit_payload = {
+      create_commit_payload = {
         actions: [
           {
             action: "update",
@@ -72,22 +86,26 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       }
 
       stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-        with(headers: request_headers, body: commit_payload).
+        with(headers: request_headers, body: create_commit_payload).
         to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
-    end
 
-    let(:request_headers) do
-      {
-        "Accept" => "application/json",
-        "Content-Type" => "application/x-www-form-urlencoded",
-        "Private-Token" => "DUMMY",
-      }
-    end
+      allow(provider).to receive(:get_user_id_from_user_name).with("sue445") { 1 }
+      allow(provider).to receive(:get_user_id_from_user_name).with("sue445-test") { 2 }
 
-    let(:response_headers) do
-      {
-        "Content-Type" => "application/json",
+      create_mr_payload = {
+        title: mr_title,
+        source_branch: mr_source_branch,
+        target_branch: mr_target_branch,
+        remove_source_branch: true,
+        description: mr_body,
+        labels: mr_labels.join(","),
+        assignee_ids: [1],
+        reviewer_ids: [2],
       }
+
+      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
+        with(headers: request_headers, body: create_mr_payload).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
     end
 
     let(:recipe_paths) do
@@ -108,7 +126,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       it "file is not updated and create Merge Request" do
         mr_url = subject
 
-        expect(mr_url).to eq "TODO"
+        expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
 
         test_txt = File.read(temp_dir_path.join("test.txt"))
         expect(test_txt).to eq "Hi, name!\n"
@@ -130,6 +148,85 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
         test_txt = File.read(temp_dir_path.join("test.txt"))
         expect(test_txt).to eq "Hi, name!\n"
       end
+    end
+  end
+
+  describe "#get_user_id_from_user_name" do
+    subject { provider.get_user_id_from_user_name(username) }
+
+    let(:username) { "john_smith" }
+
+    context "user is exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_users_1.json"))
+      end
+
+      it { should eq 1 }
+    end
+
+    context "user is not exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: "[]")
+      end
+
+      it { should eq nil }
+    end
+  end
+
+  describe "#get_user_id_from_user_name!" do
+    subject { provider.get_user_id_from_user_name!(username) }
+
+    let(:username) { "john_smith" }
+
+    context "user is exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_user.json"))
+      end
+
+      it { should eq 1 }
+    end
+
+    context "user is not exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: "[]")
+      end
+
+      it { expect { subject }.to raise_error SashimiTanpopo::NotFoundUserError }
+    end
+  end
+
+  describe "#get_user_id_from_user_names!" do
+    subject { provider.get_user_ids_from_user_names!(usernames) }
+
+    let(:username) { "john_smith" }
+    let(:usernames) { [username] }
+
+    context "users are exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_user.json"))
+      end
+
+      it { should eq [1] }
+    end
+
+    context "users are not exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/users?username=#{username}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: "[]")
+      end
+
+      it { expect { subject }.to raise_error SashimiTanpopo::NotFoundUserError }
     end
   end
 
