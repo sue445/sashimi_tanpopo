@@ -99,10 +99,33 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
     let(:params) { { name: "sue445"} }
 
     context "branch isn't exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/projects/#{escaped_repository}/repository/branches/#{mr_source_branch}").
+          with(headers: request_headers).
+          to_return(status: 404, headers: response_headers, body: "{}")
+      end
+
       it "file is not updated and create Merge Request" do
         mr_url = subject
 
-        expect(mr_url).to eq ""
+        expect(mr_url).to eq "TODO"
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, name!\n"
+      end
+    end
+
+    context "branch is exists" do
+      before do
+        stub_request(:get, "#{api_endpoint}/projects/#{escaped_repository}/repository/branches/#{mr_source_branch}").
+          with(headers: request_headers).
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_branch.json"))
+      end
+
+      it "file is not updated and not created PullRequest" do
+        mr_url = subject
+
+        expect(mr_url).to eq nil
 
         test_txt = File.read(temp_dir_path.join("test.txt"))
         expect(test_txt).to eq "Hi, name!\n"

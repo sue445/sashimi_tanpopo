@@ -65,7 +65,10 @@ module SashimiTanpopo
 
         return nil if changed_files.empty? || @dry_run
 
-        # TODO: Branch check
+        if exists_branch?(@mr_source_branch)
+          SashimiTanpopo.logger.info "Skipped because branch #{@pr_source_branch} already exists on #{@repository}"
+          return nil
+        end
 
         create_branch_and_push_changes(changed_files)
 
@@ -80,6 +83,20 @@ module SashimiTanpopo
       end
 
       private
+
+      # Whether exists branch on repository
+      #
+      # @param branch [String]
+      #
+      # @return [Boolean]
+      def exists_branch?(branch)
+        with_retry do
+          @gitlab.branch(@repository, branch)
+        end
+        true
+      rescue Gitlab::Error::NotFound
+        false
+      end
 
       # Create branch on repository and push changes
       #
