@@ -84,6 +84,25 @@ module SashimiTanpopo
 
       private
 
+      def with_retry
+        retry_count ||= 0
+
+        yield
+      rescue Gitlab::Error::MethodNotAllowed, Gitlab::Error::NotAcceptable, Gitlab::Error::Unprocessable => error
+        retry_count += 1
+
+        raise error if retry_count > MAX_RETRY_COUNT
+
+        SashimiTanpopo.logger.warn "Error is occurred and auto retry (#{retry_count}/#{MAX_RETRY_COUNT}): #{error}"
+
+        # 1, 2, 4, 8, 16 ...
+        sleep_time = 2 ** (retry_count - 1)
+
+        sleep sleep_time
+
+        retry
+      end
+
       # Whether exists branch on repository
       #
       # @param branch [String]
@@ -122,25 +141,6 @@ module SashimiTanpopo
             author_name:  @git_username,
           )
         end
-      end
-
-      def with_retry
-        retry_count ||= 0
-
-        yield
-      rescue Gitlab::Error::MethodNotAllowed, Gitlab::Error::NotAcceptable, Gitlab::Error::Unprocessable => error
-        retry_count += 1
-
-        raise error if retry_count > MAX_RETRY_COUNT
-
-        SashimiTanpopo.logger.warn "Error is occurred and auto retry (#{retry_count}/#{MAX_RETRY_COUNT}): #{error}"
-
-        # 1, 2, 4, 8, 16 ...
-        sleep_time = 2 ** (retry_count - 1)
-
-        sleep sleep_time
-
-        retry
       end
     end
   end
