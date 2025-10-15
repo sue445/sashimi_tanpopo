@@ -70,6 +70,7 @@ module SashimiTanpopo
       end
 
       # Apply recipe files
+      #
       # @return [String] Created Pull Request URL
       # @return [nil] Pull Request isn't created
       def perform
@@ -94,7 +95,9 @@ module SashimiTanpopo
       end
 
       # Get GitHub host from api_endpoint
+      #
       # @param api_endpoint [String]
+      #
       # @return [String]
       def self.github_host(api_endpoint)
         return DEFAULT_GITHUB_HOST if api_endpoint == DEFAULT_API_ENDPOINT
@@ -113,6 +116,9 @@ module SashimiTanpopo
       end
 
       # Whether exists branch on repository
+      #
+      # @param branch [String]
+      #
       # @return [Boolean]
       def exists_branch?(branch)
         @client.branch(@repository, branch)
@@ -122,6 +128,8 @@ module SashimiTanpopo
       end
 
       # Create branch on repository and push changes
+      #
+      # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
       def create_branch_and_push_changes(changed_files)
         current_ref = @client.ref(@repository, "heads/#{@pr_target_branch}")
         branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
