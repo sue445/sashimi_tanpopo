@@ -4,6 +4,7 @@ require "logger"
 require "diffy"
 require "octokit"
 require "gitlab"
+require "parallel"
 
 require_relative "sashimi_tanpopo/version"
 require_relative "sashimi_tanpopo/file_updater"
