@@ -58,6 +58,7 @@ module SashimiTanpopo
       end
 
       # Apply recipe files
+      #
       # @return [String] Created Merge Request URL
       # @return [nil] Merge Request isn't created
       def perform
@@ -108,6 +109,8 @@ module SashimiTanpopo
       # @param branch [String]
       #
       # @return [Boolean]
+      #
+      # @see https://docs.gitlab.com/api/branches/#get-single-repository-branch
       def exists_branch?(branch)
         with_retry do
           @gitlab.branch(@repository, branch)
@@ -120,6 +123,8 @@ module SashimiTanpopo
       # Create branch on repository and push changes
       #
       # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      #
+      # @see https://docs.gitlab.com/api/commits/#create-a-commit-with-multiple-files-and-actions
       def create_branch_and_push_changes(changed_files)
         actions = changed_files.map do |file_path, changed_file|
           {
