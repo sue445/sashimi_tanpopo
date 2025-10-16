@@ -162,11 +162,11 @@ module SashimiTanpopo
       private
 
       def with_retry
-        retry_count ||= 0
+        retry_count ||= 0 # steep:ignore
 
         yield
       rescue Gitlab::Error::MethodNotAllowed, Gitlab::Error::NotAcceptable, Gitlab::Error::Unprocessable => error
-        retry_count += 1
+        retry_count += 1 # steep:ignore
 
         raise error if retry_count > MAX_RETRY_COUNT
 
@@ -175,7 +175,7 @@ module SashimiTanpopo
         # 1, 2, 4, 8, 16 ...
         sleep_time = 2 ** (retry_count - 1)
 
-        sleep sleep_time
+        sleep sleep_time # steep:ignore
 
         retry
       end
@@ -247,11 +247,11 @@ module SashimiTanpopo
         params[:labels] = @mr_labels.join(",") unless @mr_labels.empty?
 
         unless @mr_assignees.empty?
-          params[:assignee_ids] = get_user_ids_from_user_names!(@mr_assignees)
+          params[:assignee_ids] = get_user_ids_from_user_names!(@mr_assignees) # steep:ignore
         end
 
         unless @mr_reviewers.empty?
-          params[:reviewer_ids] = get_user_ids_from_user_names!(@mr_reviewers)
+          params[:reviewer_ids] = get_user_ids_from_user_names!(@mr_reviewers) # steep:ignore
         end
 
         mr_title =

@@ -12,6 +12,8 @@ module SashimiTanpopo
 
     def github: (*String recipe_files) -> void
 
+    def gitlab: (*String recipe_files) -> void
+
     def option_or_env: (
         (String | Symbol) option_name,
         String env_name,
