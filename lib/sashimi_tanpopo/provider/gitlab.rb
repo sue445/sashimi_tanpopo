@@ -53,10 +53,22 @@ module SashimiTanpopo
         @mr_labels = mr_labels
         @is_draft_mr = is_draft_mr
         @is_auto_merge = is_auto_merge
-        @git_username = git_username
-        @git_email = git_email
 
         @gitlab = Gitlab.client(endpoint: api_endpoint, private_token: access_token)
+
+        @git_username =
+          if git_username
+            git_username
+          else
+            current_user_name
+          end
+
+        @git_email =
+          if git_email
+            git_email
+          else
+            "#{@git_username}@noreply.#{self.class.gitlab_host(api_endpoint)}"
+          end
       end
 
       # Apply recipe files
@@ -135,6 +147,18 @@ module SashimiTanpopo
         (mode.to_i(8) & 1) != 0
       end
 
+      # Get GitLab host from api_endpoint
+      #
+      # @param api_endpoint [String]
+      #
+      # @return [String]
+      def self.gitlab_host(api_endpoint)
+        matched = %r{^https?://(.+)/api}.match(api_endpoint)
+        return matched[1] if matched # steep:ignore
+
+        "example.com"
+      end
+
       private
 
       def with_retry
@@ -154,6 +178,15 @@ module SashimiTanpopo
         sleep sleep_time
 
         retry
+      end
+
+      # @return [String]
+      def current_user_name
+        user = with_retry do
+          @gitlab.user
+        end
+
+        user["username"]
       end
 
       # Whether exists branch on repository

@@ -71,25 +71,9 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
     before do
       FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
 
-      create_commit_payload = {
-        actions: [
-          {
-            action: "update",
-            file_path: "test.txt",
-            execute_filemode: "false",
-            content: "Hi, sue445!\n",
-          }
-        ],
-        author_email: git_email,
-        author_name: git_username,
-        branch: mr_source_branch,
-        commit_message: commit_message,
-        start_branch: mr_target_branch,
-      }
-
-      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-        with(headers: request_headers, body: create_commit_payload).
-        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+      stub_request(:get, "#{api_endpoint}/user").
+        with(headers: request_headers).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_user.json"))
 
       allow(provider).to receive(:get_user_id_from_user_name).with("sue445") { 1 }
       allow(provider).to receive(:get_user_id_from_user_name).with("sue445-test") { 2 }
@@ -139,13 +123,76 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
             to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
         end
 
-        it "file is not updated and create Merge Request" do
-          mr_url = subject
+        context "with git_username and git_email" do
+          let(:git_username) { "test" }
+          let(:git_email)    { "test@example.com" }
 
-          expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+          before do
+            create_commit_payload = {
+              actions: [
+                {
+                  action: "update",
+                  file_path: "test.txt",
+                  execute_filemode: "false",
+                  content: "Hi, sue445!\n",
+                }
+              ],
+              author_email: git_email,
+              author_name: git_username,
+              branch: mr_source_branch,
+              commit_message: commit_message,
+              start_branch: mr_target_branch,
+            }
 
-          test_txt = File.read(temp_dir_path.join("test.txt"))
-          expect(test_txt).to eq "Hi, name!\n"
+            stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+              with(headers: request_headers, body: create_commit_payload).
+              to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+          end
+
+          it "file is not updated and create Merge Request" do
+            mr_url = subject
+
+            expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+            test_txt = File.read(temp_dir_path.join("test.txt"))
+            expect(test_txt).to eq "Hi, name!\n"
+          end
+        end
+
+        context "without git_username and git_email" do
+          let(:git_username) { nil }
+          let(:git_email)    { nil }
+
+          before do
+            create_commit_payload = {
+              actions: [
+                {
+                  action: "update",
+                  file_path: "test.txt",
+                  execute_filemode: "false",
+                  content: "Hi, sue445!\n",
+                }
+              ],
+              author_email: "john_smith@noreply.gitlab.example.com",
+              author_name: "john_smith",
+              branch: mr_source_branch,
+              commit_message: commit_message,
+              start_branch: mr_target_branch,
+            }
+
+            stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+              with(headers: request_headers, body: create_commit_payload).
+              to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+          end
+
+          it "file is not updated and create Merge Request" do
+            mr_url = subject
+
+            expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+            test_txt = File.read(temp_dir_path.join("test.txt"))
+            expect(test_txt).to eq "Hi, name!\n"
+          end
         end
       end
 
@@ -167,6 +214,26 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
           stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
             with(headers: request_headers, body: create_mr_payload).
             to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+
+          create_commit_payload = {
+            actions: [
+              {
+                action: "update",
+                file_path: "test.txt",
+                execute_filemode: "false",
+                content: "Hi, sue445!\n",
+              }
+            ],
+            author_email: git_email,
+            author_name: git_username,
+            branch: mr_source_branch,
+            commit_message: commit_message,
+            start_branch: mr_target_branch,
+          }
+
+          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+            with(headers: request_headers, body: create_commit_payload).
+            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
         end
 
         it "file is not updated and create Merge Request" do
@@ -233,7 +300,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       before do
         stub_request(:get, "#{api_endpoint}/users?username=#{username}").
           with(headers: request_headers).
-          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_user.json"))
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_users_1.json"))
       end
 
       it { should eq 1 }
@@ -260,7 +327,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       before do
         stub_request(:get, "#{api_endpoint}/users?username=#{username}").
           with(headers: request_headers).
-          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_user.json"))
+          to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_users_1.json"))
       end
 
       it { should eq [1] }
@@ -290,6 +357,28 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       let(:mode) { "100644" }
 
       it { should eq false }
+    end
+  end
+
+  describe ".gitlab_host" do
+    subject { SashimiTanpopo::Provider::GitLab.gitlab_host(api_endpoint) }
+
+    context "with default API endpoint" do
+      let(:api_endpoint) { "https://gitlab.com/api/v4" }
+
+      it { should eq "gitlab.com" }
+    end
+
+    context "with custom API endpoint" do
+      let(:api_endpoint) { "https://gitlab.example.com/api/v4" }
+
+      it { should eq "gitlab.example.com" }
+    end
+
+    context "unknown format" do
+      let(:api_endpoint) { "https://unknown.com/" }
+
+      it { should eq "example.com" }
     end
   end
 end
