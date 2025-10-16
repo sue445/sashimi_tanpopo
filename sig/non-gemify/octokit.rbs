@@ -1,3 +1,5 @@
+# NOTE: octokit depends on sawyer
+
 module Octokit
   class Error < StandardError
   end
