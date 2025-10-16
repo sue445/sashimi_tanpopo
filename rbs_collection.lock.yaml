@@ -9,6 +9,14 @@ gems:
     revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: base64
+  version: '0.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: bigdecimal
   version: '3.1'
   source:
@@ -17,6 +25,18 @@ gems:
     revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: csv
+  version: '3.3'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: date
+  version: '0'
+  source:
+    type: stdlib
 - name: dbm
   version: '0'
   source:
@@ -57,6 +77,14 @@ gems:
     revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: httparty
+  version: '0.18'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: io-console
   version: '0'
   source:
@@ -69,6 +97,14 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: mini_mime
+  version: '0.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: monitor
   version: '0'
   source:
@@ -83,6 +119,14 @@ gems:
     type: stdlib
 - name: octokit
   version: '8.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 10d80b1f45dd4241d64d40b49e622cd5d3cfa903
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: parallel
+  version: '1.20'
   source:
     type: git
     name: ruby/gem_rbs_collection
@@ -114,6 +158,10 @@ gems:
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rdoc
+  version: '0'
+  source:
+    type: stdlib
+- name: stringio
   version: '0'
   source:
     type: stdlib
