@@ -94,21 +94,6 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       allow(provider).to receive(:get_user_id_from_user_name).with("sue445") { 1 }
       allow(provider).to receive(:get_user_id_from_user_name).with("sue445-test") { 2 }
 
-      create_mr_payload = {
-        title: mr_title,
-        source_branch: mr_source_branch,
-        target_branch: mr_target_branch,
-        remove_source_branch: true,
-        description: mr_body,
-        labels: mr_labels.join(","),
-        assignee_ids: [1],
-        reviewer_ids: [2],
-      }
-
-      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
-        with(headers: request_headers, body: create_mr_payload).
-        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
-
       set_auto_merge_payload = {
         auto_merge: true,
         should_remove_source_branch: true,
@@ -134,13 +119,64 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
           to_return(status: 404, headers: response_headers, body: "{}")
       end
 
-      it "file is not updated and create Merge Request" do
-        mr_url = subject
+      context "create non-draft MR" do
+        let(:is_draft_mr) { false }
 
-        expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+        before do
+          create_mr_payload = {
+            title: mr_title,
+            source_branch: mr_source_branch,
+            target_branch: mr_target_branch,
+            remove_source_branch: true,
+            description: mr_body,
+            labels: mr_labels.join(","),
+            assignee_ids: [1],
+            reviewer_ids: [2],
+          }
 
-        test_txt = File.read(temp_dir_path.join("test.txt"))
-        expect(test_txt).to eq "Hi, name!\n"
+          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
+            with(headers: request_headers, body: create_mr_payload).
+            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+        end
+
+        it "file is not updated and create Merge Request" do
+          mr_url = subject
+
+          expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+          test_txt = File.read(temp_dir_path.join("test.txt"))
+          expect(test_txt).to eq "Hi, name!\n"
+        end
+      end
+
+      context "create draft MR" do
+        let(:is_draft_mr) { true }
+
+        before do
+          create_mr_payload = {
+            title: "Draft: #{mr_title}",
+            source_branch: mr_source_branch,
+            target_branch: mr_target_branch,
+            remove_source_branch: true,
+            description: mr_body,
+            labels: mr_labels.join(","),
+            assignee_ids: [1],
+            reviewer_ids: [2],
+          }
+
+          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
+            with(headers: request_headers, body: create_mr_payload).
+            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+        end
+
+        it "file is not updated and create Merge Request" do
+          mr_url = subject
+
+          expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+          test_txt = File.read(temp_dir_path.join("test.txt"))
+          expect(test_txt).to eq "Hi, name!\n"
+        end
       end
     end
 

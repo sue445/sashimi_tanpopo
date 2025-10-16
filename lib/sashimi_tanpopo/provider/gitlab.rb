@@ -221,10 +221,17 @@ module SashimiTanpopo
           params[:reviewer_ids] = get_user_ids_from_user_names!(@mr_reviewers)
         end
 
+        mr_title =
+          if @is_draft_mr
+            "Draft: " + @mr_title
+          else
+            @mr_title
+          end
+
         mr = with_retry do
           @gitlab.create_merge_request(
             @repository,
-            @mr_title,
+            mr_title,
             params,
           )
         end
