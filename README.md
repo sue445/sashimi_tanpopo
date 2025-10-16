@@ -94,6 +94,42 @@ Options:
                                                         # Default: false
 ```
 
+### sashimi_tanpopo gitlab
+Change local files using recipe files and create Merge Request
+
+```bash
+$ sashimi_tanpopo help gitlab
+
+Usage:
+  sashimi_tanpopo gitlab RECIPE [RECIPE...] --gitlab-project=user/repo --mr-source-branch=mr_branch --mr-target-branch=main --mr-title=MR_TITLE -m, --message=MESSAGE
+
+Options:
+  -d, [--target-dir=TARGET_DIR]                                        # Target directory. Default: current directory
+  -p, [--params=key:value]                                             # Params passed to recipe file
+      [--dry-run], [--no-dry-run], [--skip-dry-run]                    # Whether to run dry run
+                                                                       # Default: false
+      [--color], [--no-color], [--skip-color]                          # Whether to colorize output
+                                                                       # Default: true
+      [--git-user-name=GIT_USER_NAME]                                  # user name for git commit. Default: username of user authenticated with token
+      [--git-email=GIT_EMAIL]                                          # email for git commit. Default: <git_user_name>@noreply.<gitlab_host>
+  -m, --message=MESSAGE                                                # commit message
+      --gitlab-project=user/repo                                       # GitLab project for Merge Request [$CI_PROJECT_PATH]
+      [--gitlab-api-url=GITLAB_API_URL]                                # GitLab API endpoint. Either --gitlab-api-url or $CI_API_V4_URL is required [$CI_API_V4_URL]
+                                                                       # Default: https://gitlab.com/api/v4
+      [--gitlab-token=GITLAB_TOKEN]                                    # GitLab access token. Either --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]
+      --mr-title=MR_TITLE                                              # Merge Request title
+      [--mr-body=MR_BODY]                                              # Merge Request body
+      --mr-source-branch=mr_branch                                     # Merge Request source branch
+      --mr-target-branch=main                                          # Merge Request target branch). Either --mr-target-branch or $CI_DEFAULT_BRANCH is required [$CI_DEFAULT_BRANCH]
+      [--mr-assignees=one two three]                                   # Merge Request assignees
+      [--mr-reviewers=one two three]                                   # Merge Request reviewers
+      [--mr-labels=one two three]                                      # Merge Request labels
+      [--mr-draft], [--no-mr-draft], [--skip-mr-draft]                 # Whether to create draft Merge Request
+                                                                       # Default: false
+      [--mr-auto-merge], [--no-mr-auto-merge], [--skip-mr-auto-merge]  # Whether to set auto-merge to Merge Request
+                                                                       # Default: false
+```
+
 ## Recipe file specification
 See [docs/RECIPE.md](docs/RECIPE.md)
 
