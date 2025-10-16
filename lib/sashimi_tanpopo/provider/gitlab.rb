@@ -27,11 +27,12 @@ module SashimiTanpopo
       # @param mr_reviewers [Array<String>]
       # @param mr_labels [Array<String>]
       # @param is_draft_mr [Boolean] Whether create draft Pull Request
+      # @param is_auto_merge [Boolean] Whether enable auto-merge
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:,
                      git_username:, git_email:, commit_message:,
                      repository:, access_token:, api_endpoint: DEFAULT_API_ENDPOINT,
                      mr_title:, mr_body:, mr_source_branch:, mr_target_branch:,
-                     mr_assignees: [], mr_reviewers: [], mr_labels: [], is_draft_mr:)
+                     mr_assignees: [], mr_reviewers: [], mr_labels: [], is_draft_mr:, is_auto_merge:)
         super(
           recipe_paths:    recipe_paths,
           target_dir:      target_dir,
@@ -51,6 +52,7 @@ module SashimiTanpopo
         @mr_reviewers = mr_reviewers
         @mr_labels = mr_labels
         @is_draft_mr = is_draft_mr
+        @is_auto_merge = is_auto_merge
         @git_username = git_username
         @git_email = git_email
 
@@ -74,6 +76,12 @@ module SashimiTanpopo
         create_branch_and_push_changes(changed_files)
 
         mr = create_merge_request
+        SashimiTanpopo.logger.info "Merge Request is created: #{mr[:web_url]}"
+
+        if @is_auto_merge
+          set_auto_merge(mr[:iid])
+          SashimiTanpopo.logger.info "Set auto-merge to #{mr[:web_url]}"
+        end
 
         mr[:web_url]
       end
@@ -225,6 +233,15 @@ module SashimiTanpopo
           iid:     mr["iid"],
           web_url: mr["web_url"],
         }
+      end
+
+      # @param mr_iid [Integer]
+      #
+      # @see https://docs.gitlab.com/api/merge_requests/#merge-a-merge-request
+      def set_auto_merge(mr_iid)
+        with_retry do
+          @gitlab.accept_merge_request(@repository, mr_iid, auto_merge: true, should_remove_source_branch: true)
+        end
       end
     end
   end

@@ -22,6 +22,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       mr_reviewers:     mr_reviewers,
       mr_labels:        mr_labels,
       is_draft_mr:      is_draft_mr,
+      is_auto_merge:    is_auto_merge,
     )
   end
 
@@ -48,6 +49,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
   let(:mr_reviewers)       { %w(sue445-test) }
   let(:mr_labels)          { %w(sashimi-tanpopo) }
   let(:is_draft_mr)        { false }
+  let(:is_auto_merge)      { true }
 
   let(:request_headers) do
     {
@@ -106,6 +108,15 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
       stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
         with(headers: request_headers, body: create_mr_payload).
         to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+
+      set_auto_merge_payload = {
+        auto_merge: true,
+        should_remove_source_branch: true,
+      }
+
+      stub_request(:put, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests/1/merge").
+        with(headers: request_headers, body: set_auto_merge_payload).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_merge_merge_request.json"))
     end
 
     let(:recipe_paths) do
