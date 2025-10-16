@@ -78,6 +78,53 @@ module SashimiTanpopo
       ).perform
     end
 
+    desc "gitlab RECIPE [RECIPE...]", "Change local files using recipe files and create Merge Request"
+    define_exec_common_options
+    option :git_user_name,     type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
+    option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@noreply.<gitlab_host>"
+    option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
+    option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request [$CI_PROJECT_PATH]", required: true, banner: "user/repo"
+    option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. Either --gitlab-api-url or $CI_API_V4_URL is required [$CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
+    option :gitlab_token,      type: :string,  desc: "GitLab access token. Either --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]"
+    option :mr_title,          type: :string,  desc: "Merge Request title", required: true
+    option :mr_body,           type: :string,  desc: "Merge Request body"
+    option :mr_source_branch,  type: :string,  desc: "Merge Request source branch", required: true, banner: "mr_branch"
+    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). Either --mr-target-branch or $CI_DEFAULT_BRANCH is required [$CI_DEFAULT_BRANCH]", required: true, banner: "main"
+    option :mr_assignees,      type: :array,   desc: "Merge Request assignees", default: []
+    option :mr_reviewers,      type: :array,   desc: "Merge Request reviewers", default: []
+    option :mr_labels,         type: :array,   desc: "Merge Request labels", default: []
+    option :mr_draft,          type: :boolean, desc: "Whether to create draft Merge Request", default: false
+    option :mr_auto_merge,     type: :boolean, desc: "Whether to set auto-merge to Merge Request", default: false
+    def gitlab(*recipe_files)
+      repository       = option_or_env!(:gitlab_project, "CI_PROJECT_PATH")
+      api_endpoint     = option_or_env!(:gitlab_api_url, "CI_API_V4_URL")
+      access_token     = option_or_env!(:gitlab_token, "GITLAB_TOKEN")
+      mr_target_branch = option_or_env!(:mr_target_branch, "CI_DEFAULT_BRANCH ")
+
+      Provider::GitLab.new(
+        recipe_paths:     recipe_files,
+        target_dir:       options[:target_dir],
+        params:           self.class.normalize_params(options[:params]),
+        dry_run:          options[:dry_run],
+        is_colored:       options[:color],
+        git_username:     options[:git_user_name],
+        git_email:        options[:git_email],
+        commit_message:   options[:message],
+        repository:       repository,
+        api_endpoint:     api_endpoint,
+        access_token:     access_token,
+        mr_title:         options[:mr_title],
+        mr_body:          options[:mr_body],
+        mr_source_branch: options[:mr_source_branch],
+        mr_target_branch: mr_target_branch,
+        mr_assignees:     options[:mr_assignees],
+        mr_reviewers:     options[:mr_reviewers],
+        mr_labels:        options[:mr_labels],
+        is_draft_mr:      options[:mr_draft],
+        is_auto_merge:    options[:mr_auto_merge],
+      ).perform
+    end
+
     # @param params [Hash<String, String>]
     # @return [Hash<Symbol,String>]
     #
