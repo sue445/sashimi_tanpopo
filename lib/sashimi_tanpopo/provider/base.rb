@@ -35,7 +35,7 @@ module SashimiTanpopo
 
         @recipe_paths.each do |recipe_path|
           changed_files =
-            FileUpdater.new.perform(
+            DSL.new.perform(
               recipe_path:     recipe_path,
               target_dir:      @target_dir,
               params:          @params,

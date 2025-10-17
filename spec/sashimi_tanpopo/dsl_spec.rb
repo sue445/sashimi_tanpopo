@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe SashimiTanpopo::FileUpdater do
-  let(:updater) { SashimiTanpopo::FileUpdater.new }
+RSpec.describe SashimiTanpopo::DSL do
+  let(:dsl) { SashimiTanpopo::DSL.new }
 
   describe "#evaluate" do
     subject do
-      updater.evaluate(
+      dsl.evaluate(
         recipe_body:     recipe_body,
         recipe_path:     recipe_path,
         target_dir:      target_dir,

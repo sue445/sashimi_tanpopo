@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SashimiTanpopo
-  class FileUpdater
+  class DSL
     # Apply recipe file
     #
     # @param recipe_path [String]
