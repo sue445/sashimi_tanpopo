@@ -1,5 +1,5 @@
 module SashimiTanpopo
-  class FileUpdater
+  class DSL
     def perform: (
         recipe_path: String,
         target_dir: String,
