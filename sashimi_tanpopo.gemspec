@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Change files and create patches"
   spec.homepage = "https://github.com/sue445/sashimi_tanpopo"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/sue445/sashimi_tanpopo"
@@ -35,7 +35,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "diffy", ">= 3.0", "< 4.0"
   spec.add_dependency "faraday-retry", ">= 2.0", "< 3.0"
+  spec.add_dependency "gitlab", ">= 6.0", "< 7.0"
   spec.add_dependency "octokit", ">= 10.0", "< 11.0"
+  spec.add_dependency "parallel", ">= 1.0", "< 2.0"
   spec.add_dependency "thor", ">= 1.0", "< 2.0"
 
   spec.add_development_dependency "irb"

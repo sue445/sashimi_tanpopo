@@ -67,7 +67,7 @@ Change local files using recipe files and create Pull Request
 $ sashimi_tanpopo help github
 
 Usage:
-  sashimi_tanpopo github RECIPE [RECIPE...] --github-repository=user/repo --pr-source-branch=pr_branch --pr-target-branch=main --pr-title=PR_TITLE -m, --message=MESSAGE
+  sashimi_tanpopo github RECIPE [RECIPE...] --pr-source-branch=pr_branch --pr-title=PR_TITLE -m, --message=COMMIT_MESSAGE
 
 Options:
   -d, [--target-dir=TARGET_DIR]                         # Target directory. Default: current directory
@@ -78,20 +78,56 @@ Options:
                                                         # Default: true
       [--git-user-name=GIT_USER_NAME]                   # user name for git commit. Default: username of user authenticated with token
       [--git-email=GIT_EMAIL]                           # email for git commit. Default: <git_user_name>@users.noreply.<github_host>
-  -m, --message=MESSAGE                                 # commit message
-      --github-repository=user/repo                     # GitHub repository for Pull Request [$GITHUB_REPOSITORY]
-      [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
+  -m, --message=COMMIT_MESSAGE                          # commit message
+      [--github-repository=user/repo]                   # GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]
+      [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
                                                         # Default: https://api.github.com
-      [--github-token=GITHUB_TOKEN]                     # GitHub access token. Either --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
+      [--github-token=GITHUB_TOKEN]                     # GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
       --pr-title=PR_TITLE                               # Pull Request title
       [--pr-body=PR_BODY]                               # Pull Request body
       --pr-source-branch=pr_branch                      # Pull Request source branch (a.k.a. head branch)
-      --pr-target-branch=main                           # Pull Request target branch (a.k.a. base branch). Either --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]
+      [--pr-target-branch=main]                         # Pull Request target branch (a.k.a. base branch). One of --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]
       [--pr-assignees=one two three]                    # Pull Request assignees
       [--pr-reviewers=one two three]                    # Pull Request reviewers
       [--pr-labels=one two three]                       # Pull Request labels
       [--pr-draft], [--no-pr-draft], [--skip-pr-draft]  # Whether to create draft Pull Request
                                                         # Default: false
+```
+
+### sashimi_tanpopo gitlab
+Change local files using recipe files and create Merge Request
+
+```bash
+$ sashimi_tanpopo help gitlab
+
+Usage:
+  sashimi_tanpopo gitlab RECIPE [RECIPE...] --mr-source-branch=mr_branch --mr-title=MR_TITLE -m, --message=COMMIT_MESSAGE
+
+Options:
+  -d, [--target-dir=TARGET_DIR]                                        # Target directory. Default: current directory
+  -p, [--params=key:value]                                             # Params passed to recipe file
+      [--dry-run], [--no-dry-run], [--skip-dry-run]                    # Whether to run dry run
+                                                                       # Default: false
+      [--color], [--no-color], [--skip-color]                          # Whether to colorize output
+                                                                       # Default: true
+      [--git-user-name=GIT_USER_NAME]                                  # user name for git commit. Default: username of user authenticated with token
+      [--git-email=GIT_EMAIL]                                          # email for git commit. Default: <git_user_name>@noreply.<gitlab_host>
+  -m, --message=COMMIT_MESSAGE                                         # commit message
+      [--gitlab-project=user/repo]                                     # GitLab project for Merge Request. One of --gitlab-project, $GITLAB_PROJECT or $CI_PROJECT_PATH is required [$GITLAB_PROJECT, $CI_PROJECT_PATH]
+      [--gitlab-api-url=GITLAB_API_URL]                                # GitLab API endpoint. One of --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]
+                                                                       # Default: https://gitlab.com/api/v4
+      [--gitlab-token=GITLAB_TOKEN]                                    # GitLab access token. One of --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]
+      --mr-title=MR_TITLE                                              # Merge Request title
+      [--mr-body=MR_BODY]                                              # Merge Request body
+      --mr-source-branch=mr_branch                                     # Merge Request source branch
+      [--mr-target-branch=main]                                        # Merge Request target branch). One of --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]
+      [--mr-assignees=one two three]                                   # Merge Request assignees
+      [--mr-reviewers=one two three]                                   # Merge Request reviewers
+      [--mr-labels=one two three]                                      # Merge Request labels
+      [--mr-draft], [--no-mr-draft], [--skip-mr-draft]                 # Whether to create draft Merge Request
+                                                                       # Default: false
+      [--mr-auto-merge], [--no-mr-auto-merge], [--skip-mr-auto-merge]  # Whether to set auto-merge to Merge Request
+                                                                       # Default: false
 ```
 
 ## Recipe file specification

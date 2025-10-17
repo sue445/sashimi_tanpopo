@@ -12,15 +12,17 @@ module SashimiTanpopo
 
     def github: (*String recipe_files) -> void
 
+    def gitlab: (*String recipe_files) -> void
+
     def option_or_env: (
-        (String | Symbol) option_name,
-        String env_name,
-        ?String? default,
+        option_name: String | Symbol,
+        env_name: String | Array[String],
+        ?default: String?,
       ) -> String?
 
     def option_or_env!: (
-        (String | Symbol) option_name,
-        String env_name,
+        option_name: String | Symbol,
+        env_name: String | Array[String],
       ) -> String
   end
 end

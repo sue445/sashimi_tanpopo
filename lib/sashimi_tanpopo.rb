@@ -3,6 +3,8 @@
 require "logger"
 require "diffy"
 require "octokit"
+require "gitlab"
+require "parallel"
 
 require_relative "sashimi_tanpopo/version"
 require_relative "sashimi_tanpopo/file_updater"
@@ -11,5 +13,6 @@ require_relative "sashimi_tanpopo/provider"
 
 module SashimiTanpopo
   class Error < StandardError; end
-  # Your code goes here...
+
+  class NotFoundUserError < Error; end
 end

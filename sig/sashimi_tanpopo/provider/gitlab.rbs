@@ -1,0 +1,72 @@
+module SashimiTanpopo
+  module Provider
+    class GitLab < Base
+      DEFAULT_API_ENDPOINT: String
+      MAX_RETRY_COUNT: Integer
+
+      @git_username: String
+      @git_email: String
+      @commit_message: String
+      @repository: String
+      @mr_title: String
+      @mr_body: String
+      @mr_source_branch: String
+      @mr_target_branch: String
+      @mr_assignees: Array[String]
+      @mr_reviewers: Array[String]
+      @mr_labels: Array[String]
+      @gitlab: Gitlab::Client
+      @is_draft_mr: bool
+      @is_auto_merge: bool
+
+      def initialize: (
+          recipe_paths: Array[String],
+          target_dir: String?,
+          params: Hash[Symbol, String],
+          dry_run: bool,
+          is_colored: bool,
+          git_username: String?,
+          git_email: String?,
+          commit_message: String,
+          repository: String,
+          access_token: String,
+          ?api_endpoint: String,
+          mr_title: String,
+          mr_body: String,
+          mr_source_branch: String,
+          mr_target_branch: String,
+          ?mr_assignees: Array[String],
+          ?mr_reviewers: Array[String],
+          ?mr_labels: Array[String],
+          is_draft_mr: bool,
+          is_auto_merge: bool,
+        ) -> void
+
+      def perform: () -> String?
+
+      def get_user_id_from_user_name: (String username) -> Integer?
+
+      def get_user_id_from_user_name!: (String username) -> Integer
+
+      def get_user_ids_from_user_names!: (Array[String] usernames) -> Array[Integer]
+
+      def self.executable_mode?: (String mode) -> bool
+
+      def self.gitlab_host: (String api_endpoint) -> String
+
+      private
+
+      def with_retry: [T] { () -> T } -> T
+
+      def current_user_name: () -> String
+
+      def exists_branch?: (String branch) -> bool
+
+      def create_branch_and_push_changes: (Hash[String, { before_content: String, after_content: String, mode: String }] changed_files) -> void
+
+      def create_merge_request: () -> { iid: Integer, web_url: String }
+
+      def set_auto_merge: (Integer mr_iid) -> void
+    end
+  end
+end
