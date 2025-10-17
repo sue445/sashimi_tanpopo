@@ -95,6 +95,11 @@ module SashimiTanpopo
         @__changed_files__ ||= {}
       end
 
+      # @return [Boolean] Whether dry run
+      def dry_run?
+        @__dry_run__
+      end
+
       # Update files if exists
       #
       # @param pattern [String] Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
@@ -130,7 +135,7 @@ module SashimiTanpopo
             mode:           File.stat(full_file_path).mode.to_s(8)
           }
 
-          if @__dry_run__
+          if dry_run?
             SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
           else
             SashimiTanpopo.logger.info "#{full_file_path} is changed"
@@ -159,7 +164,7 @@ module SashimiTanpopo
 
         show_diff(before_content, content)
 
-        File.write(path, content) if !@__dry_run__ && @__is_update_local__
+        File.write(path, content) if !dry_run? && @__is_update_local__
 
         content
       end
