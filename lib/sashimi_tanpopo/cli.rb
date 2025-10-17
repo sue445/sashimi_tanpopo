@@ -160,7 +160,8 @@ module SashimiTanpopo
         value = option_or_env(option_name: option_name, env_name: env_name)
         return value if value
 
-        SashimiTanpopo.logger.error "Error: One of --#{option_name.to_s.gsub("_", "-")}, #{env_name.join(", ")} is required!"
+        env_names = Array(env_name)
+        SashimiTanpopo.logger.error "Error: One of --#{option_name.to_s.gsub("_", "-")}, #{env_names.join(", ")} is required!"
         exit!
       end
     end
