@@ -50,10 +50,10 @@ module SashimiTanpopo
     option :pr_labels,         type: :array,   desc: "Pull Request labels", default: []
     option :pr_draft,          type: :boolean, desc: "Whether to create draft Pull Request", default: false
     def github(*recipe_files)
-      repository       = option_or_env!(:github_repository, "GITHUB_REPOSITORY")
-      api_endpoint     = option_or_env!(:github_api_url, "GITHUB_API_URL")
-      access_token     = option_or_env!(:github_token, "GITHUB_TOKEN")
-      pr_target_branch = option_or_env!(:pr_target_branch, "GITHUB_REF_NAME")
+      repository       = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
+      api_endpoint     = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
+      access_token     = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
+      pr_target_branch = option_or_env!(option_name: :pr_target_branch,  env_name: "GITHUB_REF_NAME")
 
       Provider::GitHub.new(
         recipe_paths:     recipe_files,
@@ -83,23 +83,23 @@ module SashimiTanpopo
     option :git_user_name,     type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
     option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@noreply.<gitlab_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
-    option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request [$CI_PROJECT_PATH]", required: true, banner: "user/repo"
-    option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. Either --gitlab-api-url or $CI_API_V4_URL is required [$CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
+    option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request [$GITLAB_PROJECT, $CI_PROJECT_PATH]", required: true, banner: "user/repo"
+    option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. Either --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
     option :gitlab_token,      type: :string,  desc: "GitLab access token. Either --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]"
     option :mr_title,          type: :string,  desc: "Merge Request title", required: true
     option :mr_body,           type: :string,  desc: "Merge Request body"
     option :mr_source_branch,  type: :string,  desc: "Merge Request source branch", required: true, banner: "mr_branch"
-    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). Either --mr-target-branch or $CI_DEFAULT_BRANCH is required [$CI_DEFAULT_BRANCH]", required: true, banner: "main"
+    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). Either --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]", required: true, banner: "main"
     option :mr_assignees,      type: :array,   desc: "Merge Request assignees", default: []
     option :mr_reviewers,      type: :array,   desc: "Merge Request reviewers", default: []
     option :mr_labels,         type: :array,   desc: "Merge Request labels", default: []
     option :mr_draft,          type: :boolean, desc: "Whether to create draft Merge Request", default: false
     option :mr_auto_merge,     type: :boolean, desc: "Whether to set auto-merge to Merge Request", default: false
     def gitlab(*recipe_files)
-      repository       = option_or_env!(:gitlab_project, "CI_PROJECT_PATH")
-      api_endpoint     = option_or_env!(:gitlab_api_url, "CI_API_V4_URL")
-      access_token     = option_or_env!(:gitlab_token, "GITLAB_TOKEN")
-      mr_target_branch = option_or_env!(:mr_target_branch, "CI_DEFAULT_BRANCH ")
+      repository       = option_or_env!(option_name: :gitlab_project,   env_name: %w[GITLAB_PROJECT CI_PROJECT_PATH])
+      api_endpoint     = option_or_env!(option_name: :gitlab_api_url,   env_name: %w[GITLAB_API_URL CI_API_V4_URL])
+      access_token     = option_or_env!(option_name: :gitlab_token,     env_name: "GITLAB_TOKEN")
+      mr_target_branch = option_or_env!(option_name: :mr_target_branch, env_name: %w[MR_TARGET_BRANCH CI_DEFAULT_BRANCH])
 
       Provider::GitLab.new(
         recipe_paths:     recipe_files,
@@ -139,20 +139,25 @@ module SashimiTanpopo
 
     no_commands do
       # @param option_name [String,Symbol]
-      # @param env_name [String]
+      # @param env_name [String, Array<String>]
       # @param default [String,nil]
       # @return [String,nil]
-      def option_or_env(option_name, env_name, default = nil)
+      def option_or_env(option_name:, env_name:, default:  nil)
         return options[option_name] if options[option_name] && !options[option_name].empty?
-        return ENV[env_name] unless ENV.fetch(env_name, "") == ""
+
+        env_names = Array(env_name) #: Array[String]
+        env_names.each do |name|
+          return ENV[name] unless ENV.fetch(name, "") == ""
+        end
+
         default
       end
 
       # @param option_name [String,Symbol]
-      # @param env_name [String]
+      # @param env_name [String, Array<String>]
       # @return [String]
-      def option_or_env!(option_name, env_name)
-        value = option_or_env(option_name, env_name)
+      def option_or_env!(option_name:, env_name:)
+        value = option_or_env(option_name: option_name, env_name: env_name)
         return value if value
 
         puts "Error: Either --#{option_name.to_s.gsub("_", "-")} or #{env_name} is required!"

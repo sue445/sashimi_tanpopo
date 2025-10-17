@@ -113,14 +113,14 @@ Options:
       [--git-user-name=GIT_USER_NAME]                                  # user name for git commit. Default: username of user authenticated with token
       [--git-email=GIT_EMAIL]                                          # email for git commit. Default: <git_user_name>@noreply.<gitlab_host>
   -m, --message=MESSAGE                                                # commit message
-      --gitlab-project=user/repo                                       # GitLab project for Merge Request [$CI_PROJECT_PATH]
-      [--gitlab-api-url=GITLAB_API_URL]                                # GitLab API endpoint. Either --gitlab-api-url or $CI_API_V4_URL is required [$CI_API_V4_URL]
+      --gitlab-project=user/repo                                       # GitLab project for Merge Request [$GITLAB_PROJECT, $CI_PROJECT_PATH]
+      [--gitlab-api-url=GITLAB_API_URL]                                # GitLab API endpoint. Either --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]
                                                                        # Default: https://gitlab.com/api/v4
       [--gitlab-token=GITLAB_TOKEN]                                    # GitLab access token. Either --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]
       --mr-title=MR_TITLE                                              # Merge Request title
       [--mr-body=MR_BODY]                                              # Merge Request body
       --mr-source-branch=mr_branch                                     # Merge Request source branch
-      --mr-target-branch=main                                          # Merge Request target branch). Either --mr-target-branch or $CI_DEFAULT_BRANCH is required [$CI_DEFAULT_BRANCH]
+      --mr-target-branch=main                                          # Merge Request target branch). Either --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]
       [--mr-assignees=one two three]                                   # Merge Request assignees
       [--mr-reviewers=one two three]                                   # Merge Request reviewers
       [--mr-labels=one two three]                                      # Merge Request labels
