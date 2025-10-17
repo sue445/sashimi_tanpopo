@@ -39,12 +39,12 @@ module SashimiTanpopo
     option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@users.noreply.<github_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
     option :github_repository, type: :string,  desc: "GitHub repository for Pull Request [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
-    option :github_api_url,    type: :string,  desc: "GitHub API endpoint. Either --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
-    option :github_token,      type: :string,  desc: "GitHub access token. Either --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
+    option :github_api_url,    type: :string,  desc: "GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
+    option :github_token,      type: :string,  desc: "GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
     option :pr_title,          type: :string,  desc: "Pull Request title", required: true
     option :pr_body,           type: :string,  desc: "Pull Request body"
     option :pr_source_branch,  type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
-    option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Either --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", required: true, banner: "main"
+    option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). One of --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", required: true, banner: "main"
     option :pr_assignees,      type: :array,   desc: "Pull Request assignees", default: []
     option :pr_reviewers,      type: :array,   desc: "Pull Request reviewers", default: []
     option :pr_labels,         type: :array,   desc: "Pull Request labels", default: []
@@ -84,12 +84,12 @@ module SashimiTanpopo
     option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@noreply.<gitlab_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
     option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request [$GITLAB_PROJECT, $CI_PROJECT_PATH]", required: true, banner: "user/repo"
-    option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. Either --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
-    option :gitlab_token,      type: :string,  desc: "GitLab access token. Either --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]"
+    option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. One of --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
+    option :gitlab_token,      type: :string,  desc: "GitLab access token. One of --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]"
     option :mr_title,          type: :string,  desc: "Merge Request title", required: true
     option :mr_body,           type: :string,  desc: "Merge Request body"
     option :mr_source_branch,  type: :string,  desc: "Merge Request source branch", required: true, banner: "mr_branch"
-    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). Either --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]", required: true, banner: "main"
+    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). One of --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]", required: true, banner: "main"
     option :mr_assignees,      type: :array,   desc: "Merge Request assignees", default: []
     option :mr_reviewers,      type: :array,   desc: "Merge Request reviewers", default: []
     option :mr_labels,         type: :array,   desc: "Merge Request labels", default: []
@@ -160,7 +160,7 @@ module SashimiTanpopo
         value = option_or_env(option_name: option_name, env_name: env_name)
         return value if value
 
-        puts "Error: Either --#{option_name.to_s.gsub("_", "-")} or #{env_name} is required!"
+        SashimiTanpopo.logger.error "Error: One of --#{option_name.to_s.gsub("_", "-")}, #{env_name.join(", ")} is required!"
         exit!
       end
     end
