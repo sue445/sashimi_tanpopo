@@ -38,7 +38,7 @@ module SashimiTanpopo
     option :git_user_name,     type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
     option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@users.noreply.<github_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
-    option :github_repository, type: :string,  desc: "GitHub repository for Pull Request [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
+    option :github_repository, type: :string,  desc: "GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]", required: true, banner: "user/repo"
     option :github_api_url,    type: :string,  desc: "GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
     option :github_token,      type: :string,  desc: "GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
     option :pr_title,          type: :string,  desc: "Pull Request title", required: true
@@ -83,7 +83,7 @@ module SashimiTanpopo
     option :git_user_name,     type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
     option :git_email,         type: :string,  desc: "email for git commit. Default: <git_user_name>@noreply.<gitlab_host>"
     option :message,           type: :string,  desc: "commit message", required: true, aliases: "-m"
-    option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request [$GITLAB_PROJECT, $CI_PROJECT_PATH]", required: true, banner: "user/repo"
+    option :gitlab_project,    type: :string,  desc: "GitLab project for Merge Request. One of --gitlab-project, $GITLAB_PROJECT or $CI_PROJECT_PATH is required [$GITLAB_PROJECT, $CI_PROJECT_PATH]", required: true, banner: "user/repo"
     option :gitlab_api_url,    type: :string,  desc: "GitLab API endpoint. One of --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]", default: "https://gitlab.com/api/v4"
     option :gitlab_token,      type: :string,  desc: "GitLab access token. One of --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]"
     option :mr_title,          type: :string,  desc: "Merge Request title", required: true

@@ -79,7 +79,7 @@ Options:
       [--git-user-name=GIT_USER_NAME]                   # user name for git commit. Default: username of user authenticated with token
       [--git-email=GIT_EMAIL]                           # email for git commit. Default: <git_user_name>@users.noreply.<github_host>
   -m, --message=MESSAGE                                 # commit message
-      --github-repository=user/repo                     # GitHub repository for Pull Request [$GITHUB_REPOSITORY]
+      --github-repository=user/repo                     # GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]
       [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
                                                         # Default: https://api.github.com
       [--github-token=GITHUB_TOKEN]                     # GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
@@ -113,7 +113,7 @@ Options:
       [--git-user-name=GIT_USER_NAME]                                  # user name for git commit. Default: username of user authenticated with token
       [--git-email=GIT_EMAIL]                                          # email for git commit. Default: <git_user_name>@noreply.<gitlab_host>
   -m, --message=MESSAGE                                                # commit message
-      --gitlab-project=user/repo                                       # GitLab project for Merge Request [$GITLAB_PROJECT, $CI_PROJECT_PATH]
+      --gitlab-project=user/repo                                       # GitLab project for Merge Request. One of --gitlab-project, $GITLAB_PROJECT or $CI_PROJECT_PATH is required [$GITLAB_PROJECT, $CI_PROJECT_PATH]
       [--gitlab-api-url=GITLAB_API_URL]                                # GitLab API endpoint. One of --gitlab-api-url, $GITLAB_API_URL or $CI_API_V4_URL is required [$GITLAB_API_URL, $CI_API_V4_URL]
                                                                        # Default: https://gitlab.com/api/v4
       [--gitlab-token=GITLAB_TOKEN]                                    # GitLab access token. One of --gitlab-token or $GITLAB_TOKEN is required [$GITLAB_TOKEN]
