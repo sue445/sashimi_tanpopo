@@ -4,6 +4,7 @@ require "sashimi_tanpopo"
 require "sashimi_tanpopo/cli"
 require "rspec/temp_dir"
 require "webmock/rspec"
+require "stringio"
 
 Dir["#{__dir__}/support/**/*.rb"].each {|f| require f }
 
