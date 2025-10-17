@@ -96,6 +96,11 @@ module SashimiTanpopo
       end
 
       # @return [Boolean] Whether dry run
+      #
+      # @example
+      #   unless dry_run?
+      #     puts "This will be called when apply mode"
+      #   end
       def dry_run?
         @__dry_run__
       end

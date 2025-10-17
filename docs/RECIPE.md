@@ -6,6 +6,17 @@ By avoiding the DSL methods listed below, you are free to write code as you like
 ## Special methods available within recipe file
 The following methods are special variables available within recipe file.
 
+### `dry_run?`
+Whether dry run
+
+e.g.
+
+```rb
+unless dry_run?
+  puts "This will be called when apply mode"
+end
+```
+
 ### `params`
 Passed from `--params`
 
