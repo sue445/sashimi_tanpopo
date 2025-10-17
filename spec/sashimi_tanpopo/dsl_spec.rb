@@ -143,5 +143,59 @@ RSpec.describe SashimiTanpopo::DSL do
         it { should be_empty }
       end
     end
+
+    context "many_lines.txt" do
+      include_context :stub_logger
+
+      let(:recipe_body) do
+        <<~RUBY
+          update_file "many_lines.txt" do |content|
+            content.gsub!(/a/, "A")
+          end
+        RUBY
+      end
+
+      let(:is_colored) { false }
+
+      before do
+        FileUtils.cp(fixtures_dir.join("many_lines.txt"), temp_dir)
+      end
+
+      around do |example|
+        original_logger = SashimiTanpopo.logger
+
+        example.run
+      ensure
+        SashimiTanpopo.logger = original_logger
+      end
+
+      it { should have_key "many_lines.txt" }
+
+      it "file is updated" do
+        subject
+
+        many_lines_txt_path = temp_dir_path.join("many_lines.txt")
+        many_lines_txt = File.read(many_lines_txt_path)
+        expect(many_lines_txt).to include "AAAAAAAAAA"
+
+        expected_diff = [
+          " INFO : Checking #{many_lines_txt_path}",
+          " INFO : diff:",
+          " INFO : 7777777777",
+          " INFO : 8888888888",
+          " INFO : 9999999999",
+          " INFO : -aaaaaaaaaa",
+          " INFO : +AAAAAAAAAA",
+          " INFO : bbbbbbbbbb",
+          " INFO : cccccccccc",
+          " INFO : dddddddddd",
+          " INFO : #{many_lines_txt_path} is changed",
+          "",
+        ].join("\n")
+
+        stdout = log_output.string
+        expect(stdout).to eq expected_diff
+      end
+    end
   end
 end

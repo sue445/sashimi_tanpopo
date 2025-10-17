@@ -172,7 +172,7 @@ module SashimiTanpopo
       # @param str1 [String]
       # @param str2 [String]
       def show_diff(str1, str2)
-        diff_text = Diffy::Diff.new(str1, str2).to_s(@__diffy_format__) # steep:ignore
+        diff_text = Diffy::Diff.new(str1, str2, context: 3).to_s(@__diffy_format__) # steep:ignore
 
         SashimiTanpopo.logger.info "diff:"
 
