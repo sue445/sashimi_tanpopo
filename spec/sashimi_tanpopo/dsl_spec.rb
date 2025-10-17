@@ -129,5 +129,19 @@ RSpec.describe SashimiTanpopo::DSL do
         expect(test_txt).to eq "Hi, name!\n"
       end
     end
+
+    context "dry_run is enabled" do
+      let(:dry_run) { true }
+
+      describe "dry_run? is available" do
+        let(:recipe_body) do
+          <<~RUBY
+            raise "should not be called here!" unless dry_run?
+          RUBY
+        end
+
+        it { should be_empty }
+      end
+    end
   end
 end

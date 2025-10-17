@@ -39,6 +39,8 @@ module SashimiTanpopo
 
       def changed_files: () -> changed_files
 
+      def dry_run?: () -> bool
+
       def update_file: (String pattern) { (String) -> void } -> void
 
       private
