@@ -9,6 +9,10 @@ on:
       - opened
       - synchronize
       - reopened
+    paths-ignore:
+      - .github/workflows/docker-ghcr.yml
+      - Dockerfile
+      - "**/*.md"
   schedule:
     - cron: "0 10 * * 5" # JST 19:00 (Fri)
 
