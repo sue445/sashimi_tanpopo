@@ -20,4 +20,19 @@ task :rbs do
   sh "steep check"
 end
 
+desc "Fix version in Dockerfile"
+task :fix_version do
+  require "sashimi_tanpopo/version"
+
+  dockerfile = File.read("Dockerfile")
+  dockerfile.gsub!(/^ARG SASHIMI_TANPOPO_VERSION=.+$/, "ARG SASHIMI_TANPOPO_VERSION=#{SashimiTanpopo::VERSION}")
+
+  File.open("Dockerfile", "w") do |f|
+    f.write(dockerfile)
+  end
+
+  sh "git add Dockerfile || true"
+  sh "git commit -m 'Bump version in Dockerfile' || true"
+end
+
 task default: %i[spec rbs]
