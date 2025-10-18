@@ -1,6 +1,7 @@
 # SashimiTanpopo :sushi: :blossom:
 Change files and create patches
 
+[![Gem Version](https://badge.fury.io/rb/sashimi_tanpopo.svg)](https://badge.fury.io/rb/sashimi_tanpopo)
 [![test](https://github.com/sue445/sashimi_tanpopo/actions/workflows/test.yml/badge.svg)](https://github.com/sue445/sashimi_tanpopo/actions/workflows/test.yml)
 
 ## Example
