@@ -35,7 +35,7 @@ task :fix_version do
   sh "git commit -m 'Bump version in Dockerfile' || true"
 end
 
-# Run fix_version before release
-Rake::Task[:release].enhance([:fix_version])
+# Run fix_version before release:source_control_push (inside of release task)
+Rake::Task["release:source_control_push"].enhance([:fix_version])
 
 task default: %i[spec rbs]
