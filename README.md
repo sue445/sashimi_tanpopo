@@ -38,8 +38,16 @@ $ sashimi_tanpopo github --target-dir=/path/to/app --params=ruby_version:3.4.5 \
 ```
 
 ## Installation
+### Use gem directly
 ```bash
 gem install sashimi_tanpopo
+```
+
+### Use via docker
+e.g.
+
+```bash
+docker run -v /path/to/recipe_dir:/recipes:ro -v $(pwd):/work --rm ghcr.io/sue445/sashimi_tanpopo <local|github|gitlab> <arguments> /recipes/recipe.rb
 ```
 
 ## Usage
