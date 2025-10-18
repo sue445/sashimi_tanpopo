@@ -37,6 +37,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')
+
       - name: Set TAG_NAME
         run: |
           set -xe
@@ -47,11 +56,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SASHIMI_TANPOPO_VERSION=${{ env.TAG_NAME }}
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
 
       - name: Slack Notification
         uses: act10ns/slack@v2
