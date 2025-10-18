@@ -10,6 +10,7 @@ on:
       - synchronize
       - reopened
     paths-ignore:
+      - .github/workflows/docker-ghcr.yml
       - Dockerfile
       - "**/*.md"
   schedule:

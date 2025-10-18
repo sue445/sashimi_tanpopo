@@ -12,6 +12,7 @@ on:
       - synchronize
       - reopened
     paths:
+      - .github/workflows/docker-ghcr.yml
       - Dockerfile
 
 jobs:
