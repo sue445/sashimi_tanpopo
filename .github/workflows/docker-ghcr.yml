@@ -46,10 +46,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
         if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')
 
-      - name: Set TAG_NAME
+      - name: Set TAG_VERSION
         run: |
           set -xe
-          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
 
       - name: Build and push
@@ -60,7 +60,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            SASHIMI_TANPOPO_VERSION=${{ env.TAG_NAME }}
+            SASHIMI_TANPOPO_VERSION=${{ env.TAG_VERSION }}
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
 
       - name: Slack Notification
