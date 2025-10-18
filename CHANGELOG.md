@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.1...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.2...main)
+
+## [0.1.2](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.1.2) - 2025-10-19
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.1...v0.1.2)
+
+* Fix docker build on CI
+  * https://github.com/sue445/sashimi_tanpopo/pull/44
 
 ## [0.1.1](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.1.1) - 2025-10-19
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.0...v0.1.1)
