@@ -142,6 +142,10 @@ Options:
 ## Recipe file specification
 See [docs/RECIPE.md](docs/RECIPE.md)
 
+## Use on CI services
+### GitHub Actions
+https://github.com/marketplace/actions/sashimi_tanpopo_action
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
