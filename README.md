@@ -103,6 +103,14 @@ Options:
                                                         # Default: false
 ```
 
+`--github-token` requires followings permissions
+
+* Contents: Read and Write
+* Pull requests: Read and Write
+* Metadata: Read-only
+* Workflows: Read and Write
+  * Only if you want to change `.github/workflows/*.yml`
+
 ### sashimi_tanpopo gitlab
 Change local files using recipe files and create Merge Request
 
@@ -138,6 +146,11 @@ Options:
       [--mr-auto-merge], [--no-mr-auto-merge], [--skip-mr-auto-merge]  # Whether to set auto-merge to Merge Request
                                                                        # Default: false
 ```
+
+`--gitlab-token` requires followings permissions
+
+* Role: Developer
+* Scopes: `api`
 
 ## Recipe file specification
 See [docs/RECIPE.md](docs/RECIPE.md)
