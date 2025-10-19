@@ -103,7 +103,7 @@ Options:
                                                         # Default: false
 ```
 
-`--github-token` requires followings permissions
+`--github-token` requires followings repository permissions
 
 * Contents: Read and Write
 * Pull requests: Read and Write
