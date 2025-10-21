@@ -23,5 +23,8 @@ module Octokit
     def add_assignees: (String repo, Integer pr_number, Array[String] assignees) -> Sawyer::Resource
     def request_pull_request_review: (String repo, Integer pr_number, reviewers: Array[String]) -> Sawyer::Resource
     def branch: (String repo, String branch, ?Hash[Symbol, untyped] options) -> Sawyer::Resource
+
+    def repository: (String repo, ?Hash[Symbol, untyped] options) -> Sawyer::Resource
+    alias repo repository
   end
 end

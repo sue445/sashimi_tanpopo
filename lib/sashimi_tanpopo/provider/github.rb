@@ -22,7 +22,7 @@ module SashimiTanpopo
       # @param pr_title [String]
       # @param pr_body [String]
       # @param pr_source_branch [String] Pull Request source branch (a.k.a. head branch)
-      # @param pr_target_branch [String] Pull Request target branch (a.k.a. base branch)
+      # @param pr_target_branch [String,nil] Pull Request target branch (a.k.a. base branch)
       # @param pr_assignees [Array<String>]
       # @param pr_reviewers [Array<String>]
       # @param pr_labels [Array<String>]
@@ -46,13 +46,19 @@ module SashimiTanpopo
         @pr_title = pr_title
         @pr_body = pr_body
         @pr_source_branch = pr_source_branch
-        @pr_target_branch = pr_target_branch
         @pr_assignees = pr_assignees
         @pr_reviewers = pr_reviewers
         @pr_labels = pr_labels
         @is_draft_pr = is_draft_pr
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
+
+        @pr_target_branch =
+          if pr_target_branch
+            pr_target_branch
+          else
+            get_default_branch
+          end
 
         @git_username =
           if git_username
@@ -115,6 +121,14 @@ module SashimiTanpopo
       # @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
       def current_user_name
         @client.user[:login]
+      end
+
+      # @return [String]
+      #
+      # @see https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
+      def get_default_branch
+        res = @client.repository(@repository)
+        res[:default_branch]
       end
 
       # Whether exists branch on repository

@@ -97,6 +97,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         with(headers: request_headers).
         to_return(status: 200, headers: response_headers, body: fixture("github_get_commit.json"))
 
+      stub_request(:get, "https://api.github.com/repos/#{repository}").
+        with(headers: request_headers).
+        to_return(status: 200, headers: response_headers, body: fixture("github_get_repository.json"))
+
       blob_json = {
         content: "Hi, sue445!\n",
         encoding: "utf-8",
@@ -185,13 +189,48 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
             to_return(status: 404, headers: response_headers, body: "{}")
         end
 
-        it "file is not updated and create PullRequest" do
-          pr_url = subject
+        context "when pr_target_branch is passed" do
+          let(:pr_target_branch) { "main" }
 
-          expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+          it "file is not updated and create PullRequest" do
+            pr_url = subject
 
-          test_txt = File.read(temp_dir_path.join("test.txt"))
-          expect(test_txt).to eq "Hi, name!\n"
+            expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+            test_txt = File.read(temp_dir_path.join("test.txt"))
+            expect(test_txt).to eq "Hi, name!\n"
+          end
+        end
+
+        context "when pr_target_branch isn't passed" do
+          let(:pr_target_branch) { nil }
+
+          before do
+            stub_request(:get, "https://api.github.com/repos/#{repository}/git/refs/heads/master").
+              with(headers: request_headers).
+              to_return(status: 200, headers: response_headers, body: fixture("github_get_ref.json"))
+
+            create_pr_json = {
+              draft: is_draft_pr,
+              base: "master",
+              head: pr_source_branch,
+              title: pr_title,
+              body: pr_body,
+            }.to_json
+
+            stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
+              with(headers: request_headers, body: create_pr_json).
+              to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+          end
+
+          it "file is not updated and create PullRequest" do
+            pr_url = subject
+
+            expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+            test_txt = File.read(temp_dir_path.join("test.txt"))
+            expect(test_txt).to eq "Hi, name!\n"
+          end
         end
       end
 
