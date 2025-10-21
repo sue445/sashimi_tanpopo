@@ -235,7 +235,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
               author_name: "john_smith",
               branch: mr_source_branch,
               commit_message: commit_message,
-              start_branch: mr_target_branch,
+              start_branch: "main",
             }
 
             stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").

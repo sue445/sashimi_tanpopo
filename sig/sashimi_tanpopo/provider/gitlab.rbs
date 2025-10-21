@@ -18,6 +18,7 @@ module SashimiTanpopo
       @gitlab: Gitlab::Client
       @is_draft_mr: bool
       @is_auto_merge: bool
+      @api_endpoint: String
 
       def initialize: (
           recipe_paths: Array[String],
@@ -57,6 +58,10 @@ module SashimiTanpopo
       private
 
       def mr_target_branch: () -> String
+
+      def git_username: () -> String
+
+      def git_email: () -> String
 
       def with_retry: [T] { () -> T } -> T
 

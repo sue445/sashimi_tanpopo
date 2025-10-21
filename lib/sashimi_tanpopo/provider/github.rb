@@ -46,33 +46,16 @@ module SashimiTanpopo
         @pr_title = pr_title
         @pr_body = pr_body
         @pr_source_branch = pr_source_branch
+        @pr_target_branch = pr_target_branch
         @pr_assignees = pr_assignees
         @pr_reviewers = pr_reviewers
         @pr_labels = pr_labels
         @is_draft_pr = is_draft_pr
+        @git_username = git_username
+        @git_email = git_email
+        @api_endpoint = api_endpoint
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
-
-        @pr_target_branch =
-          if pr_target_branch
-            pr_target_branch
-          else
-            get_default_branch
-          end
-
-        @git_username =
-          if git_username
-            git_username
-          else
-            current_user_name
-          end
-
-        @git_email =
-          if git_email
-            git_email
-          else
-            "#{@git_username}@users.noreply.#{self.class.github_host(api_endpoint)}"
-          end
       end
 
       # Apply recipe files
@@ -117,6 +100,21 @@ module SashimiTanpopo
       private
 
       # @return [String]
+      def pr_target_branch
+        @pr_target_branch ||= get_default_branch
+      end
+
+      # @return [String]
+      def git_username
+        @git_username ||= current_user_name
+      end
+
+      # @return [String]
+      def git_email
+        @git_email ||= "#{git_username}@users.noreply.#{self.class.github_host(@api_endpoint)}"
+      end
+
+      # @return [String]
       #
       # @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
       def current_user_name
@@ -154,7 +152,7 @@ module SashimiTanpopo
       # @see https://docs.github.com/en/rest/git/commits?apiVersion=2022-11-28#create-a-commit
       # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#update-a-reference
       def create_branch_and_push_changes(changed_files)
-        current_ref = @client.ref(@repository, "heads/#{@pr_target_branch}")
+        current_ref = @client.ref(@repository, "heads/#{pr_target_branch}")
         branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
 
         branch_commit = @client.commit(@repository, branch_ref.object.sha) # steep:ignore
@@ -171,8 +169,8 @@ module SashimiTanpopo
           tree.sha, # steep:ignore
           branch_ref.object.sha, # steep:ignore
           author: {
-            name: @git_username,
-            email: @git_email,
+            name: git_username,
+            email: git_email,
           }
         )
 
@@ -201,7 +199,7 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
       def create_pull_request
-        pr = @client.create_pull_request(@repository, @pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
+        pr = @client.create_pull_request(@repository, pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
 
         SashimiTanpopo.logger.info "Pull Request is created: #{pr[:html_url]}"
 

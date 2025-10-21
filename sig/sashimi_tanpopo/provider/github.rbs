@@ -17,6 +17,7 @@ module SashimiTanpopo
       @pr_labels: Array[String]
       @client: Octokit::Client
       @is_draft_pr: bool
+      @api_endpoint: String
 
       def initialize: (
           recipe_paths: Array[String],
@@ -45,6 +46,12 @@ module SashimiTanpopo
       def self.github_host: (String api_endpoint) -> String
 
       private
+
+      def pr_target_branch: () -> String
+
+      def git_username: () -> String
+
+      def git_email: () -> String
 
       def current_user_name: () -> String
 

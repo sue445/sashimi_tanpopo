@@ -53,22 +53,11 @@ module SashimiTanpopo
         @mr_labels = mr_labels
         @is_draft_mr = is_draft_mr
         @is_auto_merge = is_auto_merge
+        @git_username = git_username
+        @git_email = git_email
+        @api_endpoint = api_endpoint
 
         @gitlab = Gitlab.client(endpoint: api_endpoint, private_token: access_token)
-
-        @git_username =
-          if git_username
-            git_username
-          else
-            current_user_name
-          end
-
-        @git_email =
-          if git_email
-            git_email
-          else
-            "#{@git_username}@noreply.#{self.class.gitlab_host(api_endpoint)}"
-          end
       end
 
       # Apply recipe files
@@ -166,6 +155,16 @@ module SashimiTanpopo
         @mr_target_branch ||= get_default_branch
       end
 
+      # @return [String]
+      def git_username
+        @git_username ||= current_user_name
+      end
+
+      # @return [String]
+      def git_email
+        @git_email ||= "#{git_username}@noreply.#{self.class.gitlab_host(@api_endpoint)}"
+      end
+
       def with_retry
         retry_count ||= 0 # steep:ignore
 
@@ -240,8 +239,8 @@ module SashimiTanpopo
             @commit_message,
             actions,
             start_branch: mr_target_branch,
-            author_email: @git_email,
-            author_name:  @git_username,
+            author_email: git_email,
+            author_name:  git_username,
           )
         end
       end
