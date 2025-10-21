@@ -22,7 +22,7 @@ module SashimiTanpopo
       # @param mr_title [String]
       # @param mr_body [String]
       # @param mr_source_branch [String] Merge Request source branch
-      # @param mr_target_branch [String] Merge Request target branch
+      # @param mr_target_branch [String,nil] Merge Request target branch
       # @param mr_assignees [Array<String>]
       # @param mr_reviewers [Array<String>]
       # @param mr_labels [Array<String>]
@@ -161,6 +161,11 @@ module SashimiTanpopo
 
       private
 
+      # @return [String]
+      def mr_target_branch
+        @mr_target_branch ||= get_default_branch
+      end
+
       def with_retry
         retry_count ||= 0 # steep:ignore
 
@@ -187,6 +192,14 @@ module SashimiTanpopo
         end
 
         user["username"]
+      end
+
+      # @return [String]
+      def get_default_branch
+        project = with_retry do
+          @gitlab.project(@repository)
+        end
+        project["default_branch"]
       end
 
       # Whether exists branch on repository
@@ -226,7 +239,7 @@ module SashimiTanpopo
             @mr_source_branch,
             @commit_message,
             actions,
-            start_branch: @mr_target_branch,
+            start_branch: mr_target_branch,
             author_email: @git_email,
             author_name:  @git_username,
           )
@@ -239,7 +252,7 @@ module SashimiTanpopo
       def create_merge_request
         params = {
           source_branch:        @mr_source_branch,
-          target_branch:        @mr_target_branch,
+          target_branch:        mr_target_branch,
           remove_source_branch: true,
           description:          @mr_body,
         }
