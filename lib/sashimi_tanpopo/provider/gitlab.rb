@@ -22,7 +22,7 @@ module SashimiTanpopo
       # @param mr_title [String]
       # @param mr_body [String]
       # @param mr_source_branch [String] Merge Request source branch
-      # @param mr_target_branch [String] Merge Request target branch
+      # @param mr_target_branch [String,nil] Merge Request target branch
       # @param mr_assignees [Array<String>]
       # @param mr_reviewers [Array<String>]
       # @param mr_labels [Array<String>]
@@ -53,22 +53,11 @@ module SashimiTanpopo
         @mr_labels = mr_labels
         @is_draft_mr = is_draft_mr
         @is_auto_merge = is_auto_merge
+        @git_username = git_username
+        @git_email = git_email
+        @api_endpoint = api_endpoint
 
         @gitlab = Gitlab.client(endpoint: api_endpoint, private_token: access_token)
-
-        @git_username =
-          if git_username
-            git_username
-          else
-            current_user_name
-          end
-
-        @git_email =
-          if git_email
-            git_email
-          else
-            "#{@git_username}@noreply.#{self.class.gitlab_host(api_endpoint)}"
-          end
       end
 
       # Apply recipe files
@@ -161,6 +150,21 @@ module SashimiTanpopo
 
       private
 
+      # @return [String]
+      def mr_target_branch
+        @mr_target_branch ||= get_default_branch
+      end
+
+      # @return [String]
+      def git_username
+        @git_username ||= current_user_name
+      end
+
+      # @return [String]
+      def git_email
+        @git_email ||= "#{git_username}@noreply.#{self.class.gitlab_host(@api_endpoint)}"
+      end
+
       def with_retry
         retry_count ||= 0 # steep:ignore
 
@@ -187,6 +191,14 @@ module SashimiTanpopo
         end
 
         user["username"]
+      end
+
+      # @return [String]
+      def get_default_branch
+        project = with_retry do
+          @gitlab.project(@repository)
+        end
+        project["default_branch"]
       end
 
       # Whether exists branch on repository
@@ -226,9 +238,9 @@ module SashimiTanpopo
             @mr_source_branch,
             @commit_message,
             actions,
-            start_branch: @mr_target_branch,
-            author_email: @git_email,
-            author_name:  @git_username,
+            start_branch: mr_target_branch,
+            author_email: git_email,
+            author_name:  git_username,
           )
         end
       end
@@ -239,7 +251,7 @@ module SashimiTanpopo
       def create_merge_request
         params = {
           source_branch:        @mr_source_branch,
-          target_branch:        @mr_target_branch,
+          target_branch:        mr_target_branch,
           remove_source_branch: true,
           description:          @mr_body,
         }

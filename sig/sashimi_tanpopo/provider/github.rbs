@@ -17,6 +17,7 @@ module SashimiTanpopo
       @pr_labels: Array[String]
       @client: Octokit::Client
       @is_draft_pr: bool
+      @api_endpoint: String
 
       def initialize: (
           recipe_paths: Array[String],
@@ -33,7 +34,7 @@ module SashimiTanpopo
           pr_title: String,
           pr_body: String,
           pr_source_branch: String,
-          pr_target_branch: String,
+          pr_target_branch: String?,
           ?pr_assignees: Array[String],
           ?pr_reviewers: Array[String],
           ?pr_labels: Array[String],
@@ -46,7 +47,15 @@ module SashimiTanpopo
 
       private
 
+      def pr_target_branch: () -> String
+
+      def git_username: () -> String
+
+      def git_email: () -> String
+
       def current_user_name: () -> String
+
+      def get_default_branch: () -> String
 
       def exists_branch?: (String branch) -> bool
 

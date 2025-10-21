@@ -149,13 +149,71 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
               to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
           end
 
-          it "file is not updated and create Merge Request" do
-            mr_url = subject
+          context "when mr_target_branch is passed" do
+            let(:mr_target_branch) { "main" }
 
-            expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+            it "file is not updated and create Merge Request" do
+              mr_url = subject
 
-            test_txt = File.read(temp_dir_path.join("test.txt"))
-            expect(test_txt).to eq "Hi, name!\n"
+              expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+              test_txt = File.read(temp_dir_path.join("test.txt"))
+              expect(test_txt).to eq "Hi, name!\n"
+            end
+          end
+
+          context "when mr_target_branch isn't passed" do
+            let(:mr_target_branch) { nil }
+
+            before do
+              stub_request(:get, "#{api_endpoint}/projects/#{escaped_repository}").
+                with(headers: request_headers).
+                to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_project.json"))
+
+              create_commit_payload = {
+                actions: [
+                  {
+                    action: "update",
+                    file_path: "test.txt",
+                    execute_filemode: "false",
+                    content: "Hi, sue445!\n",
+                  }
+                ],
+                author_email: git_email,
+                author_name: git_username,
+                branch: mr_source_branch,
+                commit_message: commit_message,
+                start_branch: "main",
+              }
+
+              stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+                with(headers: request_headers, body: create_commit_payload).
+                to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+
+              create_mr_payload = {
+                title: mr_title,
+                source_branch: mr_source_branch,
+                target_branch: "main",
+                remove_source_branch: true,
+                description: mr_body,
+                labels: mr_labels.join(","),
+                assignee_ids: [1],
+                reviewer_ids: [2],
+              }
+
+              stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
+                with(headers: request_headers, body: create_mr_payload).
+                to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+            end
+
+            it "file is not updated and create Merge Request" do
+              mr_url = subject
+
+              expect(mr_url).to eq "http://gitlab.example.com/my-group/my-project/merge_requests/1"
+
+              test_txt = File.read(temp_dir_path.join("test.txt"))
+              expect(test_txt).to eq "Hi, name!\n"
+            end
           end
         end
 
@@ -177,7 +235,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
               author_name: "john_smith",
               branch: mr_source_branch,
               commit_message: commit_message,
-              start_branch: mr_target_branch,
+              start_branch: "main",
             }
 
             stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").

@@ -44,7 +44,7 @@ module SashimiTanpopo
     option :pr_title,          type: :string,  desc: "Pull Request title", required: true
     option :pr_body,           type: :string,  desc: "Pull Request body"
     option :pr_source_branch,  type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
-    option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). One of --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]", banner: "main"
+    option :pr_target_branch,  type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)", banner: "main"
     option :pr_assignees,      type: :array,   desc: "Pull Request assignees", default: []
     option :pr_reviewers,      type: :array,   desc: "Pull Request reviewers", default: []
     option :pr_labels,         type: :array,   desc: "Pull Request labels", default: []
@@ -53,7 +53,6 @@ module SashimiTanpopo
       repository       = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
       api_endpoint     = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
       access_token     = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
-      pr_target_branch = option_or_env!(option_name: :pr_target_branch,  env_name: "GITHUB_REF_NAME")
 
       Provider::GitHub.new(
         recipe_paths:     recipe_files,
@@ -70,7 +69,7 @@ module SashimiTanpopo
         pr_title:         options[:pr_title],
         pr_body:          options[:pr_body],
         pr_source_branch: options[:pr_source_branch],
-        pr_target_branch: pr_target_branch,
+        pr_target_branch: options[:pr_target_branch],
         pr_assignees:     options[:pr_assignees],
         pr_reviewers:     options[:pr_reviewers],
         pr_labels:        options[:pr_labels],
@@ -89,7 +88,7 @@ module SashimiTanpopo
     option :mr_title,          type: :string,  desc: "Merge Request title", required: true
     option :mr_body,           type: :string,  desc: "Merge Request body"
     option :mr_source_branch,  type: :string,  desc: "Merge Request source branch", required: true, banner: "mr_branch"
-    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch). One of --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]", banner: "main"
+    option :mr_target_branch,  type: :string,  desc: "Merge Request target branch. Default: default branch of project (e.g. main, master)", banner: "main"
     option :mr_assignees,      type: :array,   desc: "Merge Request assignees", default: []
     option :mr_reviewers,      type: :array,   desc: "Merge Request reviewers", default: []
     option :mr_labels,         type: :array,   desc: "Merge Request labels", default: []
@@ -99,7 +98,6 @@ module SashimiTanpopo
       repository       = option_or_env!(option_name: :gitlab_project,   env_name: %w[GITLAB_PROJECT CI_PROJECT_PATH])
       api_endpoint     = option_or_env!(option_name: :gitlab_api_url,   env_name: %w[GITLAB_API_URL CI_API_V4_URL])
       access_token     = option_or_env!(option_name: :gitlab_token,     env_name: "GITLAB_TOKEN")
-      mr_target_branch = option_or_env!(option_name: :mr_target_branch, env_name: %w[MR_TARGET_BRANCH CI_DEFAULT_BRANCH])
 
       Provider::GitLab.new(
         recipe_paths:     recipe_files,
@@ -116,7 +114,7 @@ module SashimiTanpopo
         mr_title:         options[:mr_title],
         mr_body:          options[:mr_body],
         mr_source_branch: options[:mr_source_branch],
-        mr_target_branch: mr_target_branch,
+        mr_target_branch: options[:mr_target_branch],
         mr_assignees:     options[:mr_assignees],
         mr_reviewers:     options[:mr_reviewers],
         mr_labels:        options[:mr_labels],

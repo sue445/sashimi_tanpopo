@@ -95,7 +95,7 @@ Options:
       --pr-title=PR_TITLE                               # Pull Request title
       [--pr-body=PR_BODY]                               # Pull Request body
       --pr-source-branch=pr_branch                      # Pull Request source branch (a.k.a. head branch)
-      [--pr-target-branch=main]                         # Pull Request target branch (a.k.a. base branch). One of --pr-target-branch or $GITHUB_REF_NAME is required [$GITHUB_REF_NAME]
+      [--pr-target-branch=main]                         # Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)
       [--pr-assignees=one two three]                    # Pull Request assignees
       [--pr-reviewers=one two three]                    # Pull Request reviewers
       [--pr-labels=one two three]                       # Pull Request labels
@@ -137,7 +137,7 @@ Options:
       --mr-title=MR_TITLE                                              # Merge Request title
       [--mr-body=MR_BODY]                                              # Merge Request body
       --mr-source-branch=mr_branch                                     # Merge Request source branch
-      [--mr-target-branch=main]                                        # Merge Request target branch). One of --mr-target-branch, $MR_TARGET_BRANCH or $CI_DEFAULT_BRANCH is required [$MR_TARGET_BRANCH, $CI_DEFAULT_BRANCH]
+      [--mr-target-branch=main]                                        # Merge Request target branch. Default: default branch of project (e.g. main, master)
       [--mr-assignees=one two three]                                   # Merge Request assignees
       [--mr-reviewers=one two three]                                   # Merge Request reviewers
       [--mr-labels=one two three]                                      # Merge Request labels
