@@ -159,6 +159,13 @@ See [docs/RECIPE.md](docs/RECIPE.md)
 ### GitHub Actions
 https://github.com/marketplace/actions/sashimi_tanpopo_action
 
+## Real example
+sashimi_tanpopo is used to manage configuration files for my multiple personal repositories.
+
+See followings.
+
+* https://github.com/sue445/sashimi_tanpopo-personal
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
