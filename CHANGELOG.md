@@ -5,7 +5,7 @@
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.3...v0.2.0)
 
 * Change `--pr-target-branch` and `--mr-target-branch` 's default value to repository's default branch
-    * https://github.com/sue445/sashimi_tanpopo/pull/53
+    * https://github.com/sue445/sashimi_tanpopo/pull/52
 
 ## [0.1.3](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.1.3) - 2025-10-19
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.2...v0.1.3)
