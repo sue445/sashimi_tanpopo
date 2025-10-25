@@ -70,7 +70,7 @@ Options:
 ```
 
 ### sashimi_tanpopo github
-Change local files using recipe files and create Pull Request
+Change local files using recipe files and create Pull Request on GitHub
 
 ```bash
 $ sashimi_tanpopo help github
@@ -112,7 +112,9 @@ Options:
   * Only if you want to change `.github/workflows/*.yml`
 
 ### sashimi_tanpopo gitlab
-Change local files using recipe files and create Merge Request
+Change local files using recipe files and create Merge Request on [GitLab™](https://about.gitlab.com/)
+
+_GITLAB is a trademark of GitLab Inc. in the United States and other countries and regions_
 
 ```bash
 $ sashimi_tanpopo help gitlab
