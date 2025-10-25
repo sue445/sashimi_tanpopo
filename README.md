@@ -157,7 +157,10 @@ See [docs/RECIPE.md](docs/RECIPE.md)
 
 ## Use on CI services
 ### GitHub Actions
-https://github.com/marketplace/actions/sashimi_tanpopo_action
+See https://github.com/marketplace/actions/sashimi_tanpopo_action
+
+### GitLab CI
+See https://gitlab.com/sue445/sashimi_tanpopo-components
 
 ## Real example
 sashimi_tanpopo is used to manage configuration files for my multiple personal repositories.
