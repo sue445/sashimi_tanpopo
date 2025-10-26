@@ -50,6 +50,8 @@ e.g.
 docker run -v /path/to/recipe_dir:/recipes:ro -v $(pwd):/work --rm ghcr.io/sue445/sashimi_tanpopo <local|github|gitlab> <arguments> /recipes/recipe.rb
 ```
 
+c.f. https://github.com/sue445/sashimi_tanpopo/pkgs/container/sashimi_tanpopo
+
 ## Usage
 ### sashimi_tanpopo local
 Change local files using recipe files
