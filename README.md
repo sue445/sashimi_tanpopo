@@ -162,7 +162,7 @@ See [docs/RECIPE.md](docs/RECIPE.md)
 See https://github.com/marketplace/actions/sashimi_tanpopo_action
 
 ### GitLab CI
-See https://gitlab.com/sue445/sashimi_tanpopo-components
+See https://gitlab.com/explore/catalog/sue445/sashimi_tanpopo-components
 
 ## Real example
 sashimi_tanpopo is used to manage configuration files for my multiple personal repositories.
@@ -170,6 +170,7 @@ sashimi_tanpopo is used to manage configuration files for my multiple personal r
 See followings.
 
 * https://github.com/sue445/sashimi_tanpopo-personal
+* https://gitlab.com/sue445/sashimi_tanpopo-personal-gitlab
 
 ## Development
 
