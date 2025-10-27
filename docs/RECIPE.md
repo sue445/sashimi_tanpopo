@@ -2,6 +2,7 @@
 Recipe file is simple Ruby script, with some exceptions.
 
 By avoiding the DSL methods listed below, you are free to write code as you like.
+(e.g. write your cool code, define variables, require other files)
 
 ## Special methods available within recipe file
 The following methods are special variables available within recipe file.
