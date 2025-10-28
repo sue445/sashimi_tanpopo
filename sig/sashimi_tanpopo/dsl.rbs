@@ -24,7 +24,7 @@ module SashimiTanpopo
       @__dry_run__: bool
       @__target_dir__: String
       @__is_update_local__: bool
-      @__diffy_format__: Symbol
+      @__is_colored__: bool
       @__changed_files__: changed_files
 
       def initialize: (
