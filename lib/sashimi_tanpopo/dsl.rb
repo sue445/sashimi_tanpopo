@@ -70,8 +70,7 @@ module SashimiTanpopo
         @__dry_run__ = dry_run
         @__target_dir__ = target_dir
         @__is_update_local__ = is_update_local
-
-        @__diffy_format__ = is_colored ? :color : :text
+        @__is_colored__ = is_colored
       end
 
       # passed from `--params`
@@ -177,7 +176,7 @@ module SashimiTanpopo
       # @param str1 [String]
       # @param str2 [String]
       def show_diff(str1, str2)
-        diff_text = Diffy::Diff.new(str1, str2, context: 3).to_s(@__diffy_format__) # steep:ignore
+        diff_text = DiffHelper.generate_diff(str1, str2, is_colored: @__is_colored__)
 
         SashimiTanpopo.logger.info "diff:"
 

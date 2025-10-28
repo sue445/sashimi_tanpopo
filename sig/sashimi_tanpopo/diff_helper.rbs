@@ -1,0 +1,5 @@
+module SashimiTanpopo
+  module DiffHelper
+    def self.generate_diff: (String str1, String str2, is_colored: bool) -> String
+  end
+end
