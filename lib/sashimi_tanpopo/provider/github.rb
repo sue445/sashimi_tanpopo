@@ -97,6 +97,39 @@ module SashimiTanpopo
         DEFAULT_GITHUB_HOST
       end
 
+      # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      # @param dry_run [Boolean]
+      #
+      # @return [String]
+      def self.generate_summary(changed_files:, dry_run:)
+        lines = []
+
+        if dry_run
+          lines << "# Summary (dry run)"
+        else
+          lines << "# Summary"
+        end
+
+        if changed_files.empty?
+          lines.push(
+            "no changes",
+            "",
+          )
+        else
+          changed_files.each do |path, data|
+            lines.push(
+              "## #{path}",
+              "```diff",
+              SashimiTanpopo::DiffHelper.generate_diff(data[:before_content], data[:after_content], is_colored: false).rstrip,
+              "```",
+              "",
+            )
+          end
+        end
+
+        lines.join("\n")
+      end
+
       private
 
       # @return [String]

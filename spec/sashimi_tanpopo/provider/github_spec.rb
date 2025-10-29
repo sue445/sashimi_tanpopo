@@ -310,4 +310,89 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       it { should eq "github.com" }
     end
   end
+
+  describe ".generate_summary" do
+    subject do
+      SashimiTanpopo::Provider::GitHub.generate_summary(
+        changed_files: changed_files,
+        dry_run:       dry_run,
+      )
+    end
+
+    let(:changed_files) { [] }
+    let(:dry_run) { false }
+
+    context "contains changes" do
+      let(:changed_files) do
+        {
+          "test.txt" => {
+            before_content: "foo",
+            after_content: "bar",
+            mode: "100644",
+          },
+          "test2.txt" => {
+            before_content: <<~EOS,
+              1111
+              2222
+            EOS
+            after_content: <<~EOS,
+              1111
+              AAAA
+            EOS
+            mode: "100644",
+          }
+        }
+      end
+
+      let(:expected) do
+        <<~MARKDOWN
+          # Summary
+          ## test.txt
+          ```diff
+          -foo
+          \\ No newline at end of file
+          +bar
+          \\ No newline at end of file
+          ```
+
+          ## test2.txt
+          ```diff
+           1111
+          -2222
+          +AAAA
+          ```
+        MARKDOWN
+      end
+
+      it { should eq expected }
+    end
+
+    context "no changes" do
+      let(:changed_files) { [] }
+      let(:dry_run) { false }
+
+      let(:expected) do
+        <<~MARKDOWN
+          # Summary
+          no changes
+        MARKDOWN
+      end
+
+      it { should eq expected }
+    end
+
+    context "dry run" do
+      let(:changed_files) { [] }
+      let(:dry_run) { true }
+
+      let(:expected) do
+        <<~MARKDOWN
+          # Summary (dry run)
+          no changes
+        MARKDOWN
+      end
+
+      it { should eq expected }
+    end
+  end
 end
