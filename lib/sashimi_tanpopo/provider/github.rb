@@ -107,7 +107,7 @@ module SashimiTanpopo
       #
       # @return [String]
       def self.generate_summary(changed_files:, dry_run:)
-        lines = []
+        lines = [] #: Array[String]
 
         if dry_run
           lines << "# Summary (dry run)"

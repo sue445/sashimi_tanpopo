@@ -18,6 +18,7 @@ module SashimiTanpopo
       @client: Octokit::Client
       @is_draft_pr: bool
       @api_endpoint: String
+      @summary_path: String
 
       def initialize: (
           recipe_paths: Array[String],
@@ -39,11 +40,14 @@ module SashimiTanpopo
           ?pr_reviewers: Array[String],
           ?pr_labels: Array[String],
           is_draft_pr: bool,
+          summary_path: String?
         ) -> void
 
       def perform: () -> String?
 
       def self.github_host: (String api_endpoint) -> String
+
+      def self.generate_summary: (changed_files: changed_files, dry_run: bool) -> String
 
       private
 
@@ -56,6 +60,8 @@ module SashimiTanpopo
       def current_user_name: () -> String
 
       def get_default_branch: () -> String
+
+      def write_summary_file: (changed_files changed_files) -> void
 
       def exists_branch?: (String branch) -> bool
 
