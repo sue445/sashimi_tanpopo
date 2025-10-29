@@ -94,6 +94,7 @@ Options:
       [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
                                                         # Default: https://api.github.com
       [--github-token=GITHUB_TOKEN]                     # GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
+      [--github-step-summary=GITHUB_STEP_SUMMARY]       # Path to GitHub step summary file [$GITHUB_STEP_SUMMARY]
       --pr-title=PR_TITLE                               # Pull Request title
       [--pr-body=PR_BODY]                               # Pull Request body
       --pr-source-branch=pr_branch                      # Pull Request source branch (a.k.a. head branch)
