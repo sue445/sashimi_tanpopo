@@ -21,6 +21,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       pr_reviewers:     pr_reviewers,
       pr_labels:        pr_labels,
       is_draft_pr:      is_draft_pr,
+      summary_path:     summary_path,
     )
   end
 
@@ -45,6 +46,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_reviewers)     { %w(sue445-test) }
   let(:pr_labels)        { %w(sashimi-tanpopo) }
   let(:is_draft_pr)      { false }
+  let(:summary_path)     { nil }
 
   describe "#perform" do
     subject { provider.perform }
@@ -199,6 +201,30 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
             test_txt = File.read(temp_dir_path.join("test.txt"))
             expect(test_txt).to eq "Hi, name!\n"
+          end
+
+          context "has summary_path" do
+            let(:summary_path) { temp_dir_path.join("summary.txt").to_s }
+
+            before do
+              FileUtils.touch(summary_path)
+            end
+
+            it "summary file contains content" do
+              subject
+
+              expected = <<~EOS
+                # Summary
+                ## test.txt
+                ```diff
+                -Hi, name!
+                +Hi, sue445!
+                ```
+              EOS
+              summary_txt = File.read(summary_path)
+
+              expect(summary_txt).to eq expected
+            end
           end
         end
 
