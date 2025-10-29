@@ -44,6 +44,8 @@ jobs:
           bundle update --jobs $(nproc) --retry 3
 
       - run: bundle exec rake spec
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Slack Notification (not success)
         uses: act10ns/slack@v2
