@@ -33,6 +33,10 @@ gems:
     revision: 533a74999571ba71d84cbbb3ef47ba34de526a12
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: dbm
+  version: '0'
+  source:
+    type: stdlib
 - name: diff-lcs
   version: '1.5'
   source:
@@ -49,6 +53,10 @@ gems:
     revision: 533a74999571ba71d84cbbb3ef47ba34de526a12
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: erb
+  version: '0'
+  source:
+    type: stdlib
 - name: faraday
   version: '2.7'
   source:
@@ -145,6 +153,14 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: pstore
+  version: '0'
+  source:
+    type: stdlib
+- name: psych
+  version: '0'
+  source:
+    type: stdlib
 - name: rake
   version: '13.0'
   source:
@@ -170,6 +186,10 @@ gems:
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: timeout
+  version: '0'
+  source:
+    type: stdlib
+- name: tsort
   version: '0'
   source:
     type: stdlib
