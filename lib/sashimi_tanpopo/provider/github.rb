@@ -56,7 +56,7 @@ module SashimiTanpopo
         @git_username = git_username
         @git_email = git_email
         @api_endpoint = api_endpoint
-        @summary_path = summary_path
+        @summary_path = summary_path || ""
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
       end
@@ -169,7 +169,7 @@ module SashimiTanpopo
 
       # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: f path, value: Hash
       def write_summary_file(changed_files)
-        return if !@summary_path || @summary_path.empty?
+        return if @summary_path.empty?
 
         unless File.exist?(@summary_path)
           SashimiTanpopo.logger.warn "#{@summary_path} does not exist"
