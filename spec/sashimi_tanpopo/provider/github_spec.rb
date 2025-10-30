@@ -21,6 +21,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       pr_reviewers:     pr_reviewers,
       pr_labels:        pr_labels,
       is_draft_pr:      is_draft_pr,
+      summary_path:     summary_path,
     )
   end
 
@@ -45,6 +46,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_reviewers)     { %w(sue445-test) }
   let(:pr_labels)        { %w(sashimi-tanpopo) }
   let(:is_draft_pr)      { false }
+  let(:summary_path)     { nil }
 
   describe "#perform" do
     subject { provider.perform }
@@ -200,6 +202,30 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
             test_txt = File.read(temp_dir_path.join("test.txt"))
             expect(test_txt).to eq "Hi, name!\n"
           end
+
+          context "has summary_path" do
+            let(:summary_path) { temp_dir_path.join("summary.txt").to_s }
+
+            before do
+              FileUtils.touch(summary_path)
+            end
+
+            it "summary file contains content" do
+              subject
+
+              expected = <<~EOS
+                ## :page_facing_up: sashimi_tanpopo report
+                ### :memo: test.txt
+                ```diff
+                -Hi, name!
+                +Hi, sue445!
+                ```
+              EOS
+              summary_txt = File.read(summary_path)
+
+              expect(summary_txt).to eq expected
+            end
+          end
         end
 
         context "when pr_target_branch isn't passed" do
@@ -308,6 +334,91 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:api_endpoint) { "https://example.com/" }
 
       it { should eq "github.com" }
+    end
+  end
+
+  describe ".generate_summary" do
+    subject do
+      SashimiTanpopo::Provider::GitHub.generate_summary(
+        changed_files: changed_files,
+        dry_run:       dry_run,
+      )
+    end
+
+    let(:changed_files) { [] }
+    let(:dry_run) { false }
+
+    context "contains changes" do
+      let(:changed_files) do
+        {
+          "test.txt" => {
+            before_content: "foo",
+            after_content: "bar",
+            mode: "100644",
+          },
+          "test2.txt" => {
+            before_content: <<~EOS,
+              1111
+              2222
+            EOS
+            after_content: <<~EOS,
+              1111
+              AAAA
+            EOS
+            mode: "100644",
+          }
+        }
+      end
+
+      let(:expected) do
+        <<~MARKDOWN
+          ## :page_facing_up: sashimi_tanpopo report
+          ### :memo: test.txt
+          ```diff
+          -foo
+          \\ No newline at end of file
+          +bar
+          \\ No newline at end of file
+          ```
+
+          ### :memo: test2.txt
+          ```diff
+           1111
+          -2222
+          +AAAA
+          ```
+        MARKDOWN
+      end
+
+      it { should eq expected }
+    end
+
+    context "no changes" do
+      let(:changed_files) { {} }
+      let(:dry_run) { false }
+
+      let(:expected) do
+        <<~MARKDOWN
+          ## :page_facing_up: sashimi_tanpopo report
+          no changes
+        MARKDOWN
+      end
+
+      it { should eq expected }
+    end
+
+    context "dry run" do
+      let(:changed_files) { {} }
+      let(:dry_run) { true }
+
+      let(:expected) do
+        <<~MARKDOWN
+          ## :page_facing_up: sashimi_tanpopo report (dry run)
+          no changes
+        MARKDOWN
+      end
+
+      it { should eq expected }
     end
   end
 end

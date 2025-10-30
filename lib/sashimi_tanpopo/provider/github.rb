@@ -27,11 +27,13 @@ module SashimiTanpopo
       # @param pr_reviewers [Array<String>]
       # @param pr_labels [Array<String>]
       # @param is_draft_pr [Boolean] Whether create draft Pull Request
+      # @param summary_path [String,nil]
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:,
                      git_username:, git_email:, commit_message:,
                      repository:, access_token:, api_endpoint: DEFAULT_API_ENDPOINT,
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
-                     pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:)
+                     pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:,
+                     summary_path:)
         super(
           recipe_paths:    recipe_paths,
           target_dir:      target_dir,
@@ -54,6 +56,7 @@ module SashimiTanpopo
         @git_username = git_username
         @git_email = git_email
         @api_endpoint = api_endpoint
+        @summary_path = summary_path || ""
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
       end
@@ -64,6 +67,8 @@ module SashimiTanpopo
       # @return [nil] Pull Request isn't created
       def perform
         changed_files = apply_recipe_files
+
+        write_summary_file(changed_files)
 
         return nil if changed_files.empty? || @dry_run
 
@@ -97,6 +102,36 @@ module SashimiTanpopo
         DEFAULT_GITHUB_HOST
       end
 
+      # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: f path, value: Hash
+      # @param dry_run [Boolean]
+      #
+      # @return [String]
+      def self.generate_summary(changed_files:, dry_run:)
+        header = +"## :page_facing_up: sashimi_tanpopo report"
+        header << " (dry run)" if dry_run
+
+        lines = [header]
+
+        if changed_files.empty?
+          lines.push(
+            "no changes",
+            "",
+          )
+        else
+          changed_files.each do |path, data|
+            lines.push(
+              "### :memo: #{path}",
+              "```diff",
+              SashimiTanpopo::DiffHelper.generate_diff(data[:before_content], data[:after_content], is_colored: false).rstrip,
+              "```",
+              "",
+            )
+          end
+        end
+
+        lines.join("\n")
+      end
+
       private
 
       # @return [String]
@@ -127,6 +162,22 @@ module SashimiTanpopo
       def get_default_branch
         res = @client.repository(@repository)
         res[:default_branch]
+      end
+
+      # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: f path, value: Hash
+      def write_summary_file(changed_files)
+        return if @summary_path.empty?
+
+        unless File.exist?(@summary_path)
+          SashimiTanpopo.logger.warn "#{@summary_path} does not exist"
+          return
+        end
+
+        summary = self.class.generate_summary(changed_files: changed_files, dry_run: @dry_run)
+
+        File.open(@summary_path, "a") do |f|
+          f.write(summary)
+        end
       end
 
       # Whether exists branch on repository

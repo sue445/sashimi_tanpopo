@@ -33,6 +33,10 @@ gems:
     revision: 533a74999571ba71d84cbbb3ef47ba34de526a12
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: date
+  version: '0'
+  source:
+    type: stdlib
 - name: dbm
   version: '0'
   source:
