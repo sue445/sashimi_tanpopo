@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.3...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.0...main)
+
+## [0.3.0](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.0) - 2025-10-30
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.2.0...v0.3.0)
+
+* Support GitHub Actions Job Summary
+  * https://github.com/sue445/sashimi_tanpopo/pull/62
 
 ## [0.2.0](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.2.0) - 2025-10-22
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.1.3...v0.2.0)
