@@ -214,8 +214,8 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
               subject
 
               expected = <<~EOS
-                # Summary
-                ## test.txt
+                ## :page_facing_up: sashimi_tanpopo report
+                ### :memo: test.txt
                 ```diff
                 -Hi, name!
                 +Hi, sue445!
@@ -372,8 +372,8 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
       let(:expected) do
         <<~MARKDOWN
-          # Summary
-          ## test.txt
+          ## :page_facing_up: sashimi_tanpopo report
+          ### :memo: test.txt
           ```diff
           -foo
           \\ No newline at end of file
@@ -381,7 +381,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
           \\ No newline at end of file
           ```
 
-          ## test2.txt
+          ### :memo: test2.txt
           ```diff
            1111
           -2222
@@ -399,7 +399,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
       let(:expected) do
         <<~MARKDOWN
-          # Summary
+          ## :page_facing_up: sashimi_tanpopo report
           no changes
         MARKDOWN
       end
@@ -413,7 +413,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
       let(:expected) do
         <<~MARKDOWN
-          # Summary (dry run)
+          ## :page_facing_up: sashimi_tanpopo report (dry run)
           no changes
         MARKDOWN
       end

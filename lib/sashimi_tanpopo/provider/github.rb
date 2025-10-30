@@ -107,13 +107,10 @@ module SashimiTanpopo
       #
       # @return [String]
       def self.generate_summary(changed_files:, dry_run:)
-        lines = [] #: Array[String]
+        header = +"## :page_facing_up: sashimi_tanpopo report"
+        header << " (dry run)" if dry_run
 
-        if dry_run
-          lines << "# Summary (dry run)"
-        else
-          lines << "# Summary"
-        end
+        lines = [header]
 
         if changed_files.empty?
           lines.push(
@@ -123,7 +120,7 @@ module SashimiTanpopo
         else
           changed_files.each do |path, data|
             lines.push(
-              "## #{path}",
+              "### :memo: #{path}",
               "```diff",
               SashimiTanpopo::DiffHelper.generate_diff(data[:before_content], data[:after_content], is_colored: false).rstrip,
               "```",
