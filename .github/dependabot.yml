@@ -10,3 +10,13 @@ updates:
       default-days: 7
     assignees:
       - sue445
+
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    assignees:
+      - sue445
+    versioning-strategy: widen
