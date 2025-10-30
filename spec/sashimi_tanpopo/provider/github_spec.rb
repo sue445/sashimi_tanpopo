@@ -394,7 +394,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
     end
 
     context "no changes" do
-      let(:changed_files) { [] }
+      let(:changed_files) { {} }
       let(:dry_run) { false }
 
       let(:expected) do
@@ -408,7 +408,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
     end
 
     context "dry run" do
-      let(:changed_files) { [] }
+      let(:changed_files) { {} }
       let(:dry_run) { true }
 
       let(:expected) do
