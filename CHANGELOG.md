@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.0...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.1...main)
+
+## [0.3.1](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.1) - 2025-10-31
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.0...v0.3.1)
+
+* Disable file existence checks when using `--github-step-summary`
+  * https://github.com/sue445/sashimi_tanpopo/pull/66
 
 ## [0.3.0](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.0) - 2025-10-30
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.2.0...v0.3.0)
