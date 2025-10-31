@@ -206,10 +206,6 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
           context "has summary_path" do
             let(:summary_path) { temp_dir_path.join("summary.txt").to_s }
 
-            before do
-              FileUtils.touch(summary_path)
-            end
-
             it "summary file contains content" do
               subject
 
