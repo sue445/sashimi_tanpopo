@@ -168,11 +168,6 @@ module SashimiTanpopo
       def write_summary_file(changed_files)
         return if @summary_path.empty?
 
-        unless File.exist?(@summary_path)
-          SashimiTanpopo.logger.warn "#{@summary_path} does not exist"
-          return
-        end
-
         summary = self.class.generate_summary(changed_files: changed_files, dry_run: @dry_run)
 
         File.open(@summary_path, "a") do |f|
