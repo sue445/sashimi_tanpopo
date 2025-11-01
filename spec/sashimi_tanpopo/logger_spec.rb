@@ -20,5 +20,11 @@ RSpec.describe SashimiTanpopo::Logger do
 
       it { should eq " INFO : test\n" }
     end
+
+    context "Start with spaces" do
+      let(:message) { "  test\n" }
+
+      it { should eq " INFO :   test\n" }
+    end
   end
 end
