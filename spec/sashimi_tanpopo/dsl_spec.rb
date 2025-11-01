@@ -161,14 +161,6 @@ RSpec.describe SashimiTanpopo::DSL do
         FileUtils.cp(fixtures_dir.join("many_lines.txt"), temp_dir)
       end
 
-      around do |example|
-        original_logger = SashimiTanpopo.logger
-
-        example.run
-      ensure
-        SashimiTanpopo.logger = original_logger
-      end
-
       it { should have_key "many_lines.txt" }
 
       it "file is updated" do
