@@ -8,7 +8,7 @@ module SashimiTanpopo
       # @param progname [String]
       # @param msg [String]
       def call(severity, datetime, progname, msg)
-        log = "%s : %s" % ["%5s" % severity, msg.strip]
+        log = "%s : %s" % ["%5s" % severity, msg.rstrip]
 
         log + "\n"
       end

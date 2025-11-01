@@ -161,14 +161,6 @@ RSpec.describe SashimiTanpopo::DSL do
         FileUtils.cp(fixtures_dir.join("many_lines.txt"), temp_dir)
       end
 
-      around do |example|
-        original_logger = SashimiTanpopo.logger
-
-        example.run
-      ensure
-        SashimiTanpopo.logger = original_logger
-      end
-
       it { should have_key "many_lines.txt" }
 
       it "file is updated" do
@@ -181,14 +173,14 @@ RSpec.describe SashimiTanpopo::DSL do
         expected_diff = [
           " INFO : Checking #{many_lines_txt_path}",
           " INFO : diff:",
-          " INFO : 7777777777",
-          " INFO : 8888888888",
-          " INFO : 9999999999",
+          " INFO :  7777777777",
+          " INFO :  8888888888",
+          " INFO :  9999999999",
           " INFO : -aaaaaaaaaa",
           " INFO : +AAAAAAAAAA",
-          " INFO : bbbbbbbbbb",
-          " INFO : cccccccccc",
-          " INFO : dddddddddd",
+          " INFO :  bbbbbbbbbb",
+          " INFO :  cccccccccc",
+          " INFO :  dddddddddd",
           " INFO : #{many_lines_txt_path} is changed",
           "",
         ].join("\n")
