@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.1...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.2...main)
+
+## [0.3.2](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.2) - 2025-11-02
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.1...v0.3.2)
+
+* Do not remove left-hand space in logger
+  * https://github.com/sue445/sashimi_tanpopo/pull/68
 
 ## [0.3.1](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.1) - 2025-10-31
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.0...v0.3.1)
