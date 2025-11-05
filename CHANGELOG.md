@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.2...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.3...main)
+
+## [0.3.3](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.3) - 2025-11-05
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.2...v0.3.3)
+
+* Fixed an issue where file was not updated when `update_file` was called multiple times on the same file
+  * https://github.com/sue445/sashimi_tanpopo/pull/70
 
 ## [0.3.2](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.2) - 2025-11-02
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.1...v0.3.2)
