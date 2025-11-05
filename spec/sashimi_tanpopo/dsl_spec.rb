@@ -12,7 +12,7 @@ RSpec.describe SashimiTanpopo::DSL do
         params:          params,
         dry_run:         dry_run,
         is_colored:      is_colored,
-        is_update_local: true,
+        is_update_local: is_update_local,
       )
     end
 
@@ -188,6 +188,40 @@ RSpec.describe SashimiTanpopo::DSL do
         stdout = log_output.string
         expect(stdout).to eq expected_diff
       end
+    end
+
+    context "Call update_file multiple times for a single file" do
+      let(:is_update_local) { false }
+
+      let(:recipe_body) do
+        <<~RUBY
+          update_file "test3.txt" do |content|
+            content.gsub!("name", params[:name])
+          end
+
+          update_file "test3.txt" do |content|
+            content.gsub!("lang", params[:lang])
+          end
+        RUBY
+      end
+
+      let(:params) { { name: "sue445", lang: "ja" } }
+
+      let(:expected) do
+        {
+          "test3.txt" => {
+            before_content: "Name=name\nLang=lang\n",
+            after_content: "Name=sue445\nLang=ja\n",
+            mode: "100644",
+          },
+        }
+      end
+
+      before do
+        FileUtils.cp(fixtures_dir.join("test3.txt"), temp_dir)
+      end
+
+      it { should eq expected }
     end
   end
 end
