@@ -190,7 +190,7 @@ RSpec.describe SashimiTanpopo::DSL do
       end
     end
 
-    context "Call update_file multiple times for a single file" do
+    context "Call update_file multiple times for a same file" do
       let(:is_update_local) { false }
 
       let(:recipe_body) do
@@ -210,8 +210,8 @@ RSpec.describe SashimiTanpopo::DSL do
       let(:expected) do
         {
           "test3.txt" => {
-            before_content: "Name=name\nLang=lang\n",
-            after_content: "Name=sue445\nLang=ja\n",
+            before_content: "Name=name\nLanguage=lang\n",
+            after_content: "Name=sue445\nLanguage=ja\n",
             mode: "100644",
           },
         }
