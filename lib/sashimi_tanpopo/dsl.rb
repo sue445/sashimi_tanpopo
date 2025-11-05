@@ -143,12 +143,15 @@ module SashimiTanpopo
 
           File.write(full_file_path, after_content) if !dry_run? && @__is_update_local__
 
-          changed_files[path] ||= {
-            before_content: before_content,
-            mode:           File.stat(full_file_path).mode.to_s(8)
-          }
-
-          changed_files[path][:after_content] = after_content
+          if changed_files[path]
+            changed_files[path][:after_content] = after_content
+          else
+            changed_files[path] = {
+              before_content: before_content,
+              after_content:  after_content,
+              mode:           File.stat(full_file_path).mode.to_s(8)
+            }
+          end
 
           if dry_run?
             SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
