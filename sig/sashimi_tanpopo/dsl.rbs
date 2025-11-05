@@ -45,7 +45,7 @@ module SashimiTanpopo
 
       private
 
-      def update_single_file: (String path) { (String) -> void } -> String?
+      def update_single_file: (String content) { (String) -> void } -> String?
 
       def show_diff: (String str1, String str2) -> void
     end

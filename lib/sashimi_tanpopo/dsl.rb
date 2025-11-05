@@ -122,22 +122,36 @@ module SashimiTanpopo
       def update_file(pattern, &block)
         Dir.glob(pattern).each do |path|
           full_file_path = File.join(@__target_dir__, path)
-          before_content = File.read(full_file_path)
+
+          next unless File.exist?(full_file_path)
+
+          before_content =
+            if changed_files[path]
+              changed_files[path][:after_content]
+            else
+              File.read(full_file_path)
+            end
 
           SashimiTanpopo.logger.info "Checking #{full_file_path}"
 
-          after_content = update_single_file(path, &block)
+          after_content = update_single_file(before_content, &block)
 
           unless after_content
             SashimiTanpopo.logger.info "#{full_file_path} isn't changed"
             next
           end
 
-          changed_files[path] = {
-            before_content: before_content,
-            after_content:  after_content,
-            mode:           File.stat(full_file_path).mode.to_s(8)
-          }
+          File.write(full_file_path, after_content) if !dry_run? && @__is_update_local__
+
+          if changed_files[path]
+            changed_files[path][:after_content] = after_content
+          else
+            changed_files[path] = {
+              before_content: before_content,
+              after_content:  after_content,
+              mode:           File.stat(full_file_path).mode.to_s(8)
+            }
+          end
 
           if dry_run?
             SashimiTanpopo.logger.info "#{full_file_path} will be changed (dryrun)"
@@ -149,28 +163,23 @@ module SashimiTanpopo
 
       private
 
-      # @param path [String]
+      # @param content [String]
       #
       # @yieldparam content [String] content of file
       #
       # @return [String] Content of changed file if file is changed
       # @return [nil] file isn't changed
-      def update_single_file(path)
-        return nil unless File.exist?(path)
+      def update_single_file(content)
+        after_content = content.dup
 
-        content = File.read(path)
-        before_content = content.dup
-
-        yield content
+        yield after_content
 
         # File isn't changed
-        return nil if content == before_content
+        return nil if after_content == content
 
-        show_diff(before_content, content)
+        show_diff(content, after_content)
 
-        File.write(path, content) if !dry_run? && @__is_update_local__
-
-        content
+        after_content
       end
 
       # @param str1 [String]
