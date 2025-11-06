@@ -90,6 +90,15 @@ module SashimiTanpopo
       end
 
       # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      #
+      # @example
+      #   {
+      #     "path/to/changed-file.txt" => {
+      #       before_content: "foo",
+      #       after_content:  "bar",
+      #       mode:           "100644",
+      #     }
+      #   }
       def changed_files
         @__changed_files__ ||= {}
       end
