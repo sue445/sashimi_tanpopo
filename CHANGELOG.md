@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.3...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.4...main)
+
+## [v0.3.4](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.4) - 2025-11-30
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.3...v0.3.4)
+
+* Release gem from GitHub Actions
+  * https://github.com/sue445/sashimi_tanpopo/pull/73
 
 ## [v0.3.3](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.3) - 2025-11-05
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.2...v0.3.3)
