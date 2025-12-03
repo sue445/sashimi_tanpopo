@@ -223,5 +223,29 @@ RSpec.describe SashimiTanpopo::DSL do
 
       it { should eq expected }
     end
+
+    context "create new file" do
+      let(:recipe_body) do
+        <<~RUBY
+          update_file "new_file.txt", create: true do |content|
+            content.replace("My name is " + params[:name])
+          end
+        RUBY
+      end
+
+      let(:params) { { name: "sue445"} }
+
+      let(:expected) do
+        {
+          "new_file.txt" => {
+            before_content: "",
+            after_content: "My name is sue445",
+            mode: "100644",
+          },
+        }
+      end
+
+      it { should eq expected }
+    end
   end
 end
