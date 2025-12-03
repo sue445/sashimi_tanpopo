@@ -53,11 +53,17 @@ end
 update_file ".github/workflows/*.yml" do |content|
   content.gsub!(/ruby-version: "(.+)"/, %Q{ruby-version: "#{params[:ruby_version]}"})
 end
+
+# Create new file if file doesn’t exist
+update_file "new_file.txt", create: true do |content|
+  content.replace("My name is " + params[:name])
+end
 ```
 
 Parameters:
 
 * `pattern`: Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
+* `create` (defaults to `false`): Create new file if file doesn’t exist
 
 Yield Parameters:
 
