@@ -41,9 +41,15 @@ module SashimiTanpopo
 
       def dry_run?: () -> bool
 
-      def update_file: (String pattern) { (String) -> void } -> void
+      def update_file: (String pattern, ?create: bool) { (String) -> void } -> void
 
       private
+
+      def update_file_with_glob: (String pattern) { (String) -> void } -> void
+
+      def create_new_file: (String path) { (String) -> void } -> void
+
+      def glob_pattern?: (String pattern) -> bool
 
       def update_single_file: (String content) { (String) -> void } -> String?
 

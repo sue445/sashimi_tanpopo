@@ -116,6 +116,7 @@ module SashimiTanpopo
       # Update files if exists
       #
       # @param pattern [String] Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
+      # @param create [Boolean] Whether create new file if file doesn't exist
       #
       # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
       #
@@ -128,7 +129,21 @@ module SashimiTanpopo
       #   update_file ".github/workflows/*.yml" do |content|
       #     content.gsub!(/ruby-version: "(.+)"/, %Q{ruby-version: "#{params[:ruby_version]}"})
       #   end
-      def update_file(pattern, &block)
+      #
+      # @example Create new file if file doesn't exist
+      #   update_file "new_file.txt", create: true do |content|
+      #     content.replace("My name is " + params[:name])
+      #   end
+      def update_file(pattern, create: false, &block)
+        update_file_with_glob(pattern, &block)
+        create_new_file(pattern, &block) if create
+      end
+
+      private
+
+      # @param pattern [String]
+      # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
+      def update_file_with_glob(pattern, &block)
         Dir.glob(pattern).each do |path|
           full_file_path = File.join(@__target_dir__, path)
 
@@ -170,7 +185,49 @@ module SashimiTanpopo
         end
       end
 
-      private
+      # @param path [String]
+      # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
+      def create_new_file(path, &block)
+        return if glob_pattern?(path)
+
+        full_file_path = File.join(@__target_dir__, path)
+
+        return if File.exist?(full_file_path)
+
+        SashimiTanpopo.logger.info "Checking #{full_file_path}"
+
+        before_content = ""
+        after_content = update_single_file(before_content, &block)
+
+        unless after_content
+          SashimiTanpopo.logger.info "#{full_file_path} isn't created"
+          return
+        end
+
+        File.write(full_file_path, after_content) if !dry_run? && @__is_update_local__
+
+        if changed_files[path]
+          changed_files[path][:after_content] = after_content
+        else
+          changed_files[path] = {
+            before_content: before_content,
+            after_content:  after_content,
+            mode:           File.stat(full_file_path).mode.to_s(8)
+          }
+        end
+
+        if dry_run?
+          SashimiTanpopo.logger.info "#{full_file_path} will be created (dryrun)"
+        else
+          SashimiTanpopo.logger.info "#{full_file_path} is created"
+        end
+      end
+
+      # @param pattern [String]
+      # @return [Boolean]
+      def glob_pattern?(pattern)
+        ["*", "?", "[", "]", "{", "}", "**/"].any? { |str| pattern.include?(str) }
+      end
 
       # @param content [String]
       #
