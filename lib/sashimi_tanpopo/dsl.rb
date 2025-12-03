@@ -116,7 +116,7 @@ module SashimiTanpopo
       # Update files if exists
       #
       # @param pattern [String] Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
-      # @param create [Boolean] Create new file if file doesn't exist
+      # @param create [Boolean] Whether create new file if file doesn't exist
       #
       # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
       #

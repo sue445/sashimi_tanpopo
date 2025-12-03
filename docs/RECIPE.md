@@ -63,7 +63,7 @@ end
 Parameters:
 
 * `pattern`: Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
-* `create` (defaults to `false`): Create new file if file doesn’t exist
+* `create` (defaults to `false`): Whether create new file if file doesn’t exist
 
 Yield Parameters:
 
