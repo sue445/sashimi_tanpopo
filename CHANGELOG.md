@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.4...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.4.0...main)
+
+## [v0.3.4](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.4.0) - 2025-12-03
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.4...v0.4.0)
+
+* Add `create` arg to `update_file`
+  * https://github.com/sue445/sashimi_tanpopo/pull/80
 
 ## [v0.3.4](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.3.4) - 2025-11-30
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.3.3...v0.3.4)
