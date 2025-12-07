@@ -212,14 +212,14 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
               it "summary file contains content" do
                 subject
 
-                expected = <<~EOS
+                expected = <<~MARKDOWN
                   ## :page_facing_up: sashimi_tanpopo report
                   ### :memo: test.txt
                   ```diff
                   -Hi, name!
                   +Hi, sue445!
                   ```
-                EOS
+                MARKDOWN
                 summary_txt = File.read(summary_path)
 
                 expect(summary_txt).to eq expected
@@ -237,10 +237,10 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
                 it "summary file contains content" do
                   subject
 
-                  expected = <<~EOS
+                  expected = <<~MARKDOWN
                     ## :page_facing_up: sashimi_tanpopo report
                     no changes
-                  EOS
+                  MARKDOWN
                   summary_txt = File.read(summary_path)
 
                   expect(summary_txt).to eq expected
