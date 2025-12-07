@@ -8,6 +8,9 @@ jobs:
     if: github.repository == 'sue445/sashimi_tanpopo'
     runs-on: ubuntu-latest
 
+    outputs:
+      tag_name: ${{ steps.set_output.outputs.tag_name }}
+
     environment:
       name: rubygems.org
       url: https://rubygems.org/gems/sashimi_tanpopo
@@ -36,12 +39,62 @@ jobs:
       - name: Create GitHub release
         run: |
           tag_name="$(git describe --tags --abbrev=0)"
-          echo "TAG_NAME=${tag_name}" >> $GITHUB_ENV
           gh release create "${tag_name}" --verify-tag --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: docker push to ghcr.io
-        uses: ./github/workflows/docker-ghcr.yml
+      - id: set_output
+        run: |
+          tag_name="$(git describe --tags --abbrev=0)"
+          echo "tag_name=${tag_name}" >> "$GITHUB_OUTPUT"
+
+  push_to_ghcr_io:
+    needs:
+      - release
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
-          tag_name: ${{ env.TAG_NAME }}
+          images: |
+            ghcr.io/sue445/sashimi_tanpopo
+
+      - name: Login to GHCR
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set TAG_VERSION
+        run: |
+          set -xe
+          echo "TAG_VERSION=${TAG_NAME#v}" >> $GITHUB_ENV
+        env:
+          TAG_NAME: ${{ needs.release.outputs.tag_name }}
+
+      - name: Build and push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/sue445/sashimi_tanpopo:${{ needs.release.outputs.tag_name }}
+            ghcr.io/sue445/sashimi_tanpopo:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SASHIMI_TANPOPO_VERSION=${{ env.TAG_VERSION }}
+
+      - name: Slack Notification
+        uses: act10ns/slack@cfcc30955fe9377f4f55e1079e5419ee1014269f # v2
+        if: always()
+        continue-on-error: true
+        with:
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
