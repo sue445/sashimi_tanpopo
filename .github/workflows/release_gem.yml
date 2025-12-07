@@ -36,6 +36,12 @@ jobs:
       - name: Create GitHub release
         run: |
           tag_name="$(git describe --tags --abbrev=0)"
+          echo "TAG_NAME=${tag_name}" >> $GITHUB_ENV
           gh release create "${tag_name}" --verify-tag --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: docker push to ghcr.io
+        uses: ./github/workflows/docker-ghcr.yml
+        with:
+          tag_name: ${{ env.TAG_NAME }}
