@@ -28,12 +28,13 @@ module SashimiTanpopo
       # @param pr_labels [Array<String>]
       # @param is_draft_pr [Boolean] Whether create draft Pull Request
       # @param summary_path [String,nil]
+      # @param only_changes_summary [Boolean]
       def initialize(recipe_paths:, target_dir:, params:, dry_run:, is_colored:,
                      git_username:, git_email:, commit_message:,
                      repository:, access_token:, api_endpoint: DEFAULT_API_ENDPOINT,
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
                      pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:,
-                     summary_path:)
+                     summary_path:, only_changes_summary:)
         super(
           recipe_paths:    recipe_paths,
           target_dir:      target_dir,
@@ -57,6 +58,7 @@ module SashimiTanpopo
         @git_email = git_email
         @api_endpoint = api_endpoint
         @summary_path = summary_path || ""
+        @only_changes_summary = only_changes_summary
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
       end
@@ -167,6 +169,8 @@ module SashimiTanpopo
       # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: f path, value: Hash
       def write_summary_file(changed_files)
         return if @summary_path.empty?
+
+        return if changed_files.empty? && @only_changes_summary
 
         summary = self.class.generate_summary(changed_files: changed_files, dry_run: @dry_run)
 

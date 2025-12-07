@@ -19,6 +19,7 @@ module SashimiTanpopo
       @is_draft_pr: bool
       @api_endpoint: String
       @summary_path: String
+      @only_changes_summary: bool
 
       def initialize: (
           recipe_paths: Array[String],
@@ -40,7 +41,8 @@ module SashimiTanpopo
           ?pr_reviewers: Array[String],
           ?pr_labels: Array[String],
           is_draft_pr: bool,
-          summary_path: String?
+          summary_path: String?,
+          only_changes_summary: bool,
         ) -> void
 
       def perform: () -> String?

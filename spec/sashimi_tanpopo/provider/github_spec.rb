@@ -3,25 +3,26 @@
 RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:provider) do
     SashimiTanpopo::Provider::GitHub.new(
-      recipe_paths:     recipe_paths,
-      target_dir:       target_dir,
-      params:           params,
-      dry_run:          dry_run,
-      is_colored:       is_colored,
-      git_username:     git_username,
-      git_email:        git_email,
-      commit_message:   commit_message,
-      repository:       repository,
-      access_token:     access_token,
-      pr_title:         pr_title,
-      pr_body:          pr_body,
-      pr_source_branch: pr_source_branch,
-      pr_target_branch: pr_target_branch,
-      pr_assignees:     pr_assignees,
-      pr_reviewers:     pr_reviewers,
-      pr_labels:        pr_labels,
-      is_draft_pr:      is_draft_pr,
-      summary_path:     summary_path,
+      recipe_paths:         recipe_paths,
+      target_dir:           target_dir,
+      params:               params,
+      dry_run:              dry_run,
+      is_colored:           is_colored,
+      git_username:         git_username,
+      git_email:            git_email,
+      commit_message:       commit_message,
+      repository:           repository,
+      access_token:         access_token,
+      pr_title:             pr_title,
+      pr_body:              pr_body,
+      pr_source_branch:     pr_source_branch,
+      pr_target_branch:     pr_target_branch,
+      pr_assignees:         pr_assignees,
+      pr_reviewers:         pr_reviewers,
+      pr_labels:            pr_labels,
+      is_draft_pr:          is_draft_pr,
+      summary_path:         summary_path,
+      only_changes_summary: only_changes_summary,
     )
   end
 
@@ -33,20 +34,21 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:dry_run) { false }
   let(:is_colored) { true }
 
-  let(:git_username)     { nil }
-  let(:git_email)        { nil }
-  let(:commit_message)   { "Update files" }
-  let(:repository)       { "example/example" }
-  let(:access_token)     { "DUMMY" }
-  let(:pr_title)         { "PR title" }
-  let(:pr_body)          { "PR body" }
-  let(:pr_source_branch) { "test" }
-  let(:pr_target_branch) { "main" }
-  let(:pr_assignees)     { %w(sue445) }
-  let(:pr_reviewers)     { %w(sue445-test) }
-  let(:pr_labels)        { %w(sashimi-tanpopo) }
-  let(:is_draft_pr)      { false }
-  let(:summary_path)     { nil }
+  let(:git_username)         { nil }
+  let(:git_email)            { nil }
+  let(:commit_message)       { "Update files" }
+  let(:repository)           { "example/example" }
+  let(:access_token)         { "DUMMY" }
+  let(:pr_title)             { "PR title" }
+  let(:pr_body)              { "PR body" }
+  let(:pr_source_branch)     { "test" }
+  let(:pr_target_branch)     { "main" }
+  let(:pr_assignees)         { %w(sue445) }
+  let(:pr_reviewers)         { %w(sue445-test) }
+  let(:pr_labels)            { %w(sashimi-tanpopo) }
+  let(:is_draft_pr)          { false }
+  let(:summary_path)         { nil }
+  let(:only_changes_summary) { false }
 
   describe "#perform" do
     subject { provider.perform }
@@ -206,20 +208,54 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
           context "has summary_path" do
             let(:summary_path) { temp_dir_path.join("summary.txt").to_s }
 
-            it "summary file contains content" do
-              subject
+            context "has changes" do
+              it "summary file contains content" do
+                subject
 
-              expected = <<~EOS
-                ## :page_facing_up: sashimi_tanpopo report
-                ### :memo: test.txt
-                ```diff
-                -Hi, name!
-                +Hi, sue445!
-                ```
-              EOS
-              summary_txt = File.read(summary_path)
+                expected = <<~EOS
+                  ## :page_facing_up: sashimi_tanpopo report
+                  ### :memo: test.txt
+                  ```diff
+                  -Hi, name!
+                  +Hi, sue445!
+                  ```
+                EOS
+                summary_txt = File.read(summary_path)
 
-              expect(summary_txt).to eq expected
+                expect(summary_txt).to eq expected
+              end
+            end
+
+            context "no changes" do
+              before do
+                allow(provider).to receive(:apply_recipe_files) { {} }
+              end
+
+              context "only_changes_summary is false" do
+                let(:only_changes_summary) { false }
+
+                it "summary file contains content" do
+                  subject
+
+                  expected = <<~EOS
+                    ## :page_facing_up: sashimi_tanpopo report
+                    no changes
+                  EOS
+                  summary_txt = File.read(summary_path)
+
+                  expect(summary_txt).to eq expected
+                end
+              end
+
+              context "only_changes_summary is true" do
+                let(:only_changes_summary) { true }
+
+                it "summary file contains content" do
+                  subject
+
+                  expect(File.exist?(summary_path)).to eq false
+                end
+              end
             end
           end
         end
