@@ -1,5 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.1...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.2...main)
+
+## [v0.5.2](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.5.2) - 2025-12-07
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.1...v0.5.2)
+
+* Fixes Docker image was not pushed to ghcr.io (TAKE 2)
+  * https://github.com/sue445/sashimi_tanpopo/pull/87
 
 ## [v0.5.1](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.5.1) - 2025-12-07
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.0...v0.5.1)
