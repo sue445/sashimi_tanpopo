@@ -8,28 +8,28 @@ RSpec.describe SashimiTanpopo::DiffHelper do
 
     context "simple case" do
       let(:str1) do
-        <<~EOS
+        <<~DIFF
           0000000000
           1111111111
           2222222222
-        EOS
+        DIFF
       end
 
       let(:str2) do
-        <<~EOS
+        <<~DIFF
           0000000000
           AAAAAAAAAA
           2222222222
-        EOS
+        DIFF
       end
 
       let(:expected) do
-        <<~EOS
+        <<~DIFF
            0000000000
           -1111111111
           +AAAAAAAAAA
            2222222222
-        EOS
+        DIFF
       end
 
       it { should eq expected }
@@ -37,7 +37,7 @@ RSpec.describe SashimiTanpopo::DiffHelper do
 
     context "many lines" do
       let(:str1) do
-        <<~EOS
+        <<~DIFF
           0000000000
           1111111111
           2222222222
@@ -47,11 +47,11 @@ RSpec.describe SashimiTanpopo::DiffHelper do
           6666666666
           7777777777
           8888888888
-        EOS
+        DIFF
       end
 
       let(:str2) do
-        <<~EOS
+        <<~DIFF
           0000000000
           1111111111
           2222222222
@@ -61,11 +61,11 @@ RSpec.describe SashimiTanpopo::DiffHelper do
           6666666666
           7777777777
           8888888888
-        EOS
+        DIFF
       end
 
       let(:expected) do
-        <<~EOS
+        <<~DIFF
            1111111111
            2222222222
            3333333333
@@ -74,7 +74,7 @@ RSpec.describe SashimiTanpopo::DiffHelper do
            5555555555
            6666666666
            7777777777
-        EOS
+        DIFF
       end
 
       it { should eq expected }
