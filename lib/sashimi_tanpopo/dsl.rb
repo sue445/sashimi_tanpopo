@@ -113,25 +113,28 @@ module SashimiTanpopo
         @__dry_run__
       end
 
-      # Update files if exists
+      # Update files
       #
       # @param pattern [String] Path to target file (relative path from `--target-dir`). This supports [`Dir.glob`](https://ruby-doc.org/current/Dir.html#method-c-glob) pattern. (e.g. `.github/workflows/*.yml`)
       # @param create [Boolean] Whether create new file if file doesn't exist
       #
       # @yieldparam content [String] Content of file. If `content` is changed in block, file will be changed.
       #
-      # @example Update single file
+      # @example Update single file if exists
       #   update_file "test.txt" do |content|
       #     content.gsub!("name", params[:name])
       #   end
       #
-      # @example Update multiple files
+      # @example Update multiple files if exists
       #   update_file ".github/workflows/*.yml" do |content|
       #     content.gsub!(/ruby-version: "(.+)"/, %Q{ruby-version: "#{params[:ruby_version]}"})
       #   end
       #
       # @example Create new file if file doesn't exist
       #   update_file "new_file.txt", create: true do |content|
+      #     # content
+      #     # # => ""
+      #
       #     content.replace("My name is " + params[:name])
       #   end
       def update_file(pattern, create: false, &block)
