@@ -51,9 +51,9 @@ module SashimiTanpopo
     option :pr_labels,           type: :array,   desc: "Pull Request labels", default: []
     option :pr_draft,            type: :boolean, desc: "Whether to create draft Pull Request", default: false
     def github(*recipe_files)
-      repository       = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
-      api_endpoint     = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
-      access_token     = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
+      repository   = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
+      api_endpoint = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
+      access_token = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
 
       summary_path = option_or_env(option_name: :github_step_summary, env_name: "GITHUB_STEP_SUMMARY")
 
