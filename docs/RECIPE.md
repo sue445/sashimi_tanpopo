@@ -41,21 +41,24 @@ params
 ```
 
 ### `update_file`
-Update files if exists
+Update files
 
 ```ruby
-# Update single file
+# Update single file if exists
 update_file "test.txt" do |content|
   content.gsub!("name", params[:name])
 end
 
-# Update multiple files
+# Update multiple files if exists
 update_file ".github/workflows/*.yml" do |content|
   content.gsub!(/ruby-version: "(.+)"/, %Q{ruby-version: "#{params[:ruby_version]}"})
 end
 
 # Create new file if file doesn’t exist
 update_file "new_file.txt", create: true do |content|
+  # content
+  # # => ""
+
   content.replace("My name is " + params[:name])
 end
 ```
