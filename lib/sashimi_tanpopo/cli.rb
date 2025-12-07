@@ -35,49 +35,51 @@ module SashimiTanpopo
 
     desc "github RECIPE [RECIPE...]", "Change local files using recipe files and create Pull Request"
     define_exec_common_options
-    option :git_user_name,       type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
-    option :git_email,           type: :string,  desc: "email for git commit. Default: <git_user_name>@users.noreply.<github_host>"
-    option :message,             type: :string,  desc: "commit message", required: true, aliases: "-m", banner: "COMMIT_MESSAGE"
-    option :github_repository,   type: :string,  desc: "GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]", banner: "user/repo"
-    option :github_api_url,      type: :string,  desc: "GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
-    option :github_token,        type: :string,  desc: "GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
-    option :github_step_summary, type: :string,  desc: "Path to GitHub step summary file [$GITHUB_STEP_SUMMARY]"
-    option :pr_title,            type: :string,  desc: "Pull Request title", required: true
-    option :pr_body,             type: :string,  desc: "Pull Request body"
-    option :pr_source_branch,    type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
-    option :pr_target_branch,    type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)", banner: "main"
-    option :pr_assignees,        type: :array,   desc: "Pull Request assignees", default: []
-    option :pr_reviewers,        type: :array,   desc: "Pull Request reviewers", default: []
-    option :pr_labels,           type: :array,   desc: "Pull Request labels", default: []
-    option :pr_draft,            type: :boolean, desc: "Whether to create draft Pull Request", default: false
+    option :git_user_name,        type: :string,  desc: "user name for git commit. Default: username of user authenticated with token"
+    option :git_email,            type: :string,  desc: "email for git commit. Default: <git_user_name>@users.noreply.<github_host>"
+    option :message,              type: :string,  desc: "commit message", required: true, aliases: "-m", banner: "COMMIT_MESSAGE"
+    option :github_repository,    type: :string,  desc: "GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]", banner: "user/repo"
+    option :github_api_url,       type: :string,  desc: "GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]", default: "https://api.github.com"
+    option :github_token,         type: :string,  desc: "GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]"
+    option :github_step_summary,  type: :string,  desc: "Path to GitHub step summary file [$GITHUB_STEP_SUMMARY]"
+    option :only_changes_summary, type: :boolean, desc: "Whether to write only file changes to step summary file", default: false
+    option :pr_title,             type: :string,  desc: "Pull Request title", required: true
+    option :pr_body,              type: :string,  desc: "Pull Request body"
+    option :pr_source_branch,     type: :string,  desc: "Pull Request source branch (a.k.a. head branch)", required: true, banner: "pr_branch"
+    option :pr_target_branch,     type: :string,  desc: "Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)", banner: "main"
+    option :pr_assignees,         type: :array,   desc: "Pull Request assignees", default: []
+    option :pr_reviewers,         type: :array,   desc: "Pull Request reviewers", default: []
+    option :pr_labels,            type: :array,   desc: "Pull Request labels", default: []
+    option :pr_draft,             type: :boolean, desc: "Whether to create draft Pull Request", default: false
     def github(*recipe_files)
-      repository       = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
-      api_endpoint     = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
-      access_token     = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
+      repository   = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
+      api_endpoint = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
+      access_token = option_or_env!(option_name: :github_token,      env_name: "GITHUB_TOKEN")
 
       summary_path = option_or_env(option_name: :github_step_summary, env_name: "GITHUB_STEP_SUMMARY")
 
       Provider::GitHub.new(
-        recipe_paths:     recipe_files,
-        target_dir:       options[:target_dir],
-        params:           self.class.normalize_params(options[:params]),
-        dry_run:          options[:dry_run],
-        is_colored:       options[:color],
-        git_username:     options[:git_user_name],
-        git_email:        options[:git_email],
-        commit_message:   options[:message],
-        repository:       repository,
-        api_endpoint:     api_endpoint,
-        access_token:     access_token,
-        pr_title:         options[:pr_title],
-        pr_body:          options[:pr_body],
-        pr_source_branch: options[:pr_source_branch],
-        pr_target_branch: options[:pr_target_branch],
-        pr_assignees:     options[:pr_assignees],
-        pr_reviewers:     options[:pr_reviewers],
-        pr_labels:        options[:pr_labels],
-        is_draft_pr:      options[:pr_draft],
-        summary_path:     summary_path,
+        recipe_paths:         recipe_files,
+        target_dir:           options[:target_dir],
+        params:               self.class.normalize_params(options[:params]),
+        dry_run:              options[:dry_run],
+        is_colored:           options[:color],
+        git_username:         options[:git_user_name],
+        git_email:            options[:git_email],
+        commit_message:       options[:message],
+        repository:           repository,
+        api_endpoint:         api_endpoint,
+        access_token:         access_token,
+        pr_title:             options[:pr_title],
+        pr_body:              options[:pr_body],
+        pr_source_branch:     options[:pr_source_branch],
+        pr_target_branch:     options[:pr_target_branch],
+        pr_assignees:         options[:pr_assignees],
+        pr_reviewers:         options[:pr_reviewers],
+        pr_labels:            options[:pr_labels],
+        is_draft_pr:          options[:pr_draft],
+        summary_path:         summary_path,
+        only_changes_summary: options[:only_changes_summary],
       ).perform
     end
 

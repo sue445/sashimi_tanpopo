@@ -81,29 +81,31 @@ Usage:
   sashimi_tanpopo github RECIPE [RECIPE...] --pr-source-branch=pr_branch --pr-title=PR_TITLE -m, --message=COMMIT_MESSAGE
 
 Options:
-  -d, [--target-dir=TARGET_DIR]                         # Target directory. Default: current directory
-  -p, [--params=key:value]                              # Params passed to recipe file
-      [--dry-run], [--no-dry-run], [--skip-dry-run]     # Whether to run dry run
-                                                        # Default: false
-      [--color], [--no-color], [--skip-color]           # Whether to colorize output
-                                                        # Default: true
-      [--git-user-name=GIT_USER_NAME]                   # user name for git commit. Default: username of user authenticated with token
-      [--git-email=GIT_EMAIL]                           # email for git commit. Default: <git_user_name>@users.noreply.<github_host>
-  -m, --message=COMMIT_MESSAGE                          # commit message
-      [--github-repository=user/repo]                   # GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]
-      [--github-api-url=GITHUB_API_URL]                 # GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
-                                                        # Default: https://api.github.com
-      [--github-token=GITHUB_TOKEN]                     # GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
-      [--github-step-summary=GITHUB_STEP_SUMMARY]       # Path to GitHub step summary file [$GITHUB_STEP_SUMMARY]
-      --pr-title=PR_TITLE                               # Pull Request title
-      [--pr-body=PR_BODY]                               # Pull Request body
-      --pr-source-branch=pr_branch                      # Pull Request source branch (a.k.a. head branch)
-      [--pr-target-branch=main]                         # Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)
-      [--pr-assignees=one two three]                    # Pull Request assignees
-      [--pr-reviewers=one two three]                    # Pull Request reviewers
-      [--pr-labels=one two three]                       # Pull Request labels
-      [--pr-draft], [--no-pr-draft], [--skip-pr-draft]  # Whether to create draft Pull Request
-                                                        # Default: false
+  -d, [--target-dir=TARGET_DIR]                                                             # Target directory. Default: current directory
+  -p, [--params=key:value]                                                                  # Params passed to recipe file
+      [--dry-run], [--no-dry-run], [--skip-dry-run]                                         # Whether to run dry run
+                                                                                            # Default: false
+      [--color], [--no-color], [--skip-color]                                               # Whether to colorize output
+                                                                                            # Default: true
+      [--git-user-name=GIT_USER_NAME]                                                       # user name for git commit. Default: username of user authenticated with token
+      [--git-email=GIT_EMAIL]                                                               # email for git commit. Default: <git_user_name>@users.noreply.<github_host>
+  -m, --message=COMMIT_MESSAGE                                                              # commit message
+      [--github-repository=user/repo]                                                       # GitHub repository for Pull Request. One of --github--repository or $GITHUB_REPOSITORY is required [$GITHUB_REPOSITORY]
+      [--github-api-url=GITHUB_API_URL]                                                     # GitHub API endpoint. One of --github-api-url or $GITHUB_API_URL is required [$GITHUB_API_URL]
+                                                                                            # Default: https://api.github.com
+      [--github-token=GITHUB_TOKEN]                                                         # GitHub access token. One of --github-token or $GITHUB_TOKEN is required [$GITHUB_TOKEN]
+      [--github-step-summary=GITHUB_STEP_SUMMARY]                                           # Path to GitHub step summary file [$GITHUB_STEP_SUMMARY]
+      [--only-changes-summary], [--no-only-changes-summary], [--skip-only-changes-summary]  # Whether to write only file changes to step summary file
+                                                                                            # Default: false
+      --pr-title=PR_TITLE                                                                   # Pull Request title
+      [--pr-body=PR_BODY]                                                                   # Pull Request body
+      --pr-source-branch=pr_branch                                                          # Pull Request source branch (a.k.a. head branch)
+      [--pr-target-branch=main]                                                             # Pull Request target branch (a.k.a. base branch). Default: default branch of repository (e.g. main, master)
+      [--pr-assignees=one two three]                                                        # Pull Request assignees
+      [--pr-reviewers=one two three]                                                        # Pull Request reviewers
+      [--pr-labels=one two three]                                                           # Pull Request labels
+      [--pr-draft], [--no-pr-draft], [--skip-pr-draft]                                      # Whether to create draft Pull Request
+                                                                                            # Default: false
 ```
 
 `--github-token` requires followings repository permissions
