@@ -11,6 +11,9 @@ jobs:
       gem_name:  sashimi_tanpopo
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      id-token: write
 
   push_to_ghcr_io:
     needs:
