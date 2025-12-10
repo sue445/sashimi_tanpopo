@@ -5,48 +5,12 @@ on:
 
 jobs:
   release:
-    if: github.repository == 'sue445/sashimi_tanpopo'
-    runs-on: ubuntu-latest
-
-    outputs:
-      tag_name: ${{ steps.set_output.outputs.tag_name }}
-
-    environment:
-      name: rubygems.org
-      url: https://rubygems.org/gems/sashimi_tanpopo
-
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
-        with:
-          egress-policy: audit
-
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 # v1.268.0
-        with:
-          bundler-cache: true
-          ruby-version: ruby
-
-      - name: Publish to RubyGems
-        uses: rubygems/release-gem@1c162a739e8b4cb21a676e97b087e8268d8fc40b # v1.1.2
-
-      - name: Create GitHub release
-        run: |
-          tag_name="$(git describe --tags --abbrev=0)"
-          gh release create "${tag_name}" --verify-tag --generate-notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - id: set_output
-        run: |
-          tag_name="$(git describe --tags --abbrev=0)"
-          echo "tag_name=${tag_name}" >> "$GITHUB_OUTPUT"
+    uses: sue445/workflows/.github/workflows/release_gem.yml@main
+    with:
+      repo_name: sue445/sashimi_tanpopo
+      gem_name:  sashimi_tanpopo
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
 
   push_to_ghcr_io:
     needs:
