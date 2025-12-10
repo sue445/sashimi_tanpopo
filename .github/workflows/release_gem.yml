@@ -10,7 +10,7 @@ jobs:
       repo_name: sue445/sashimi_tanpopo
       gem_name:  sashimi_tanpopo
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
 
   push_to_ghcr_io:
     needs:
