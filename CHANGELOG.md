@@ -1,6 +1,9 @@
 ## [Unreleased]
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.3...main)
 
+* Upgrade to Ruby 4.0 in Dockerfile
+  * https://github.com/sue445/sashimi_tanpopo/pull/102
+
 ## [v0.5.3](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.5.3) - 2025-12-07
 [full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.2...v0.5.3)
 
