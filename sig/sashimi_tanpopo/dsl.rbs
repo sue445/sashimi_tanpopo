@@ -7,6 +7,7 @@ module SashimiTanpopo
         dry_run: bool,
         is_colored: bool,
         is_update_local: bool,
+        changed_files: changed_files,
       ) -> changed_files
 
     def evaluate: (
@@ -17,6 +18,7 @@ module SashimiTanpopo
         dry_run: bool,
         is_colored: bool,
         is_update_local: bool,
+        changed_files: changed_files,
       ) -> changed_files
 
     class EvalContext
@@ -33,6 +35,7 @@ module SashimiTanpopo
           is_colored: bool,
           target_dir: String,
           is_update_local: bool,
+          changed_files: changed_files,
         ) -> void
 
       def params: () -> Hash[Symbol, String]

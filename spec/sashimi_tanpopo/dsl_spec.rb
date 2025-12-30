@@ -13,6 +13,7 @@ RSpec.describe SashimiTanpopo::DSL do
         dry_run:         dry_run,
         is_colored:      is_colored,
         is_update_local: is_update_local,
+        changed_files:   changed_files,
       )
     end
 
@@ -24,6 +25,7 @@ RSpec.describe SashimiTanpopo::DSL do
     let(:dry_run) { false }
     let(:is_colored) { true }
     let(:is_update_local) { true }
+    let(:changed_files) { {} }
 
     context "update single file" do
       let(:recipe_body) do
