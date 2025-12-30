@@ -42,6 +42,7 @@ module SashimiTanpopo
               dry_run:         @dry_run,
               is_colored:      @is_colored,
               is_update_local: @is_update_local,
+              changed_files:   all_changed_files,
             )
 
           all_changed_files.merge!(changed_files)

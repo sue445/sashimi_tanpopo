@@ -10,6 +10,7 @@ module SashimiTanpopo
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
     # @param is_update_local [Boolean] Whether update local file in `update_file`
+    # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
     #
     # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
     #
@@ -21,7 +22,7 @@ module SashimiTanpopo
     #       mode:           "100644",
     #     }
     #   }
-    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:)
+    def perform(recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:, changed_files: {})
       evaluate(
         recipe_body:     File.read(recipe_path),
         recipe_path:     recipe_path,
@@ -30,6 +31,7 @@ module SashimiTanpopo
         dry_run:         dry_run,
         is_colored:      is_colored,
         is_update_local: is_update_local,
+        changed_files:   changed_files,
       )
     end
 
@@ -42,6 +44,7 @@ module SashimiTanpopo
     # @param dry_run [Boolean]
     # @param is_colored [Boolean] Whether show color diff
     # @param is_update_local [Boolean] Whether update local file in `update_file`
+    # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
     #
     # @return [Hash<String, { before_content: String, after_content: String, mode: String }>] changed files (key: file path, value: Hash)
     #
@@ -53,8 +56,8 @@ module SashimiTanpopo
     #       mode:           "100644",
     #     }
     #   }
-    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:)
-      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored, target_dir: target_dir, is_update_local: is_update_local)
+    def evaluate(recipe_body:, recipe_path:, target_dir:, params:, dry_run:, is_colored:, is_update_local:, changed_files:)
+      context = EvalContext.new(params: params, dry_run: dry_run, is_colored: is_colored, target_dir: target_dir, is_update_local: is_update_local, changed_files: changed_files)
       InstanceEval.new(recipe_body: recipe_body, recipe_path: recipe_path, target_dir: target_dir, context: context).call
       context.changed_files
     end
@@ -65,12 +68,14 @@ module SashimiTanpopo
       # @param is_colored [Boolean] Whether show color diff
       # @param target_dir [String]
       # @param is_update_local [Boolean] Whether update local file in `update_file`
-      def initialize(params:, dry_run:, is_colored:, target_dir:, is_update_local:)
+      # @param changed_files [Hash<String, { before_content: String, after_content: String, mode: String }>] key: file path, value: Hash
+      def initialize(params:, dry_run:, is_colored:, target_dir:, is_update_local:, changed_files:)
         @__params__ = params
         @__dry_run__ = dry_run
         @__target_dir__ = target_dir
         @__is_update_local__ = is_update_local
         @__is_colored__ = is_colored
+        @__changed_files__ = changed_files
       end
 
       # passed from `--params`
@@ -100,7 +105,7 @@ module SashimiTanpopo
       #     }
       #   }
       def changed_files
-        @__changed_files__ ||= {}
+        @__changed_files__
       end
 
       # @return [Boolean] Whether dry run

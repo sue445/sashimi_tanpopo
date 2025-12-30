@@ -26,19 +26,37 @@ RSpec.describe SashimiTanpopo::Provider::Local do
       FileUtils.cp(fixtures_dir.join("test.txt"), temp_dir)
     end
 
-    let(:recipe_paths) do
-      [
-        fixtures_dir.join("recipe.rb").to_s,
-      ]
-    end
-
     let(:params) { { name: "sue445"} }
 
-    it "file is updated" do
-      subject
+    context "with single recipe" do
+      let(:recipe_paths) do
+        [
+          fixtures_dir.join("recipe.rb").to_s,
+        ]
+      end
 
-      test_txt = File.read(temp_dir_path.join("test.txt"))
-      expect(test_txt).to eq "Hi, sue445!\n"
+      it "file is updated" do
+        subject
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hi, sue445!\n"
+      end
+    end
+
+    context "with multiple recipes" do
+      let(:recipe_paths) do
+        [
+          fixtures_dir.join("recipe.rb").to_s,
+          fixtures_dir.join("recipe2.rb").to_s,
+        ]
+      end
+
+      it "file is updated" do
+        subject
+
+        test_txt = File.read(temp_dir_path.join("test.txt"))
+        expect(test_txt).to eq "Hello, sue445!\n"
+      end
     end
   end
 end
