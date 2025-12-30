@@ -33,6 +33,27 @@ jobs:
           bundler-cache: true
           ruby-version: ruby
 
+      - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        id: app-token
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      # ref. https://zzzkan.me/blog/github-action-direct-push/
+      - name: Prepare for git push by GitHub App
+        run: |
+          git config user.name ${GIT_USER_NAME}
+          git config user.email ${GIT_USER_EMAIL}
+        env:
+          GIT_USER_NAME: "${{ steps.app-token.outputs.app-slug }}[bot]"
+          GIT_USER_EMAIL: "${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+
       - name: Publish to RubyGems
         uses: rubygems/release-gem@1c162a739e8b4cb21a676e97b087e8268d8fc40b # v1.1.2
 
