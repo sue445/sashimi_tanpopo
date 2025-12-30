@@ -1,6 +1,11 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.3...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.4...main)
 
+## [v0.5.4](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.5.4) - 2025-12-30
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.3...v0.5.4)
+
+* Fixed problem where not all changes were applied when passing multiple recipes
+  * https://github.com/sue445/sashimi_tanpopo/pull/103
 * Upgrade to Ruby 4.0 in Dockerfile
   * https://github.com/sue445/sashimi_tanpopo/pull/102
 
