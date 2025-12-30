@@ -36,6 +36,6 @@ task :fix_version do
 end
 
 # Run fix_version before release:source_control_push (inside of release task)
-Rake::Task["release:source_control_push"].enhance([:fix_version])
+Rake::Task["release:source_control_push"].enhance([:fix_version]) unless ENV["CI"]
 
 task default: %i[spec rbs]

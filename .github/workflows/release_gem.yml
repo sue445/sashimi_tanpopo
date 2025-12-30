@@ -50,6 +50,7 @@ jobs:
         run: |
           git config user.name ${GIT_USER_NAME}
           git config user.email ${GIT_USER_EMAIL}
+          bundle exec rake fix_version
         env:
           GIT_USER_NAME: "${{ steps.app-token.outputs.app-slug }}[bot]"
           GIT_USER_EMAIL: "${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
