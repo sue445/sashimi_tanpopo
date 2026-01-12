@@ -62,7 +62,7 @@ module SashimiTanpopo
         @summary_path = summary_path || ""
         @only_changes_summary = only_changes_summary
 
-        @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
+        @octokit = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
         @graphql = Graphlient::Client.new(
           "#{api_endpoint.delete_suffix("/")}/graphql",
           headers: {
@@ -166,14 +166,14 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
       def current_user_name
-        @client.user[:login]
+        @octokit.user[:login]
       end
 
       # @return [String]
       #
       # @see https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
       def get_default_branch
-        res = @client.repository(@repository)
+        res = @octokit.repository(@repository)
         res[:default_branch]
       end
 
@@ -196,7 +196,7 @@ module SashimiTanpopo
       #
       # @return [Boolean]
       def exists_branch?(branch)
-        @client.branch(@repository, branch)
+        @octokit.branch(@repository, branch)
         true
       rescue Octokit::NotFound
         false
@@ -213,18 +213,18 @@ module SashimiTanpopo
       # @see https://docs.github.com/en/rest/git/commits?apiVersion=2022-11-28#create-a-commit
       # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#update-a-reference
       def create_branch_and_push_changes(changed_files)
-        current_ref = @client.ref(@repository, "heads/#{pr_target_branch}")
-        branch_ref = @client.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
+        current_ref = @octokit.ref(@repository, "heads/#{pr_target_branch}")
+        branch_ref = @octokit.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
 
-        branch_commit = @client.commit(@repository, branch_ref.object.sha) # steep:ignore
+        branch_commit = @octokit.commit(@repository, branch_ref.object.sha) # steep:ignore
 
         tree_metas =
           changed_files.map do |path, data|
             create_tree_meta(path: path, body: data[:after_content], mode: data[:mode])
           end
-        tree = @client.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha) # steep:ignore
+        tree = @octokit.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha) # steep:ignore
 
-        commit = @client.create_commit(
+        commit = @octokit.create_commit(
           @repository,
           @commit_message,
           tree.sha, # steep:ignore
@@ -235,7 +235,7 @@ module SashimiTanpopo
           }
         )
 
-        @client.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha) # steep:ignore
+        @octokit.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha) # steep:ignore
       end
 
       # @param path [String]
@@ -246,7 +246,7 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/rest/git/blobs#create-a-blob
       def create_tree_meta(path:, body:, mode:)
-        file_body_sha = @client.create_blob(@repository, body)
+        file_body_sha = @octokit.create_blob(@repository, body)
 
         {
           path: path,
@@ -260,7 +260,7 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
       def create_pull_request
-        pr = @client.create_pull_request(@repository, pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
+        pr = @octokit.create_pull_request(@repository, pr_target_branch, @pr_source_branch, @pr_title, @pr_body, draft: @is_draft_pr)
 
         SashimiTanpopo.logger.info "Pull Request is created: #{pr[:html_url]}"
 
@@ -277,7 +277,7 @@ module SashimiTanpopo
       def add_pr_labels(pr_number)
         return if @pr_labels.empty?
 
-        @client.add_labels_to_an_issue(@repository, pr_number, @pr_labels)
+        @octokit.add_labels_to_an_issue(@repository, pr_number, @pr_labels)
       end
 
       # @param pr_number [Integer]
@@ -286,7 +286,7 @@ module SashimiTanpopo
       def add_pr_assignees(pr_number)
         return if @pr_assignees.empty?
 
-        @client.add_assignees(@repository, pr_number, @pr_assignees)
+        @octokit.add_assignees(@repository, pr_number, @pr_assignees)
       end
 
       # @param pr_number [Integer]
@@ -295,7 +295,7 @@ module SashimiTanpopo
       def add_pr_reviewers(pr_number)
         return if @pr_reviewers.empty?
 
-        @client.request_pull_request_review(@repository, pr_number, reviewers: @pr_reviewers)
+        @octokit.request_pull_request_review(@repository, pr_number, reviewers: @pr_reviewers)
       end
 
       # @param pr_node_id [String]
