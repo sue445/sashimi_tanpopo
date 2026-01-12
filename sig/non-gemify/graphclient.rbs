@@ -1,8 +1,0 @@
-module Graphlient
-  class Client
-    def initialize: (String url, ?Hash[Symbol, untyped] options) ?{ (instance) -> void } -> void
-
-    def query: (String query, ?Hash[Symbol | String, untyped]? variables) -> untyped
-      | (?Hash[Symbol | String, untyped]? variables) { () -> untyped } -> untyped
-  end
-end
