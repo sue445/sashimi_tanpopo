@@ -15,11 +15,14 @@ module SashimiTanpopo
       @pr_assignees: Array[String]
       @pr_reviewers: Array[String]
       @pr_labels: Array[String]
-      @client: Octokit::Client
+      @pr_auto_merge: bool
       @is_draft_pr: bool
       @api_endpoint: String
       @summary_path: String
       @only_changes_summary: bool
+
+      @client: Octokit::Client
+      @graphql: Graphlient::Client
 
       def initialize: (
           recipe_paths: Array[String],
@@ -40,6 +43,7 @@ module SashimiTanpopo
           ?pr_assignees: Array[String],
           ?pr_reviewers: Array[String],
           ?pr_labels: Array[String],
+          pr_auto_merge: bool,
           is_draft_pr: bool,
           summary_path: String?,
           only_changes_summary: bool,
@@ -71,13 +75,15 @@ module SashimiTanpopo
 
       def create_tree_meta: (path: String, body: String, mode: String) -> { path: String, mode: String, type: String, sha: String }
 
-      def create_pull_request: () -> { number: Integer, html_url: String }
+      def create_pull_request: () -> { number: Integer, html_url: String, node_id: String }
 
       def add_pr_labels: (Integer pr_number) -> void
 
       def add_pr_assignees: (Integer pr_number) -> void
 
       def add_pr_reviewers: (Integer pr_number) -> void
+
+      def set_auto_merge: (String pr_node_id) -> void
     end
   end
 end

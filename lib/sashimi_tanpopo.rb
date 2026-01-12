@@ -5,6 +5,7 @@ require "diffy"
 require "octokit"
 require "gitlab"
 require "parallel"
+require "graphlient"
 
 require_relative "sashimi_tanpopo/version"
 require_relative "sashimi_tanpopo/dsl"

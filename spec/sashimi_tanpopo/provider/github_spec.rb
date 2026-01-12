@@ -20,6 +20,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       pr_assignees:         pr_assignees,
       pr_reviewers:         pr_reviewers,
       pr_labels:            pr_labels,
+      pr_auto_merge:        pr_auto_merge,
       is_draft_pr:          is_draft_pr,
       summary_path:         summary_path,
       only_changes_summary: only_changes_summary,
@@ -46,6 +47,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_assignees)         { %w(sue445) }
   let(:pr_reviewers)         { %w(sue445-test) }
   let(:pr_labels)            { %w(sashimi-tanpopo) }
+  let(:pr_auto_merge)        { false }
   let(:is_draft_pr)          { false }
   let(:summary_path)         { nil }
   let(:only_changes_summary) { false }
@@ -69,6 +71,13 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       {
         "Accept" => "application/vnd.github.v3+json",
         "Authorization" => "token #{access_token}",
+        "Content-Type" => "application/json",
+      }
+    end
+
+    let(:graphql_request_headers) do
+      {
+        "Authorization" => "Bearer #{access_token}",
         "Content-Type" => "application/json",
       }
     end
@@ -296,6 +305,29 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
             test_txt = File.read(temp_dir_path.join("test.txt"))
             expect(test_txt).to eq "Hi, name!\n"
+          end
+
+          context "when pr_auto_merge is enabled" do
+            let(:pr_auto_merge) { true }
+
+            before do
+              allow(provider).to receive(:set_auto_merge)
+            end
+
+            it "file is not updated and create PullRequest" do
+              pr_url = subject
+
+              expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+              test_txt = File.read(temp_dir_path.join("test.txt"))
+              expect(test_txt).to eq "Hi, name!\n"
+            end
+
+            it "set_auto_merge is called" do
+              subject
+
+              expect(provider).to have_received(:set_auto_merge).with("MDExOlB1bGxSZXF1ZXN0MQ==")
+            end
           end
         end
       end
