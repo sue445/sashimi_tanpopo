@@ -1,5 +1,8 @@
 ## [Unreleased]
-[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.4...main)
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.6.0...main)
+
+## [v0.6.0](https://github.com/sue445/sashimi_tanpopo/releases/tag/v0.6.0) - 2026-01-12
+[full changelog](http://github.com/sue445/sashimi_tanpopo/compare/v0.5.4...v0.6.0)
 
 * Add `--pr-auto-merge` to `sashimi_tanpopo github`
   * https://github.com/sue445/sashimi_tanpopo/pull/111
