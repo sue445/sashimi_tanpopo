@@ -353,7 +353,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:git_email)    { nil }
 
       before do
-        stub_push_commit(author_name: "octocat", author_email: "octocat@users.noreply.github.com" )
+        stub_push_commit(author_name: "octocat", author_email: "octocat@users.noreply.github.com")
         stub_branch_is_not_exists
       end
 
