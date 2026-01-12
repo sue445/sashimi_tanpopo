@@ -51,6 +51,7 @@ module SashimiTanpopo
     option :pr_reviewers,         type: :array,   desc: "Pull Request reviewers", default: []
     option :pr_labels,            type: :array,   desc: "Pull Request labels", default: []
     option :pr_draft,             type: :boolean, desc: "Whether to create draft Pull Request", default: false
+    option :pr_auto_merge,        type: :boolean, desc: "Whether to auto-merge to Pull Request", default: false
     def github(*recipe_files)
       repository   = option_or_env!(option_name: :github_repository, env_name: "GITHUB_REPOSITORY")
       api_endpoint = option_or_env!(option_name: :github_api_url,    env_name: "GITHUB_API_URL")
@@ -77,6 +78,7 @@ module SashimiTanpopo
         pr_assignees:         options[:pr_assignees],
         pr_reviewers:         options[:pr_reviewers],
         pr_labels:            options[:pr_labels],
+        pr_auto_merge:        options[:pr_auto_merge],
         is_draft_pr:          options[:pr_draft],
         summary_path:         summary_path,
         only_changes_summary: options[:only_changes_summary],

@@ -106,6 +106,8 @@ Options:
       [--pr-labels=one two three]                                                           # Pull Request labels
       [--pr-draft], [--no-pr-draft], [--skip-pr-draft]                                      # Whether to create draft Pull Request
                                                                                             # Default: false
+      [--pr-auto-merge], [--no-pr-auto-merge], [--skip-pr-auto-merge]                       # Whether to auto-merge to Pull Request
+                                                                                            # Default: false
 ```
 
 `--github-token` requires followings repository permissions
