@@ -6,7 +6,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: addressable
@@ -14,7 +14,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: base64
@@ -26,7 +26,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: concurrent-ruby
@@ -34,7 +34,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: connection_pool
@@ -42,7 +42,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: csv
@@ -50,14 +50,10 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: date
-  version: '0'
-  source:
-    type: stdlib
-- name: dbm
   version: '0'
   source:
     type: stdlib
@@ -66,7 +62,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: diffy
@@ -74,7 +70,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: digest
@@ -90,7 +86,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: fileutils
@@ -106,7 +102,15 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: graphlient
+  version: '0.8'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: graphql
@@ -114,7 +118,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: hashdiff
@@ -122,7 +126,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: httparty
@@ -130,7 +134,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: i18n
@@ -138,7 +142,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: io-console
@@ -158,7 +162,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: minitest
@@ -166,7 +170,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: monitor
@@ -174,7 +178,7 @@ gems:
   source:
     type: stdlib
 - name: multi_xml
-  version: 0.8.0
+  version: 0.8.1
   source:
     type: rubygems
 - name: net-http
@@ -190,7 +194,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: openssl
@@ -202,7 +206,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: pp
@@ -217,20 +221,12 @@ gems:
   version: 1.7.0
   source:
     type: rubygems
-- name: pstore
-  version: '0'
-  source:
-    type: stdlib
-- name: psych
-  version: '0'
-  source:
-    type: stdlib
 - name: rake
   version: '13.0'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rdoc
@@ -258,7 +254,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: time
@@ -269,16 +265,12 @@ gems:
   version: '0'
   source:
     type: stdlib
-- name: tsort
-  version: '0'
-  source:
-    type: stdlib
 - name: tzinfo
   version: '2.0'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4562d89069beae0a6aaaf8553a6b561a4f9094b8
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: uri
@@ -290,7 +282,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: f2826d40140e8d87f43a44375bb277ba7b7b2e19
+    revision: 3b02215b22b8324cc4459b722bde846c33319976
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 gemfile_lock_path: Gemfile.lock
