@@ -117,6 +117,12 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         to_return(status: 404, headers: response_headers, body: "{}")
     end
 
+    def stub_branch_is_exists
+      stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+        with(headers: request_headers).
+        to_return(status: 200, headers: response_headers, body: fixture("github_get_branch.json"))
+    end
+
     before do
       stub_request(:get, "https://api.github.com/user").
         with(headers: request_headers).
@@ -296,9 +302,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
       context "branch is exists" do
         before do
-          stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
-            with(headers: request_headers).
-            to_return(status: 200, headers: response_headers, body: fixture("github_get_branch.json"))
+          stub_branch_is_exists
         end
 
         it "file is not updated and not created PullRequest" do
