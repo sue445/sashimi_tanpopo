@@ -79,6 +79,50 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       }
     end
 
+    def stub_push_commit(author_name:, author_email:)
+      commit_json = {
+        author: {
+          name: author_name,
+          email: author_email,
+        },
+        message: "Update files",
+        tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+        parents: [
+          "aa218f56b14c9653891f9e74264a383fa43fefbd",
+        ],
+      }.to_json
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
+        with(headers: request_headers, body: commit_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+    end
+
+    def stub_create_pull_request(draft: is_draft_pr, base: pr_target_branch, head: pr_source_branch, title: pr_title, body: pr_body)
+      create_pr_json = {
+        draft: draft,
+        base: base,
+        head: head,
+        title: title,
+        body: body,
+      }.to_json
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
+        with(headers: request_headers, body: create_pr_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+    end
+
+    def stub_branch_is_not_exists
+      stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+        with(headers: request_headers).
+        to_return(status: 404, headers: response_headers, body: "{}")
+    end
+
+    def stub_branch_is_exists
+      stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
+        with(headers: request_headers).
+        to_return(status: 200, headers: response_headers, body: fixture("github_get_branch.json"))
+    end
+
     before do
       stub_request(:get, "https://api.github.com/user").
         with(headers: request_headers).
@@ -139,17 +183,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         with(headers: request_headers, body: update_ref_json).
         to_return(status: 200, headers: response_headers, body: fixture("github_update_ref.json"))
 
-      create_pr_json = {
-        draft: is_draft_pr,
-        base: pr_target_branch,
-        head: pr_source_branch,
-        title: pr_title,
-        body: pr_body,
-      }.to_json
-
-      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
-        with(headers: request_headers, body: create_pr_json).
-        to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+      stub_create_pull_request
 
       stub_request(:post, "https://api.github.com/repos/#{repository}/issues/1347/labels").
         with(headers: request_headers, body: pr_labels.to_json).
@@ -169,28 +203,12 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:git_email)    { "test@example.com" }
 
       before do
-        commit_json = {
-          author: {
-            name: "test",
-            email: "test@example.com",
-          },
-          message: "Update files",
-          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
-          parents: [
-            "aa218f56b14c9653891f9e74264a383fa43fefbd",
-          ],
-        }.to_json
-
-        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
-          with(headers: request_headers, body: commit_json).
-          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+        stub_push_commit(author_name: "test", author_email: "test@example.com" )
       end
 
       context "branch isn't exists" do
         before do
-          stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
-            with(headers: request_headers).
-            to_return(status: 404, headers: response_headers, body: "{}")
+          stub_branch_is_not_exists
         end
 
         context "when pr_target_branch is passed" do
@@ -268,17 +286,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
               with(headers: request_headers).
               to_return(status: 200, headers: response_headers, body: fixture("github_get_ref.json"))
 
-            create_pr_json = {
-              draft: is_draft_pr,
-              base: "master",
-              head: pr_source_branch,
-              title: pr_title,
-              body: pr_body,
-            }.to_json
-
-            stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
-              with(headers: request_headers, body: create_pr_json).
-              to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+            stub_create_pull_request(base: "master")
           end
 
           it "file is not updated and create PullRequest" do
@@ -294,9 +302,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
       context "branch is exists" do
         before do
-          stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
-            with(headers: request_headers).
-            to_return(status: 200, headers: response_headers, body: fixture("github_get_branch.json"))
+          stub_branch_is_exists
         end
 
         it "file is not updated and not created PullRequest" do
@@ -315,25 +321,8 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:git_email)    { nil }
 
       before do
-        commit_json = {
-          author: {
-            name: "octocat",
-            email: "octocat@users.noreply.github.com",
-          },
-          message: "Update files",
-          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
-          parents: [
-            "aa218f56b14c9653891f9e74264a383fa43fefbd",
-          ],
-        }.to_json
-
-        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
-          with(headers: request_headers, body: commit_json).
-          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
-
-        stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
-          with(headers: request_headers).
-          to_return(status: 404, headers: response_headers, body: "{}")
+        stub_push_commit(author_name: "octocat", author_email: "octocat@users.noreply.github.com" )
+        stub_branch_is_not_exists
       end
 
       it "file is not updated and create PullRequest" do

@@ -96,6 +96,45 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
 
     let(:params) { { name: "sue445"} }
 
+    def stub_create_merge_request(title: mr_title, source_branch: mr_source_branch, target_branch: mr_target_branch, description: mr_body, labels: mr_labels, assignee_ids: [1], reviewer_ids: [2])
+      create_mr_payload = {
+        title: title,
+        source_branch: source_branch,
+        target_branch: target_branch,
+        remove_source_branch: true,
+        description: description,
+        labels: labels.join(","),
+        assignee_ids: assignee_ids,
+        reviewer_ids: reviewer_ids,
+      }
+
+      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
+        with(headers: request_headers, body: create_mr_payload).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+    end
+
+    def stub_push_commit(author_email: git_email, author_name: git_username, branch: mr_source_branch, git_commit_message: commit_message, start_branch: mr_target_branch)
+      create_commit_payload = {
+        actions: [
+          {
+            action: "update",
+            file_path: "test.txt",
+            execute_filemode: "false",
+            content: "Hi, sue445!\n",
+          }
+        ],
+        author_email: author_email,
+        author_name: author_name,
+        branch: branch,
+        commit_message: git_commit_message,
+        start_branch: start_branch,
+      }
+
+      stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
+        with(headers: request_headers, body: create_commit_payload).
+        to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+    end
+
     context "branch isn't exists" do
       before do
         stub_request(:get, "#{api_endpoint}/projects/#{escaped_repository}/repository/branches/#{mr_source_branch}").
@@ -107,20 +146,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
         let(:is_draft_mr) { false }
 
         before do
-          create_mr_payload = {
-            title: mr_title,
-            source_branch: mr_source_branch,
-            target_branch: mr_target_branch,
-            remove_source_branch: true,
-            description: mr_body,
-            labels: mr_labels.join(","),
-            assignee_ids: [1],
-            reviewer_ids: [2],
-          }
-
-          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
-            with(headers: request_headers, body: create_mr_payload).
-            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+          stub_create_merge_request
         end
 
         context "with git_username and git_email" do
@@ -128,25 +154,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
           let(:git_email)    { "test@example.com" }
 
           before do
-            create_commit_payload = {
-              actions: [
-                {
-                  action: "update",
-                  file_path: "test.txt",
-                  execute_filemode: "false",
-                  content: "Hi, sue445!\n",
-                }
-              ],
-              author_email: git_email,
-              author_name: git_username,
-              branch: mr_source_branch,
-              commit_message: commit_message,
-              start_branch: mr_target_branch,
-            }
-
-            stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-              with(headers: request_headers, body: create_commit_payload).
-              to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+            stub_push_commit
           end
 
           context "when mr_target_branch is passed" do
@@ -170,40 +178,8 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
                 with(headers: request_headers).
                 to_return(status: 200, headers: response_headers, body: fixture("gitlab_get_project.json"))
 
-              create_commit_payload = {
-                actions: [
-                  {
-                    action: "update",
-                    file_path: "test.txt",
-                    execute_filemode: "false",
-                    content: "Hi, sue445!\n",
-                  }
-                ],
-                author_email: git_email,
-                author_name: git_username,
-                branch: mr_source_branch,
-                commit_message: commit_message,
-                start_branch: "main",
-              }
-
-              stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-                with(headers: request_headers, body: create_commit_payload).
-                to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
-
-              create_mr_payload = {
-                title: mr_title,
-                source_branch: mr_source_branch,
-                target_branch: "main",
-                remove_source_branch: true,
-                description: mr_body,
-                labels: mr_labels.join(","),
-                assignee_ids: [1],
-                reviewer_ids: [2],
-              }
-
-              stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
-                with(headers: request_headers, body: create_mr_payload).
-                to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
+              stub_push_commit(start_branch: "main")
+              stub_create_merge_request(target_branch: "main")
             end
 
             it "file is not updated and create Merge Request" do
@@ -222,25 +198,7 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
           let(:git_email)    { nil }
 
           before do
-            create_commit_payload = {
-              actions: [
-                {
-                  action: "update",
-                  file_path: "test.txt",
-                  execute_filemode: "false",
-                  content: "Hi, sue445!\n",
-                }
-              ],
-              author_email: "john_smith@noreply.gitlab.example.com",
-              author_name: "john_smith",
-              branch: mr_source_branch,
-              commit_message: commit_message,
-              start_branch: "main",
-            }
-
-            stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-              with(headers: request_headers, body: create_commit_payload).
-              to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+            stub_push_commit(author_email: "john_smith@noreply.gitlab.example.com", author_name: "john_smith", start_branch: "main")
           end
 
           it "file is not updated and create Merge Request" do
@@ -258,40 +216,8 @@ RSpec.describe SashimiTanpopo::Provider::GitLab do
         let(:is_draft_mr) { true }
 
         before do
-          create_mr_payload = {
-            title: "Draft: #{mr_title}",
-            source_branch: mr_source_branch,
-            target_branch: mr_target_branch,
-            remove_source_branch: true,
-            description: mr_body,
-            labels: mr_labels.join(","),
-            assignee_ids: [1],
-            reviewer_ids: [2],
-          }
-
-          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/merge_requests").
-            with(headers: request_headers, body: create_mr_payload).
-            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_merge_request.json"))
-
-          create_commit_payload = {
-            actions: [
-              {
-                action: "update",
-                file_path: "test.txt",
-                execute_filemode: "false",
-                content: "Hi, sue445!\n",
-              }
-            ],
-            author_email: git_email,
-            author_name: git_username,
-            branch: mr_source_branch,
-            commit_message: commit_message,
-            start_branch: mr_target_branch,
-          }
-
-          stub_request(:post, "#{api_endpoint}/projects/#{escaped_repository}/repository/commits").
-            with(headers: request_headers, body: create_commit_payload).
-            to_return(status: 200, headers: response_headers, body: fixture("gitlab_create_commit.json"))
+          stub_create_merge_request(title: "Draft: #{mr_title}")
+          stub_push_commit
         end
 
         it "file is not updated and create Merge Request" do
