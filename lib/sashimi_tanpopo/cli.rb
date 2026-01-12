@@ -59,6 +59,8 @@ module SashimiTanpopo
 
       summary_path = option_or_env(option_name: :github_step_summary, env_name: "GITHUB_STEP_SUMMARY")
 
+      raise ArgumentError, "`--pr-auto-merge` and `--pr-draft` cannot be used together." if options[:pr_auto_merge] && options[:pr_draft]
+
       Provider::GitHub.new(
         recipe_paths:         recipe_files,
         target_dir:           options[:target_dir],
