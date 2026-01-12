@@ -20,6 +20,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       pr_assignees:         pr_assignees,
       pr_reviewers:         pr_reviewers,
       pr_labels:            pr_labels,
+      pr_auto_merge:        pr_auto_merge,
       is_draft_pr:          is_draft_pr,
       summary_path:         summary_path,
       only_changes_summary: only_changes_summary,
@@ -46,6 +47,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
   let(:pr_assignees)         { %w(sue445) }
   let(:pr_reviewers)         { %w(sue445-test) }
   let(:pr_labels)            { %w(sashimi-tanpopo) }
+  let(:pr_auto_merge)        { false }
   let(:is_draft_pr)          { false }
   let(:summary_path)         { nil }
   let(:only_changes_summary) { false }

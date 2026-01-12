@@ -15,6 +15,7 @@ module SashimiTanpopo
       @pr_assignees: Array[String]
       @pr_reviewers: Array[String]
       @pr_labels: Array[String]
+      @pr_auto_merge: bool
       @client: Octokit::Client
       @is_draft_pr: bool
       @api_endpoint: String
@@ -40,6 +41,7 @@ module SashimiTanpopo
           ?pr_assignees: Array[String],
           ?pr_reviewers: Array[String],
           ?pr_labels: Array[String],
+          pr_auto_merge: bool,
           is_draft_pr: bool,
           summary_path: String?,
           only_changes_summary: bool,

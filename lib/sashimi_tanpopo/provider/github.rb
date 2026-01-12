@@ -26,6 +26,7 @@ module SashimiTanpopo
       # @param pr_assignees [Array<String>]
       # @param pr_reviewers [Array<String>]
       # @param pr_labels [Array<String>]
+      # @param pr_auto_merge [Boolean]
       # @param is_draft_pr [Boolean] Whether create draft Pull Request
       # @param summary_path [String,nil]
       # @param only_changes_summary [Boolean]
@@ -33,8 +34,8 @@ module SashimiTanpopo
                      git_username:, git_email:, commit_message:,
                      repository:, access_token:, api_endpoint: DEFAULT_API_ENDPOINT,
                      pr_title:, pr_body:, pr_source_branch:, pr_target_branch:,
-                     pr_assignees: [], pr_reviewers: [], pr_labels: [], is_draft_pr:,
-                     summary_path:, only_changes_summary:)
+                     pr_assignees: [], pr_reviewers: [], pr_labels: [], pr_auto_merge:,
+                     is_draft_pr:, summary_path:, only_changes_summary:)
         super(
           recipe_paths:    recipe_paths,
           target_dir:      target_dir,
@@ -53,6 +54,7 @@ module SashimiTanpopo
         @pr_assignees = pr_assignees
         @pr_reviewers = pr_reviewers
         @pr_labels = pr_labels
+        @pr_auto_merge = pr_auto_merge
         @is_draft_pr = is_draft_pr
         @git_username = git_username
         @git_email = git_email
@@ -86,6 +88,7 @@ module SashimiTanpopo
         add_pr_labels(pr[:number])
         add_pr_assignees(pr[:number])
         add_pr_reviewers(pr[:number])
+        set_auto_merge(pr[:node_id])
 
         pr[:html_url]
       end
@@ -291,6 +294,8 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/graphql/reference/mutations#enablepullrequestautomerge
       def set_auto_merge(pr_node_id)
+        return unless @pr_auto_merge
+
         post_graphql(<<~GRAPHQL, pullRequestId: pr_node_id)
           mutation($pullRequestId: ID!) {
             enablePullRequestAutoMerge(input: {
