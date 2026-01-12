@@ -97,6 +97,20 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
     end
 
+    def stub_create_pull_request(draft: is_draft_pr, base: pr_target_branch, head: pr_source_branch, title: pr_title, body: pr_body)
+      create_pr_json = {
+        draft: draft,
+        base: base,
+        head: head,
+        title: title,
+        body: body,
+      }.to_json
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
+        with(headers: request_headers, body: create_pr_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+    end
+
     before do
       stub_request(:get, "https://api.github.com/user").
         with(headers: request_headers).
@@ -157,17 +171,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
         with(headers: request_headers, body: update_ref_json).
         to_return(status: 200, headers: response_headers, body: fixture("github_update_ref.json"))
 
-      create_pr_json = {
-        draft: is_draft_pr,
-        base: pr_target_branch,
-        head: pr_source_branch,
-        title: pr_title,
-        body: pr_body,
-      }.to_json
-
-      stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
-        with(headers: request_headers, body: create_pr_json).
-        to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+      stub_create_pull_request
 
       stub_request(:post, "https://api.github.com/repos/#{repository}/issues/1347/labels").
         with(headers: request_headers, body: pr_labels.to_json).
@@ -272,17 +276,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
               with(headers: request_headers).
               to_return(status: 200, headers: response_headers, body: fixture("github_get_ref.json"))
 
-            create_pr_json = {
-              draft: is_draft_pr,
-              base: "master",
-              head: pr_source_branch,
-              title: pr_title,
-              body: pr_body,
-            }.to_json
-
-            stub_request(:post, "https://api.github.com/repos/#{repository}/pulls").
-              with(headers: request_headers, body: create_pr_json).
-              to_return(status: 201, headers: response_headers, body: fixture("github_create_pull_request.json"))
+            stub_create_pull_request(base: "master")
           end
 
           it "file is not updated and create PullRequest" do
