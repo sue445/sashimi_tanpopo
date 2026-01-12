@@ -63,6 +63,13 @@ module SashimiTanpopo
         @only_changes_summary = only_changes_summary
 
         @client = Octokit::Client.new(api_endpoint: api_endpoint, access_token: access_token)
+        @graphql = Graphlient::Client.new(
+          "#{api_endpoint.delete_suffix("/")}/graphql",
+          headers: {
+            "Authorization" => "Bearer #{access_token}",
+            "Content-Type" => 'application/json'
+          },
+        )
       end
 
       # Apply recipe files
@@ -88,7 +95,8 @@ module SashimiTanpopo
         add_pr_labels(pr[:number])
         add_pr_assignees(pr[:number])
         add_pr_reviewers(pr[:number])
-        set_auto_merge(pr[:node_id])
+
+        set_auto_merge(pr[:node_id]) if @pr_auto_merge
 
         pr[:html_url]
       end
@@ -294,9 +302,7 @@ module SashimiTanpopo
       #
       # @see https://docs.github.com/en/graphql/reference/mutations#enablepullrequestautomerge
       def set_auto_merge(pr_node_id)
-        return unless @pr_auto_merge
-
-        post_graphql(<<~GRAPHQL, pullRequestId: pr_node_id)
+        @graphql.query(<<~GRAPHQL, pullRequestId: pr_node_id)
           mutation($pullRequestId: ID!) {
             enablePullRequestAutoMerge(input: {
               pullRequestId: $pullRequestId
@@ -310,15 +316,6 @@ module SashimiTanpopo
             }
           }
         GRAPHQL
-      end
-
-      # @param query [String]
-      # @param variables [Hash<String, String>]
-      def post_graphql(query, variables = {})
-        @client.post("graphql", {
-          query: query,
-          variables: variables
-        })
       end
     end
   end

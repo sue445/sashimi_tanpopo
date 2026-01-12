@@ -75,6 +75,13 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       }
     end
 
+    let(:graphql_request_headers) do
+      {
+        "Authorization" => "Bearer #{access_token}",
+        "Content-Type" => "application/json",
+      }
+    end
+
     let(:response_headers) do
       {
         "Content-Type" => "application/json",
@@ -298,6 +305,29 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
 
             test_txt = File.read(temp_dir_path.join("test.txt"))
             expect(test_txt).to eq "Hi, name!\n"
+          end
+
+          context "when pr_auto_merge is enabled" do
+            let(:pr_auto_merge) { true }
+
+            before do
+              allow(provider).to receive(:set_auto_merge)
+            end
+
+            it "file is not updated and create PullRequest" do
+              pr_url = subject
+
+              expect(pr_url).to eq "https://github.com/octocat/Hello-World/pull/1347"
+
+              test_txt = File.read(temp_dir_path.join("test.txt"))
+              expect(test_txt).to eq "Hi, name!\n"
+            end
+
+            it "set_auto_merge is called" do
+              subject
+
+              expect(provider).to have_received(:set_auto_merge).with("MDExOlB1bGxSZXF1ZXN0MQ==")
+            end
           end
         end
       end

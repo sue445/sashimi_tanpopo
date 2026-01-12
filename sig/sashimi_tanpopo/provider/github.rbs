@@ -16,11 +16,13 @@ module SashimiTanpopo
       @pr_reviewers: Array[String]
       @pr_labels: Array[String]
       @pr_auto_merge: bool
-      @client: Octokit::Client
       @is_draft_pr: bool
       @api_endpoint: String
       @summary_path: String
       @only_changes_summary: bool
+
+      @client: Octokit::Client
+      @graphql: Graphlient::Client
 
       def initialize: (
           recipe_paths: Array[String],
@@ -82,8 +84,6 @@ module SashimiTanpopo
       def add_pr_reviewers: (Integer pr_number) -> void
 
       def set_auto_merge: (String pr_node_id) -> void
-
-      def post_graphql: (String query, ?Hash[String, String] variables) -> void
     end
   end
 end
