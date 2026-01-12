@@ -78,6 +78,10 @@ module SashimiTanpopo
       def add_pr_assignees: (Integer pr_number) -> void
 
       def add_pr_reviewers: (Integer pr_number) -> void
+
+      def set_auto_merge: (String pr_node_id) -> void
+
+      def post_graphql: (String query, ?Hash[String, String] variables) -> void
     end
   end
 end

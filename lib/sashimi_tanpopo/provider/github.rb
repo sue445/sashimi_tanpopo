@@ -285,6 +285,35 @@ module SashimiTanpopo
 
         @client.request_pull_request_review(@repository, pr_number, reviewers: @pr_reviewers)
       end
+
+      # @param pr_node_id [String]
+      #
+      # @see https://docs.github.com/en/graphql/reference/mutations#enablepullrequestautomerge
+      def set_auto_merge(pr_node_id)
+        post_graphql(<<~GRAPHQL, pullRequestId: pr_node_id)
+          mutation($pullRequestId: ID!) {
+            enablePullRequestAutoMerge(input: {
+              pullRequestId: $pullRequestId
+            }) {
+              pullRequest {
+                id
+                autoMergeRequest {
+                  enabledAt
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      # @param query [String]
+      # @param variables [Hash<String, String>]
+      def post_graphql(query, variables = {})
+        @client.post("graphql", {
+          query: query,
+          variables: variables
+        })
+      end
     end
   end
 end
