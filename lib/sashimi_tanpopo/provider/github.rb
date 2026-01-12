@@ -256,6 +256,7 @@ module SashimiTanpopo
         {
           number: pr[:number],
           html_url: pr[:html_url],
+          node_id: pr[:node_id],
         }
       end
 
