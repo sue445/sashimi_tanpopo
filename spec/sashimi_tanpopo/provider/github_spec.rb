@@ -79,6 +79,24 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       }
     end
 
+    def stub_push_commit(author_name:, author_email:)
+      commit_json = {
+        author: {
+          name: author_name,
+          email: author_email,
+        },
+        message: "Update files",
+        tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+        parents: [
+          "aa218f56b14c9653891f9e74264a383fa43fefbd",
+        ],
+      }.to_json
+
+      stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
+        with(headers: request_headers, body: commit_json).
+        to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+    end
+
     before do
       stub_request(:get, "https://api.github.com/user").
         with(headers: request_headers).
@@ -169,21 +187,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:git_email)    { "test@example.com" }
 
       before do
-        commit_json = {
-          author: {
-            name: "test",
-            email: "test@example.com",
-          },
-          message: "Update files",
-          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
-          parents: [
-            "aa218f56b14c9653891f9e74264a383fa43fefbd",
-          ],
-        }.to_json
-
-        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
-          with(headers: request_headers, body: commit_json).
-          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+        stub_push_commit(author_name: "test", author_email: "test@example.com" )
       end
 
       context "branch isn't exists" do
@@ -315,21 +319,7 @@ RSpec.describe SashimiTanpopo::Provider::GitHub do
       let(:git_email)    { nil }
 
       before do
-        commit_json = {
-          author: {
-            name: "octocat",
-            email: "octocat@users.noreply.github.com",
-          },
-          message: "Update files",
-          tree: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
-          parents: [
-            "aa218f56b14c9653891f9e74264a383fa43fefbd",
-          ],
-        }.to_json
-
-        stub_request(:post, "https://api.github.com/repos/#{repository}/git/commits").
-          with(headers: request_headers, body: commit_json).
-          to_return(status: 201, headers: response_headers, body: fixture("github_create_commit.json"))
+        stub_push_commit(author_name: "octocat", author_email: "octocat@users.noreply.github.com" )
 
         stub_request(:get, "https://api.github.com/repos/#{repository}/branches/#{pr_source_branch}").
           with(headers: request_headers).
