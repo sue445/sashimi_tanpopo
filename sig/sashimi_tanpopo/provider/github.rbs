@@ -21,7 +21,7 @@ module SashimiTanpopo
       @summary_path: String
       @only_changes_summary: bool
 
-      @client: Octokit::Client
+      @octokit: Octokit::Client
       @graphql: Graphlient::Client
 
       def initialize: (
