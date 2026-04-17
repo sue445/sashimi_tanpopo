@@ -22,7 +22,7 @@ gems:
   source:
     type: rubygems
 - name: bigdecimal
-  version: 4.1.0
+  version: 4.1.1
   source:
     type: rubygems
 - name: concurrent-ruby
@@ -50,6 +50,10 @@ gems:
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: date
+  version: '0'
+  source:
+    type: stdlib
+- name: dbm
   version: '0'
   source:
     type: stdlib
@@ -221,6 +225,14 @@ gems:
   version: 1.9.0
   source:
     type: rubygems
+- name: pstore
+  version: '0'
+  source:
+    type: stdlib
+- name: psych
+  version: '0'
+  source:
+    type: stdlib
 - name: rake
   version: '13.0'
   source:
@@ -262,6 +274,10 @@ gems:
   source:
     type: stdlib
 - name: timeout
+  version: '0'
+  source:
+    type: stdlib
+- name: tsort
   version: '0'
   source:
     type: stdlib
