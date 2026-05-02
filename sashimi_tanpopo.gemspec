@@ -43,10 +43,10 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "irb"
   spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rbs", "< 4.0.0" # FIXME: Remove version locking after https://github.com/sferik/multi_xml/pull/74 is released
+  spec.add_development_dependency "rbs", ">= 4.0.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-temp_dir"
-  spec.add_development_dependency "steep"
+  spec.add_development_dependency "steep", ">= 2.0.0"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "yard"
 
