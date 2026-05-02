@@ -214,28 +214,28 @@ module SashimiTanpopo
       # @see https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#update-a-reference
       def create_branch_and_push_changes(changed_files)
         current_ref = @octokit.ref(@repository, "heads/#{pr_target_branch}")
-        branch_ref = @octokit.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha) # steep:ignore
+        branch_ref = @octokit.create_ref(@repository, "heads/#{@pr_source_branch}", current_ref.object.sha)
 
-        branch_commit = @octokit.commit(@repository, branch_ref.object.sha) # steep:ignore
+        branch_commit = @octokit.commit(@repository, branch_ref.object.sha)
 
         tree_metas =
           changed_files.map do |path, data|
             create_tree_meta(path: path, body: data[:after_content], mode: data[:mode])
           end
-        tree = @octokit.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha) # steep:ignore
+        tree = @octokit.create_tree(@repository, tree_metas, base_tree: branch_commit.commit.tree.sha)
 
         commit = @octokit.create_commit(
           @repository,
           @commit_message,
-          tree.sha, # steep:ignore
-          branch_ref.object.sha, # steep:ignore
+          tree.sha,
+          branch_ref.object.sha,
           author: {
             name: git_username,
             email: git_email,
           }
         )
 
-        @octokit.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha) # steep:ignore
+        @octokit.update_ref(@repository, "heads/#{@pr_source_branch}", commit.sha)
       end
 
       # @param path [String]

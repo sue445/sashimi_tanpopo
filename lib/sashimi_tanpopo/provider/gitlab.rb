@@ -166,7 +166,7 @@ module SashimiTanpopo
       end
 
       def with_retry
-        retry_count ||= 0 # steep:ignore
+        retry_count ||= 0
 
         yield
       rescue Gitlab::Error::MethodNotAllowed, Gitlab::Error::NotAcceptable, Gitlab::Error::Unprocessable => error
