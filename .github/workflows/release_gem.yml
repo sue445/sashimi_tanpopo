@@ -59,7 +59,7 @@ jobs:
           GIT_USER_EMAIL: "${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
 
       - name: Publish to RubyGems
-        uses: rubygems/release-gem@6317d8d1f7e28c24d28f6eff169ea854948bd9f7 # v1.2.0
+        uses: rubygems/release-gem@052cc82692552de3ef2b81fd670e41d13cba8092 # v1.4.0
 
       - name: Create GitHub release
         run: |
