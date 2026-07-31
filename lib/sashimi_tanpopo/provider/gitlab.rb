@@ -143,7 +143,7 @@ module SashimiTanpopo
       # @return [String]
       def self.gitlab_host(api_endpoint)
         matched = %r{^https?://(.+)/api}.match(api_endpoint)
-        return matched[1] if matched # steep:ignore
+        return matched[1] if matched
 
         "example.com"
       end

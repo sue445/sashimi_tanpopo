@@ -110,7 +110,7 @@ module SashimiTanpopo
         return DEFAULT_GITHUB_HOST if api_endpoint == DEFAULT_API_ENDPOINT
 
         matched = %r{^https?://(.+)/api}.match(api_endpoint)
-        return matched[1] if matched # steep:ignore
+        return matched[1] if matched
 
         DEFAULT_GITHUB_HOST
       end
