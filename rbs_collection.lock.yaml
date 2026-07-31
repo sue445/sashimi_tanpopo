@@ -269,6 +269,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: tsort
+  version: '0'
+  source:
+    type: stdlib
 - name: tzinfo
   version: '2.0'
   source:
